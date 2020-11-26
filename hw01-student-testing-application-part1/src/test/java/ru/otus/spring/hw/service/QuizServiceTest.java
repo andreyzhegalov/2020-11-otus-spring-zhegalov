@@ -1,4 +1,4 @@
-package ru.otus.hw.service;
+package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -15,9 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import ru.otus.spring.hw.dao.QuestionDao;
+import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
-import ru.otus.spring.hw.service.QuizService;
-import ru.otus.spring.hw.service.QuizServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class QuizServiceTest {
@@ -32,6 +31,10 @@ public class QuizServiceTest {
         quizService = new QuizServiceImpl(questionDao);
     }
 
+    private Question makeQuestion(int number) {
+        return new Question(number, "", new Answer(""));
+    }
+
     @Test
     void shouldReturnEmptyIfQuestionListIsEmpty() {
         given(questionDao.getQuestion(eq(0))).willReturn(Optional.empty());
@@ -40,15 +43,15 @@ public class QuizServiceTest {
 
     @Test
     void checkingTheGettingOfTheFirstQuestion() {
-        given(questionDao.getQuestion(eq(0))).willReturn(Optional.of(new Question(0)));
+        given(questionDao.getQuestion(eq(0))).willReturn(Optional.of(makeQuestion(0)));
         assertThat(quizService.getNextQuestion(null)).isPresent();
     }
 
     @Test
     void checkingTheGettingOfTheNextFirstQuestion() {
         final int CURRENT_NUMBER = 1;
-        final var question = new Question(CURRENT_NUMBER);
-        given(questionDao.getQuestion(CURRENT_NUMBER + 1)).willReturn(Optional.of(new Question(CURRENT_NUMBER + 1)));
+        final var question = makeQuestion(CURRENT_NUMBER);
+        given(questionDao.getQuestion(CURRENT_NUMBER + 1)).willReturn(Optional.of(makeQuestion(CURRENT_NUMBER + 1)));
         assertThat(quizService.getNextQuestion(question)).isPresent();
         then(questionDao).should().getQuestion(CURRENT_NUMBER + 1);
     }
@@ -56,7 +59,7 @@ public class QuizServiceTest {
     @Test
     void shouldReturnEmptyIfQuestionIsLast() {
         final int LAST_NUMBER = 10;
-        final var question = new Question(LAST_NUMBER);
+        final var question = makeQuestion(LAST_NUMBER);
         given(questionDao.getQuestion(LAST_NUMBER + 1)).willReturn(Optional.empty());
         assertThat(quizService.getNextQuestion(question)).isEmpty();
         then(questionDao).should().getQuestion(LAST_NUMBER + 1);

@@ -1,6 +1,13 @@
 package ru.otus.spring.hw.domain;
 
-public class Answer {
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
+public class Answer {
+    private final String text;
 }
 
