@@ -19,7 +19,8 @@ public class QuizServiceImpl implements QuizService {
         if (lastQuestion == null) {
             return questionDao.getQuestion(0);
         }
-        return Optional.empty();
+        final var nextNumber = lastQuestion.getNumber() + 1;
+        return questionDao.getQuestion(nextNumber);
     }
 
     @Override
