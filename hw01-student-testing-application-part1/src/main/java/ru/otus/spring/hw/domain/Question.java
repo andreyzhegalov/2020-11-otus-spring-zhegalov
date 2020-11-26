@@ -1,13 +1,10 @@
 package ru.otus.spring.hw.domain;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public class Question {
     private final int number;
-
-    public Question(int number) {
-        this.number = number;
-    }
-
-    public int getNumber() {
-        return number;
-    }
 }
