@@ -1,6 +1,5 @@
-number,question,answer
 1,how many byte in the int type?,4
-2,base class for any class may be Object (1), or Super(2)?,1
+2,base class for any class may be Object (1) or Super(2)?,1
 3,how many primitive types in the java?,8
 4,which method adds an element to map? 1 - add 2 – put.,2
 5,what type in java takes 1 byte?,byte
