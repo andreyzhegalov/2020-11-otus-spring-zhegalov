@@ -2,7 +2,6 @@ package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -37,13 +36,13 @@ public class QuizServiceTest {
 
     @Test
     void shouldReturnEmptyIfQuestionListIsEmpty() {
-        given(questionDao.getQuestion(eq(0))).willReturn(Optional.empty());
+        given(questionDao.getFirstQuestion()).willReturn(Optional.empty());
         assertThat(quizService.getNextQuestion(null)).isEmpty();
     }
 
     @Test
     void checkingTheGettingOfTheFirstQuestion() {
-        given(questionDao.getQuestion(eq(0))).willReturn(Optional.of(makeQuestion(0)));
+        given(questionDao.getFirstQuestion()).willReturn(Optional.of(makeQuestion(0)));
         assertThat(quizService.getNextQuestion(null)).isPresent();
     }
 

@@ -10,4 +10,3 @@ public interface QuestionDao {
 
     Optional<Question> getQuestion(int number);
 }
-

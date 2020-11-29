@@ -10,4 +10,3 @@ public class QuestionDaoException extends RuntimeException {
         super(msg);
     }
 }
-

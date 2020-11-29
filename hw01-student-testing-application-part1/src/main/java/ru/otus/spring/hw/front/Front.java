@@ -5,4 +5,3 @@ public interface Front {
     void print(String data);
 
 }
-

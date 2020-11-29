@@ -45,7 +45,11 @@ public class CsvQuestionDao implements QuestionDao {
 
     @Override
     public Optional<Question> getFirstQuestion() {
-        final var firstValue = questionMap.entrySet().iterator().next().getValue();
+        final var entrySet = questionMap.entrySet();
+        if (entrySet.isEmpty()) {
+            return Optional.empty();
+        }
+        final var firstValue = entrySet.iterator().next().getValue();
         return Optional.of(firstValue);
     }
 }

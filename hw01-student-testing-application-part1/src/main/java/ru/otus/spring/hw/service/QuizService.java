@@ -12,4 +12,3 @@ public interface QuizService {
 
     Result checkAnswer(Question question, Answer answer);
 }
-

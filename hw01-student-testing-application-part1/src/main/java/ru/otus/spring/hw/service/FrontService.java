@@ -5,4 +5,3 @@ public interface FrontService {
     void printAllQuestion();
 
 }
-

@@ -32,9 +32,7 @@ public class Answer {
 
     @Override
     public String toString() {
-        return "Answer{" +
-            "text = " + getText() +
-            "}";
+        return "Answer{" + "text = " + getText() + "}";
     }
 
 }
