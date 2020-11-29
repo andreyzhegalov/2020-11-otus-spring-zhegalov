@@ -18,6 +18,11 @@ class CsvQuestionDaoTest {
     }
 
     @Test
+    void testGetFirstQuestion(){
+        assertThat(new CsvQuestionDao(csvPath).getFirstQuestion()).isPresent();
+    }
+
+    @Test
     void shouldThrowExceptionIfFileNotExist() {
         assertThatThrownBy(() -> new CsvQuestionDao("not_existed_file")).isInstanceOf(QuestionDaoException.class);
     }

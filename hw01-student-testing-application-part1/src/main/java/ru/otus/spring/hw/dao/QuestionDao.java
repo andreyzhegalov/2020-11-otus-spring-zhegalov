@@ -6,7 +6,8 @@ import ru.otus.spring.hw.domain.Question;
 
 public interface QuestionDao {
 
-    Optional<Question> getQuestion(int number);
+    Optional<Question> getFirstQuestion();
 
+    Optional<Question> getQuestion(int number);
 }
 

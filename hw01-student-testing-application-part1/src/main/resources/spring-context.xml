@@ -10,4 +10,11 @@
         <constructor-arg ref="questionDao" />
     </bean>
 
+    <bean id="consoleFront" class="ru.otus.spring.hw.front.ConsoleFront"/>
+
+    <bean id="frontService" class="ru.otus.spring.hw.service.FrontServiceImpl">
+        <constructor-arg name="quizService" ref="quizService"/>
+        <constructor-arg name="front" ref="consoleFront"/>
+    </bean>
+
 </beans>
