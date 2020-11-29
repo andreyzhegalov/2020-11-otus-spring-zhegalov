@@ -14,12 +14,13 @@ import ru.otus.spring.hw.domain.Question;
 public class CsvQuestionDao implements QuestionDao {
     private final Map<Integer, Question> questionMap;
 
-    public CsvQuestionDao(Path csvPath) {
+    public CsvQuestionDao(String csvPath) {
         Objects.requireNonNull(csvPath);
+        final var ulrCsvPath = getClass().getClassLoader().getResource(csvPath);
         questionMap = new HashMap<>();
         try {
-            loadData(csvPath);
-        } catch (IOException e) {
+            loadData(Path.of(ulrCsvPath.toURI()));
+        } catch (Exception e) {
             throw new QuestionDaoException(e.toString());
         }
     }
@@ -41,5 +42,4 @@ public class CsvQuestionDao implements QuestionDao {
             }
         }
     }
-
 }
