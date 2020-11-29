@@ -1,12 +1,12 @@
 package ru.otus.spring.hw.dao;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Scanner;
 
 import ru.otus.spring.hw.dao.mapper.CsvQuestionMapper;
 import ru.otus.spring.hw.domain.Question;
@@ -16,10 +16,12 @@ public class CsvQuestionDao implements QuestionDao {
 
     public CsvQuestionDao(String csvPath) {
         Objects.requireNonNull(csvPath);
-        final var ulrCsvPath = getClass().getClassLoader().getResource(csvPath);
+
         questionMap = new HashMap<>();
         try {
-            loadData(Path.of(ulrCsvPath.toURI()));
+            final var inputStream = getClass().getClassLoader().getResource(csvPath).openStream();
+            final var in = new BufferedReader(new InputStreamReader(inputStream));
+            loadData(in);
         } catch (Exception e) {
             throw new QuestionDaoException(e.toString());
         }
@@ -34,12 +36,10 @@ public class CsvQuestionDao implements QuestionDao {
         return questionMap.size();
     }
 
-    private void loadData(Path csvPath) throws IOException {
-        try (final var scanner = new Scanner(csvPath)) {
-            while (scanner.hasNextLine()) {
-                final var question = new CsvQuestionMapper().convert(scanner.nextLine());
-                questionMap.put(question.getNumber(), question);
-            }
+    private void loadData(BufferedReader in) throws IOException {
+        while (in.ready()) {
+            final var question = new CsvQuestionMapper().convert(in.readLine());
+            questionMap.put(question.getNumber(), question);
         }
     }
 
