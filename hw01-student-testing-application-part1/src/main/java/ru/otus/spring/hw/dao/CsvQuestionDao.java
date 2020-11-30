@@ -19,7 +19,8 @@ public class CsvQuestionDao implements QuestionDao {
 
         questionMap = new HashMap<>();
         try {
-            final var inputStream = getClass().getClassLoader().getResource(csvPath).openStream();
+            final var resourceUrl = Objects.requireNonNull(getClass().getClassLoader().getResource(csvPath));
+            final var inputStream = resourceUrl.openStream();
             final var in = new BufferedReader(new InputStreamReader(inputStream));
             loadData(in);
         } catch (Exception e) {
@@ -30,6 +31,16 @@ public class CsvQuestionDao implements QuestionDao {
     @Override
     public Optional<Question> getQuestion(int number) {
         return Optional.ofNullable(questionMap.get(number));
+    }
+
+    @Override
+    public Optional<Question> getFirstQuestion() {
+        final var entrySet = questionMap.entrySet();
+        if (entrySet.isEmpty()) {
+            return Optional.empty();
+        }
+        final var firstValue = entrySet.iterator().next().getValue();
+        return Optional.of(firstValue);
     }
 
     public int getQuestionCount() {
@@ -43,13 +54,4 @@ public class CsvQuestionDao implements QuestionDao {
         }
     }
 
-    @Override
-    public Optional<Question> getFirstQuestion() {
-        final var entrySet = questionMap.entrySet();
-        if (entrySet.isEmpty()) {
-            return Optional.empty();
-        }
-        final var firstValue = entrySet.iterator().next().getValue();
-        return Optional.of(firstValue);
-    }
 }

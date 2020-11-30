@@ -1,5 +1,7 @@
 package ru.otus.spring.hw.domain;
 
+import java.util.Objects;
+
 public class Answer {
     private final String text;
 
@@ -27,7 +29,7 @@ public class Answer {
 
         Answer object = (Answer) o;
 
-        return !(text != null ? !text.equals(object.text) : object.text != null);
+        return Objects.equals(text, object.text);
     }
 
     @Override

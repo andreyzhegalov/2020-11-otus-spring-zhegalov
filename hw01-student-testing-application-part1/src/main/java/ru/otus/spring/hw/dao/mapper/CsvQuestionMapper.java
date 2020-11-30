@@ -22,7 +22,7 @@ public class CsvQuestionMapper implements Mapper<String, Question> {
         }
         int number;
         try {
-            number = Integer.valueOf(elementList.get(NUMBER_POS));
+            number = Integer.parseInt(elementList.get(NUMBER_POS));
         } catch (NumberFormatException e) {
             throw new MapperException("error number in csv line");
         }

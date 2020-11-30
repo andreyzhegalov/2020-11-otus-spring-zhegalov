@@ -1,5 +1,7 @@
 package ru.otus.spring.hw.domain;
 
+import java.util.Objects;
+
 public class Question {
     private final int number;
     private final String text;
@@ -26,7 +28,7 @@ public class Question {
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31 * result + (int) number;
+        result = 31 * result + number;
         result = 31 * result + (text != null ? text.hashCode() : 0);
         result = 31 * result + (answer != null ? answer.hashCode() : 0);
         return result;
@@ -43,9 +45,9 @@ public class Question {
 
         if (number != object.number)
             return false;
-        if (text != null ? !text.equals(object.text) : object.text != null)
+        if (!Objects.equals(text, object.text))
             return false;
-        return !(answer != null ? !answer.equals(object.answer) : object.answer != null);
+        return Objects.equals(answer, object.answer);
     }
 
     @Override

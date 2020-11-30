@@ -1,9 +1,8 @@
 package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 
 import java.util.Optional;
 
@@ -47,12 +46,11 @@ public class QuizServiceTest {
     }
 
     @Test
-    void checkingTheGettingOfTheNextFirstQuestion() {
+    void checkingTheGettingOfTheNextQuestion() {
         final int CURRENT_NUMBER = 1;
         final var question = makeQuestion(CURRENT_NUMBER);
         given(questionDao.getQuestion(CURRENT_NUMBER + 1)).willReturn(Optional.of(makeQuestion(CURRENT_NUMBER + 1)));
         assertThat(quizService.getNextQuestion(question)).isPresent();
-        then(questionDao).should().getQuestion(CURRENT_NUMBER + 1);
     }
 
     @Test
@@ -61,11 +59,10 @@ public class QuizServiceTest {
         final var question = makeQuestion(LAST_NUMBER);
         given(questionDao.getQuestion(LAST_NUMBER + 1)).willReturn(Optional.empty());
         assertThat(quizService.getNextQuestion(question)).isEmpty();
-        then(questionDao).should().getQuestion(LAST_NUMBER + 1);
     }
 
     @Test
     void testCheckAnswer() {
-        assertThatCode(() -> quizService.checkAnswer(null, null));
+        assertThatThrownBy(() -> quizService.checkAnswer(null, null)).isInstanceOf(UnsupportedOperationException.class);
     }
 }

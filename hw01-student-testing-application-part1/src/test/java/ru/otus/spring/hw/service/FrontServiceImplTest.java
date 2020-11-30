@@ -25,6 +25,13 @@ class FrontServiceImplTest {
     private QuizService quizService;
 
     @Test
+    void testNotPrintIfThereAreNoQuestions() {
+        given(quizService.getNextQuestion(eq(null))).willReturn(Optional.empty());
+        new FrontServiceImpl(quizService, front).printAllQuestion();
+        then(front).shouldHaveNoInteractions();
+    }
+
+    @Test
     void printAllQuestion() {
         final var question1 = new Question(1, "text1", new Answer("answer1"));
         final var question2 = new Question(2, "text2", new Answer("answer2"));

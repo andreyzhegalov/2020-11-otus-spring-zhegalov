@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/andreyzhegalov/2020-11-otus-spring-zhegalov.svg?branch=feature%2Fhw01-student-testing-application-part1)](https://travis-ci.org/andreyzhegalov/2020-11-otus-spring-zhegalov)
+[![codecov](https://codecov.io/gh/andreyzhegalov/2020-11-otus-spring-zhegalov/branch/feature/hw01-student-testing-application-part1/graph/badge.svg?token=s9BbEd1xif)](https://codecov.io/gh/andreyzhegalov/2020-11-otus-spring-zhegalov)
+
 # Приложение по проведению тестирования студентов (только вывод вопросов)
 
 ## Описание
@@ -28,3 +31,22 @@
 7. Весь ввод-вывод осуществляется на английском языке.
 8. Крайне желательно написать юнит-тест какого-нибудь сервиса (оцениваться будет только попытка написать тест).
 9. Помним - "без фанатизма".
+
+### Описание решения
+Основная идея была сделать сервис тестирования с возможностью динамического формирования вопросов. То есть, список вопросов формируется динамически, по некоторой бизнес-логике (блоки тем, повторный вопрос темы в случае ошибки и т.п. ), за которою на данный момент отвечает QuizService. Сейчас вопросы выбираются последовательным инкрементом по полю Question.number.
+
+При работе с файлом вопросов реализован механизм мэпинга записи (csv, json и т.п.) на объект типа Question.
+
+### Использование
+Для запуска приложения необходимо:
+1. Собрать приложение
+````
+mvn clean package
+````
+2. перейти в папку подпроекта hw01-student-testing-application-part1/target
+3. запустить приложение
+````
+java -jar hw01-student-testing-application-part1-1.0-jar-with-dependencies.jar
+````
+
+

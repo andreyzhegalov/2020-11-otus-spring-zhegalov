@@ -18,7 +18,7 @@ public class FrontServiceImpl implements FrontService {
     @Override
     public void printAllQuestion() {
         final var allQuestions = getAllQuestion();
-        allQuestions.stream().forEach(question -> front.print(question.getText()));
+        allQuestions.forEach(question -> front.print(question.getText()));
     }
 
     private List<Question> getAllQuestion() {
