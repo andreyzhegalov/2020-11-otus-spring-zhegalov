@@ -10,11 +10,13 @@
         <constructor-arg ref="questionDao" />
     </bean>
 
-    <bean id="consoleFront" class="ru.otus.spring.hw.front.ConsoleFront"/>
+    <bean id="ioController" class="ru.otus.spring.hw.controller.IOControllerConsole">
+        <constructor-arg name="out" value="#{T(java.lang.System).out}" />
+    </bean>
 
     <bean id="frontService" class="ru.otus.spring.hw.service.FrontServiceImpl">
-        <constructor-arg name="quizService" ref="quizService"/>
-        <constructor-arg name="front" ref="consoleFront"/>
+        <constructor-arg name="quizService" ref="quizService" />
+        <constructor-arg name="ioService" ref="ioController" />
     </bean>
 
 </beans>

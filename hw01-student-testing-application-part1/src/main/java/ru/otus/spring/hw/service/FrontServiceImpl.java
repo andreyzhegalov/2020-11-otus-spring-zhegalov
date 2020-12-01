@@ -3,22 +3,22 @@ package ru.otus.spring.hw.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.otus.spring.hw.controller.IOController;
 import ru.otus.spring.hw.domain.Question;
-import ru.otus.spring.hw.front.Front;
 
 public class FrontServiceImpl implements FrontService {
-    private final Front front;
+    private final IOController ioController;
     private final QuizService quizService;
 
-    public FrontServiceImpl(QuizService quizService, Front front) {
+    public FrontServiceImpl(QuizService quizService, IOController ioService) {
         this.quizService = quizService;
-        this.front = front;
+        this.ioController = ioService;
     }
 
     @Override
     public void printAllQuestion() {
         final var allQuestions = getAllQuestion();
-        allQuestions.forEach(question -> front.print(question.getText()));
+        allQuestions.forEach(question -> ioController.print(question.getText()));
     }
 
     private List<Question> getAllQuestion() {

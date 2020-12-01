@@ -1,7 +1,5 @@
 package ru.otus.spring.hw.dao.mapper;
 
-import java.util.Arrays;
-
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 
@@ -16,16 +14,16 @@ public class CsvQuestionMapper implements Mapper<String, Question> {
         if (data.isEmpty()) {
             throw new IllegalArgumentException("empty cvs string");
         }
-        final var elementList = Arrays.asList(data.split(","));
-        if (elementList.size() != LINE_ELEMENTS_COUNT) {
+        final var elementList = data.split(",");
+        if (elementList.length != LINE_ELEMENTS_COUNT) {
             throw new MapperException("wrong csv line format");
         }
         int number;
         try {
-            number = Integer.parseInt(elementList.get(NUMBER_POS));
+            number = Integer.parseInt(elementList[NUMBER_POS]);
         } catch (NumberFormatException e) {
             throw new MapperException("error number in csv line");
         }
-        return new Question(number, elementList.get(QUESTION_TEXT_POS), new Answer(elementList.get(ANSWER_TEXT_POS)));
+        return new Question(number, elementList[QUESTION_TEXT_POS], new Answer(elementList[ANSWER_TEXT_POS]));
     }
 }

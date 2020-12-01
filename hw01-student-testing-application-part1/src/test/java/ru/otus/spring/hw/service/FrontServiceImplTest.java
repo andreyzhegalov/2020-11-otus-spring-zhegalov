@@ -11,15 +11,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import ru.otus.spring.hw.controller.IOController;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
-import ru.otus.spring.hw.front.Front;
 
 @ExtendWith(MockitoExtension.class)
 class FrontServiceImplTest {
 
     @Mock
-    private Front front;
+    private IOController ioController;
 
     @Mock
     private QuizService quizService;
@@ -27,8 +27,8 @@ class FrontServiceImplTest {
     @Test
     void testNotPrintIfThereAreNoQuestions() {
         given(quizService.getNextQuestion(eq(null))).willReturn(Optional.empty());
-        new FrontServiceImpl(quizService, front).printAllQuestion();
-        then(front).shouldHaveNoInteractions();
+        new FrontServiceImpl(quizService, ioController).printAllQuestion();
+        then(ioController).shouldHaveNoInteractions();
     }
 
     @Test
@@ -39,9 +39,9 @@ class FrontServiceImplTest {
         given(quizService.getNextQuestion(eq(null))).willReturn(Optional.of(question1));
         given(quizService.getNextQuestion(eq(question1))).willReturn(Optional.of(question2));
 
-        new FrontServiceImpl(quizService, front).printAllQuestion();
+        new FrontServiceImpl(quizService, ioController).printAllQuestion();
 
-        then(front).should().print(eq("text1"));
-        then(front).should().print(eq("text2"));
+        then(ioController).should().print(eq("text1"));
+        then(ioController).should().print(eq("text2"));
     }
 }
