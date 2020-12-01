@@ -15,12 +15,7 @@ class CsvQuestionDaoTest {
 
     @Test
     void testGetFirstQuestion() {
-        assertThat(new CsvQuestionDao(CSV_PATH).getFirstQuestion()).isPresent();
-    }
-
-    @Test
-    void testGetFirstForEmptyDataSet() {
-        assertThat(new CsvQuestionDao("datasets/empty_quiz_dataset.csv").getFirstQuestion()).isEmpty();
+        assertThat(CsvQuestionDao.getFirstQuestionNumber()).isEqualTo(1);
     }
 
     @Test

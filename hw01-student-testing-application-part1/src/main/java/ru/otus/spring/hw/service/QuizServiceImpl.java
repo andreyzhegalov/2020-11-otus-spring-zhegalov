@@ -2,6 +2,7 @@ package ru.otus.spring.hw.service;
 
 import java.util.Optional;
 
+import ru.otus.spring.hw.dao.CsvQuestionDao;
 import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
@@ -17,7 +18,7 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public Optional<Question> getNextQuestion(Question lastQuestion) {
         if (lastQuestion == null) {
-            return questionDao.getFirstQuestion();
+            return questionDao.getQuestion(CsvQuestionDao.getFirstQuestionNumber());
         }
         final var nextNumber = lastQuestion.getNumber() + 1;
         return questionDao.getQuestion(nextNumber);

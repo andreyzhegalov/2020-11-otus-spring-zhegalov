@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import ru.otus.spring.hw.dao.CsvQuestionDao;
 import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
@@ -35,13 +36,15 @@ public class QuizServiceTest {
 
     @Test
     void shouldReturnEmptyIfQuestionListIsEmpty() {
-        given(questionDao.getFirstQuestion()).willReturn(Optional.empty());
+        given(questionDao.getQuestion(CsvQuestionDao.getFirstQuestionNumber())).willReturn(Optional.empty());
         assertThat(quizService.getNextQuestion(null)).isEmpty();
     }
 
     @Test
     void checkingTheGettingOfTheFirstQuestion() {
-        given(questionDao.getFirstQuestion()).willReturn(Optional.of(makeQuestion(0)));
+        final int FIRST_QUESTION_NUMBER = CsvQuestionDao.getFirstQuestionNumber();
+        given(questionDao.getQuestion(FIRST_QUESTION_NUMBER))
+                .willReturn(Optional.of(makeQuestion(FIRST_QUESTION_NUMBER)));
         assertThat(quizService.getNextQuestion(null)).isPresent();
     }
 

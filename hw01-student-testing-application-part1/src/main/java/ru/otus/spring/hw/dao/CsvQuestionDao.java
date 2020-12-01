@@ -11,6 +11,7 @@ import ru.otus.spring.hw.dao.mapper.CsvQuestionMapper;
 import ru.otus.spring.hw.domain.Question;
 
 public class CsvQuestionDao implements QuestionDao {
+    private final static int FIRST_NUMBER_VALUE = 1;
     private final Map<Integer, Question> questionMap;
 
     public CsvQuestionDao(String csvPath) {
@@ -19,8 +20,9 @@ public class CsvQuestionDao implements QuestionDao {
         questionMap = new HashMap<>();
         try {
 
-            try (final var inputResourceStream = Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(csvPath))){
-                try (final var inputCsvStream = new BufferedReader(new InputStreamReader(inputResourceStream))){
+            try (final var inputResourceStream = Objects
+                    .requireNonNull(getClass().getClassLoader().getResourceAsStream(csvPath))) {
+                try (final var inputCsvStream = new BufferedReader(new InputStreamReader(inputResourceStream))) {
                     while (inputCsvStream.ready()) {
                         final var question = new CsvQuestionMapper().convert(inputCsvStream.readLine());
                         questionMap.put(question.getNumber(), question);
@@ -38,14 +40,8 @@ public class CsvQuestionDao implements QuestionDao {
         return Optional.ofNullable(questionMap.get(number));
     }
 
-    @Override
-    public Optional<Question> getFirstQuestion() {
-        final var entrySet = questionMap.entrySet();
-        if (entrySet.isEmpty()) {
-            return Optional.empty();
-        }
-        final var firstValue = entrySet.iterator().next().getValue();
-        return Optional.of(firstValue);
+    public static int getFirstQuestionNumber() {
+        return FIRST_NUMBER_VALUE;
     }
 
     public int getQuestionCount() {
