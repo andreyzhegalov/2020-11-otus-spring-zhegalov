@@ -1,7 +1,6 @@
 package ru.otus.spring.hw.dao;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +18,16 @@ public class CsvQuestionDao implements QuestionDao {
 
         questionMap = new HashMap<>();
         try {
-            final var resourceUrl = Objects.requireNonNull(getClass().getClassLoader().getResource(csvPath));
-            final var inputStream = resourceUrl.openStream();
-            final var in = new BufferedReader(new InputStreamReader(inputStream));
-            loadData(in);
+
+            try (final var inputResourceStream = Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(csvPath))){
+                try (final var inputCsvStream = new BufferedReader(new InputStreamReader(inputResourceStream))){
+                    while (inputCsvStream.ready()) {
+                        final var question = new CsvQuestionMapper().convert(inputCsvStream.readLine());
+                        questionMap.put(question.getNumber(), question);
+                    }
+                }
+            }
+
         } catch (Exception e) {
             throw new QuestionDaoException(e.toString());
         }
@@ -46,12 +51,4 @@ public class CsvQuestionDao implements QuestionDao {
     public int getQuestionCount() {
         return questionMap.size();
     }
-
-    private void loadData(BufferedReader in) throws IOException {
-        while (in.ready()) {
-            final var question = new CsvQuestionMapper().convert(in.readLine());
-            questionMap.put(question.getNumber(), question);
-        }
-    }
-
 }
