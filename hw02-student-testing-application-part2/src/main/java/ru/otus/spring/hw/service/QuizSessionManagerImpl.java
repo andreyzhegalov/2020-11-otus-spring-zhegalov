@@ -13,7 +13,7 @@ public class QuizSessionManagerImpl implements QuizSessionManager {
 
     @Override
     public void startTesting() {
-        final var studentName = frontService.getStudent();
+        final var student = frontService.getStudent();
         Question newQuestion = null;
         while (true) {
             final var mayBeNewQuestion = quizService.getNextQuestion(newQuestion);

@@ -16,8 +16,10 @@ import ru.otus.spring.hw.domain.Question;
 
 @ExtendWith(MockitoExtension.class)
 class QuizSessionManagerImplTest {
+
     @Mock
     private FrontService frontService;
+
     @Mock
     private QuizService quizService;
 

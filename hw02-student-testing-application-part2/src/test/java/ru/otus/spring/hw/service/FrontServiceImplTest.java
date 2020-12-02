@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 import java.util.Optional;
 
@@ -49,14 +50,14 @@ class FrontServiceImplTest {
 
     @Test
     void getStudentName(){
-        final String USER_NAME = "test user";
-        given(ioController.read()).willReturn(USER_NAME);
+        given(ioController.read()).willReturn("ivan");
+        given(ioController.read()).willReturn("ivanov");
 
         final var student = new FrontServiceImpl(quizService, ioController).getStudent();
         assertThat(student).isNotNull();
 
-        then(ioController).should().print(anyString());
-        then(ioController).should().read();
+        then(ioController).should(times(2)).print(anyString());
+        then(ioController).should(times(2)).read();
     }
 
     @Test
