@@ -1,8 +1,12 @@
 package ru.otus.spring.hw.service;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
@@ -43,5 +47,25 @@ class FrontServiceImplTest {
 
         then(ioController).should().print(eq("text1"));
         then(ioController).should().print(eq("text2"));
+    }
+
+    @Test
+    void getStudentName(){
+        final String USER_NAME = "test user";
+        given(ioController.read()).willReturn(USER_NAME);
+
+        new FrontServiceImpl(quizService, ioController).getStudentName();
+        then(ioController).should().print(anyString());
+        then(ioController).should().read();
+    }
+
+    @Test
+    void getAnswer(){
+        final var question = new Question(1, "text", new Answer(""));
+        final var answer = new FrontServiceImpl(quizService, ioController).getAnswer(question);
+        assertThat(answer).isNotNull();
+
+        then(ioController).should().print(question.getText());
+        then(ioController).should().read();
     }
 }
