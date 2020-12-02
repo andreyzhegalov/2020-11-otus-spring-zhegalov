@@ -7,7 +7,7 @@ public interface FrontService {
 
     void printAllQuestion();
 
-    void getStudentName();
+    Student getStudent();
 
     Answer getAnswer(Question question);
 

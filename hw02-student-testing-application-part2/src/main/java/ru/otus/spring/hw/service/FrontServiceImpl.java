@@ -36,14 +36,6 @@ public class FrontServiceImpl implements FrontService {
     }
 
     @Override
-    public void getStudentName() {
-        final String PROMT_MESSAGE = "Hello! Please, insert your name";
-        ioController.print(PROMT_MESSAGE);
-        final var answer = ioController.read();
-        final Student newStudent = new Student(answer);
-    }
-
-    @Override
     public Answer getAnswer(final Question question) {
         ioController.print(question.getText());
         final var answerText = ioController.read();
@@ -53,5 +45,13 @@ public class FrontServiceImpl implements FrontService {
     @Override
     public void printResult() {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public Student getStudent() {
+        final String PROMT_MESSAGE = "Hello! Please, insert your name";
+        ioController.print(PROMT_MESSAGE);
+        final var answer = ioController.read();
+        return new Student(answer);
     }
 }
