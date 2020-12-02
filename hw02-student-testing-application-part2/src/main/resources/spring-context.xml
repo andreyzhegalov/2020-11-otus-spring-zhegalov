@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="questionDao" class="ru.otus.spring.hw.dao.CsvQuestionDao">
+        <constructor-arg value="datasets/quiz_dataset.csv" />
+    </bean>
+
+    <bean id="quizService" class="ru.otus.spring.hw.service.QuizServiceImpl">
+        <constructor-arg ref="questionDao" />
+    </bean>
+
+    <bean id="ioController" class="ru.otus.spring.hw.controller.IOControllerConsole">
+        <constructor-arg name="out" value="#{T(java.lang.System).out}" />
+    </bean>
+
+    <bean id="frontService" class="ru.otus.spring.hw.service.FrontServiceImpl">
+        <constructor-arg name="quizService" ref="quizService" />
+        <constructor-arg name="ioService" ref="ioController" />
+    </bean>
+
+</beans>
