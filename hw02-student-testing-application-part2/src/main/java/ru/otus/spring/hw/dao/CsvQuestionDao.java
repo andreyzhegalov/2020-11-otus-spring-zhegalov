@@ -3,9 +3,11 @@ package ru.otus.spring.hw.dao;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import ru.otus.spring.hw.dao.mapper.CsvQuestionMapper;
 import ru.otus.spring.hw.domain.Question;
@@ -46,5 +48,10 @@ public class CsvQuestionDao implements QuestionDao {
 
     public int getQuestionCount() {
         return questionMap.size();
+    }
+
+    @Override
+    public List<Question> getAllQuestion() {
+        return questionMap.values().stream().collect(Collectors.toList());
     }
 }

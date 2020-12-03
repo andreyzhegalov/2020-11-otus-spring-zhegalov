@@ -29,4 +29,10 @@ class CsvQuestionDaoTest {
         assertThat(questionDao.getQuestion(questionDao.getQuestionCount() + 1)).isEmpty();
     }
 
+
+    @Test
+    void getAllQuestion(){
+        final var questionDao = new CsvQuestionDao(CSV_PATH);
+        assertThat(questionDao.getAllQuestion()).hasSize(5).doesNotContainNull();
+    }
 }
