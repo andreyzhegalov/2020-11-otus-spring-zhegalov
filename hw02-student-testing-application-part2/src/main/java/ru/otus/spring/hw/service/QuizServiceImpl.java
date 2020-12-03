@@ -1,31 +1,32 @@
 package ru.otus.spring.hw.service;
 
-import java.util.Optional;
-
-import ru.otus.spring.hw.dao.CsvQuestionDao;
 import ru.otus.spring.hw.dao.QuestionDao;
-import ru.otus.spring.hw.domain.Answer;
-import ru.otus.spring.hw.domain.Question;
-import ru.otus.spring.hw.domain.Result;
+import ru.otus.spring.hw.domain.Report;
 
 public class QuizServiceImpl implements QuizService {
+    private final FrontService frontService;
     private final QuestionDao questionDao;
 
-    public QuizServiceImpl(QuestionDao questionDao) {
+    public QuizServiceImpl(QuestionDao questionDao, FrontService frontService) {
         this.questionDao = questionDao;
+        this.frontService = frontService;
     }
 
     @Override
-    public Optional<Question> getNextQuestion(Question lastQuestion) {
-        if (lastQuestion == null) {
-            return questionDao.getQuestion(CsvQuestionDao.getFirstQuestionNumber());
-        }
-        final var nextNumber = lastQuestion.getNumber() + 1;
-        return questionDao.getQuestion(nextNumber);
+    public void startTesting() {
+        final var student = frontService.getStudent();
+        final var report = new Report(student);
+        final var questionList = questionDao.getAllQuestion();
+        questionList.forEach(q -> {
+            final var answer = frontService.getAnswer(q);
+            report.addAnswer(q, answer);
+        });
+        frontService.printResult(report);
     }
 
     @Override
-    public Result checkAnswer(Question question, Answer answer) {
-        throw new UnsupportedOperationException();
+    public void printAllQuestion() {
+        final var questionList = questionDao.getAllQuestion();
+        questionList.forEach(frontService::getAnswer);
     }
 }

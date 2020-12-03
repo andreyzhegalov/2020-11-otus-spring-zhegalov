@@ -7,8 +7,6 @@ import ru.otus.spring.hw.domain.Student;
 
 public interface FrontService {
 
-    void printAllQuestion();
-
     Student getStudent();
 
     Answer getAnswer(Question question);
