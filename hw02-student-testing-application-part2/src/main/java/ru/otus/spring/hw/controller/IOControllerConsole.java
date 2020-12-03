@@ -22,7 +22,7 @@ public class IOControllerConsole implements IOController {
     @Override
     public String read() {
         if(in.hasNext()){
-            return in.next();
+            return in.next().strip();
         }
         return "";
     }

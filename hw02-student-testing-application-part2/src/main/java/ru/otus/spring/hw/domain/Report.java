@@ -8,8 +8,8 @@ public class Report {
     private final int threshold = 50;
     private final static Integer CORRECT_VALUE = 1;
     private final static Integer INCORRECT_VALUE = 0;
-    private final static String REPORT_TEMPLATE_SUCCESS = "Congratulations to %s %s! You have been tested. Correct %d questions out of %d";
-    private final static String REPORT_TEMPLATE_FAIL = "%s %s, you have not been tested. Correct %d questions out of %d";
+    private final static String REPORT_TEMPLATE_SUCCESS = "Congratulations to %s %s! You have been tested. Correct %d questions out of %d.";
+    private final static String REPORT_TEMPLATE_FAIL = "%s %s, you have not been tested. Correct %d questions out of %d.";
     private final Student student;
     private final List<Integer> resultList;
 
@@ -20,7 +20,7 @@ public class Report {
     }
 
     public void addAnswer(Question question, Answer answer) {
-        resultList.add((question.getAnswer() == answer) ? CORRECT_VALUE : INCORRECT_VALUE);
+        resultList.add((question.getAnswer().equals(answer)) ? CORRECT_VALUE : INCORRECT_VALUE);
     }
 
     public String print() {

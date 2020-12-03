@@ -9,8 +9,8 @@ import ru.otus.spring.hw.domain.Student;
 public class FrontServiceImpl implements FrontService {
     private final IOController ioController;
 
-    public FrontServiceImpl(IOController ioService) {
-        this.ioController = ioService;
+    public FrontServiceImpl(IOController ioController) {
+        this.ioController = ioController;
     }
 
     @Override
