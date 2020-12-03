@@ -6,6 +6,7 @@ import java.util.List;
 import ru.otus.spring.hw.controller.IOController;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
+import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 
 public class FrontServiceImpl implements FrontService {
@@ -44,11 +45,6 @@ public class FrontServiceImpl implements FrontService {
     }
 
     @Override
-    public void printResult() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
     public Student getStudent() {
         final String GET_NAME_MESSAGE = "Hello! Please, insert your name";
         final String GET_SECOND_NAME_MESSAGE = "Insert your second name";
@@ -57,5 +53,10 @@ public class FrontServiceImpl implements FrontService {
         ioController.print(GET_SECOND_NAME_MESSAGE);
         final var secondName = ioController.read();
         return new Student(name, secondName);
+    }
+
+    @Override
+    public void printResult(Report report) {
+        ioController.print(report.print());
     }
 }

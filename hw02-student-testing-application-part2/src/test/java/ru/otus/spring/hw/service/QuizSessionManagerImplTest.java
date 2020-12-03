@@ -1,5 +1,6 @@
 package ru.otus.spring.hw.service;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -39,7 +40,7 @@ class QuizSessionManagerImplTest {
         then(frontService).should().getAnswer(question);
         then(quizService).should().getNextQuestion(question);
         then(quizService).shouldHaveNoMoreInteractions();
-        then(frontService).should().printResult();
+        then(frontService).should().printResult(any());
         then(frontService).shouldHaveNoMoreInteractions();
     }
 }

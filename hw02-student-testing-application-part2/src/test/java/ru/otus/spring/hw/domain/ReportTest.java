@@ -51,5 +51,4 @@ class ReportTest {
         final var report = new Report(student);
         assertThat(report.print()).doesNotContain("!");
     }
-
 }

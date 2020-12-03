@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.hw.controller.IOController;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
+import ru.otus.spring.hw.domain.Report;
+import ru.otus.spring.hw.domain.Student;
 
 @ExtendWith(MockitoExtension.class)
 class FrontServiceImplTest {
@@ -49,7 +51,7 @@ class FrontServiceImplTest {
     }
 
     @Test
-    void getStudentName(){
+    void getStudentName() {
         given(ioController.read()).willReturn("ivan");
         given(ioController.read()).willReturn("ivanov");
 
@@ -61,12 +63,20 @@ class FrontServiceImplTest {
     }
 
     @Test
-    void getAnswer(){
+    void getAnswer() {
         final var question = new Question(1, "text", new Answer(""));
         final var answer = new FrontServiceImpl(quizService, ioController).getAnswer(question);
         assertThat(answer).isNotNull();
 
         then(ioController).should().print(question.getText());
         then(ioController).should().read();
+    }
+
+    @Test
+    void printResult() {
+        final var report = new Report(new Student("ivan", "ivanov"));
+        new FrontServiceImpl(quizService, ioController).printResult(report);
+
+        then(ioController).should().print(anyString());
     }
 }

@@ -2,6 +2,7 @@ package ru.otus.spring.hw.service;
 
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
+import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 
 public interface FrontService {
@@ -12,5 +13,5 @@ public interface FrontService {
 
     Answer getAnswer(Question question);
 
-    void printResult();
+    void printResult(Report report);
 }
