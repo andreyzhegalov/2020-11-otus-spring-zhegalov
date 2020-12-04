@@ -1,12 +1,11 @@
 package ru.otus.spring.hw.dao;
 
+import ru.otus.spring.hw.dao.mapper.CsvQuestionMapper;
+import ru.otus.spring.hw.domain.Question;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import ru.otus.spring.hw.dao.mapper.CsvQuestionMapper;
-import ru.otus.spring.hw.domain.Question;
 
 public class CsvQuestionDao implements QuestionDao {
     private final static int FIRST_NUMBER_VALUE = 1;

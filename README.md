@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/andreyzhegalov/2020-11-otus-spring-zhegalov.svg?branch=main)](https://travis-ci.org/andreyzhegalov/2020-11-otus-spring-zhegalov)
+[![codecov](https://codecov.io/gh/andreyzhegalov/2020-11-otus-spring-zhegalov/branch/main/graph/badge.svg?token=s9BbEd1xif)](https://codecov.io/gh/andreyzhegalov/2020-11-otus-spring-zhegalov)
+
 ### Домашние задания
 
 **Курс:** Разработчик на Spring Framework

@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +48,7 @@ class QuizServiceImplTest {
         final var question = new Question(1, "question", answer);
 
         given(frontService.getStudent()).willReturn(new Student("ivan", "ivanov"));
-        given(questionDao.getAllQuestion()).willReturn(Arrays.asList(question));
+        given(questionDao.getAllQuestion()).willReturn(Collections.singletonList(question));
 
         new QuizServiceImpl(questionDao, frontService).startTesting();
 

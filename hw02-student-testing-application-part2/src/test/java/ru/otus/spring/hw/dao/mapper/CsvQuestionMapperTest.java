@@ -36,7 +36,7 @@ class CsvQuestionMapperTest {
         final var question = new CsvQuestionMapper().convert(correctCsvLine);
         assertThat(question.getNumber()).isEqualTo(1);
         assertThat(question.getText()).isEqualTo("question_text");
-        // assertThat(question.getAnswer()).isEqualTo(new Answer("answer_text"));
+        assertThat(question.getAnswer()).isEqualTo(new Answer("answer_text"));
     }
 
 }
