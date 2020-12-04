@@ -10,6 +10,8 @@ import ru.otus.spring.hw.domain.Student;
 
 @Service
 public class FrontServiceImpl implements FrontService {
+    private final static String GET_NAME_MESSAGE = "Hello! Please, insert your name";
+    private final static String GET_SECOND_NAME_MESSAGE = "Insert your second name";
     private final IOController ioController;
 
     public FrontServiceImpl(IOController ioController) {
@@ -25,8 +27,6 @@ public class FrontServiceImpl implements FrontService {
 
     @Override
     public Student getStudent() {
-        final String GET_NAME_MESSAGE = "Hello! Please, insert your name";
-        final String GET_SECOND_NAME_MESSAGE = "Insert your second name";
         ioController.print(GET_NAME_MESSAGE);
         final var name = ioController.read();
         ioController.print(GET_SECOND_NAME_MESSAGE);

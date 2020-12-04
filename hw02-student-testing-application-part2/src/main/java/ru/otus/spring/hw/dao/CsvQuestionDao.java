@@ -1,11 +1,16 @@
 package ru.otus.spring.hw.dao;
 
-import ru.otus.spring.hw.dao.mapper.CsvQuestionMapper;
-import ru.otus.spring.hw.domain.Question;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+import ru.otus.spring.hw.dao.mapper.CsvQuestionMapper;
+import ru.otus.spring.hw.domain.Question;
 
 public class CsvQuestionDao implements QuestionDao {
     private final static int FIRST_NUMBER_VALUE = 1;
@@ -35,14 +40,6 @@ public class CsvQuestionDao implements QuestionDao {
     @Override
     public Optional<Question> getQuestion(int number) {
         return Optional.ofNullable(questionMap.get(number));
-    }
-
-    public static int getFirstQuestionNumber() {
-        return FIRST_NUMBER_VALUE;
-    }
-
-    public int getQuestionCount() {
-        return questionMap.size();
     }
 
     @Override

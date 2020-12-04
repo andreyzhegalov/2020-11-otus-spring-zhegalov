@@ -14,19 +14,10 @@ class CsvQuestionDaoTest {
     }
 
     @Test
-    void testGetFirstQuestion() {
-        assertThat(CsvQuestionDao.getFirstQuestionNumber()).isEqualTo(1);
-    }
-
-    @Test
-    void getQuestionCount() {
-        assertThat(new CsvQuestionDao(CSV_PATH).getQuestionCount()).isEqualTo(5);
-    }
-
-    @Test
     void getNotExistedQuestion() {
         final var questionDao = new CsvQuestionDao(CSV_PATH);
-        assertThat(questionDao.getQuestion(questionDao.getQuestionCount() + 1)).isEmpty();
+        final int questionCount = questionDao.getAllQuestion().size();
+        assertThat(questionDao.getQuestion(questionCount + 1)).isEmpty();
     }
 
 
