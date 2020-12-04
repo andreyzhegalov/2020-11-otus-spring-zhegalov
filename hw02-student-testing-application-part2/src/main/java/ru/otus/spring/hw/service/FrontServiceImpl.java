@@ -1,11 +1,14 @@
 package ru.otus.spring.hw.service;
 
+import org.springframework.stereotype.Service;
+
 import ru.otus.spring.hw.controller.IOController;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 
+@Service
 public class FrontServiceImpl implements FrontService {
     private final IOController ioController;
 

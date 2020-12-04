@@ -1,8 +1,11 @@
 package ru.otus.spring.hw.service;
 
+import org.springframework.stereotype.Service;
+
 import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Report;
 
+@Service
 public class QuizServiceImpl implements QuizService {
     private final FrontService frontService;
     private final QuestionDao questionDao;
