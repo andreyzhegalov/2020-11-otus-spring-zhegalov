@@ -1,18 +1,15 @@
 package ru.otus.spring.hw;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import ru.otus.spring.hw.service.QuizService;
 
-@Configuration
-@ComponentScan
+@SpringBootApplication
 public class Main {
 
     public static void main(String[] args) {
-        final ApplicationContext context = new AnnotationConfigApplicationContext(Main.class);
+        final var context = SpringApplication.run(Main.class, args);
         final var quizService = context.getBean(QuizService.class);
         quizService.startTesting();
     }
