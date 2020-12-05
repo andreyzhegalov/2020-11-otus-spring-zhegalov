@@ -4,10 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+import ru.otus.spring.hw.config.AppProps;
 import ru.otus.spring.hw.config.DataSourceConfig;
 import ru.otus.spring.hw.service.QuizService;
 
-@EnableConfigurationProperties(DataSourceConfig.class )
+@EnableConfigurationProperties({ DataSourceConfig.class, AppProps.class })
 @SpringBootApplication
 public class Main {
 
