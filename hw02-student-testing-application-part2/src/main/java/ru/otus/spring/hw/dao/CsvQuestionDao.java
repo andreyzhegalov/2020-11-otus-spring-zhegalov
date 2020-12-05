@@ -13,7 +13,6 @@ import ru.otus.spring.hw.dao.mapper.CsvQuestionMapper;
 import ru.otus.spring.hw.domain.Question;
 
 public class CsvQuestionDao implements QuestionDao {
-    private final static int FIRST_NUMBER_VALUE = 1;
     private final Map<Integer, Question> questionMap;
 
     public CsvQuestionDao(String csvPath) {
