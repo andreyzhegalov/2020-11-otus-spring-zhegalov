@@ -13,6 +13,7 @@
 #### Список заданий
 1. *hw01-student-testing-application-part1* - Приложение по проведению тестирования студентов (только вывод вопросов).
 2. *hw02-student-testing-application-part2* - Приложение по проведению тестирования студентов (с самим тестированием).
+3. *hw03-student-testing-application-part3* - Приложение для тестирования студентов на Spring Boot.
 
 
 ##### License
