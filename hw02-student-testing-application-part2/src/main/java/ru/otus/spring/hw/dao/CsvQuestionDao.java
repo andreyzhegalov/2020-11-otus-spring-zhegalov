@@ -17,23 +17,7 @@ public class CsvQuestionDao implements QuestionDao {
 
     public CsvQuestionDao(String csvPath) {
         Objects.requireNonNull(csvPath);
-
-        questionMap = new HashMap<>();
-        try {
-
-            try (final var inputResourceStream = Objects
-                    .requireNonNull(getClass().getClassLoader().getResourceAsStream(csvPath))) {
-                try (final var inputCsvStream = new BufferedReader(new InputStreamReader(inputResourceStream))) {
-                    while (inputCsvStream.ready()) {
-                        final var question = new CsvQuestionMapper().convert(inputCsvStream.readLine());
-                        questionMap.put(question.getNumber(), question);
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            throw new QuestionDaoException(e.toString());
-        }
+        questionMap = load(csvPath);
     }
 
     @Override
@@ -44,5 +28,23 @@ public class CsvQuestionDao implements QuestionDao {
     @Override
     public List<Question> getAllQuestion() {
         return new ArrayList<>(questionMap.values());
+    }
+
+    private Map<Integer, Question> load(String csvPath) {
+        final var result = new HashMap<Integer, Question>();
+        try {
+            try (final var inputResourceStream = Objects
+                    .requireNonNull(getClass().getClassLoader().getResourceAsStream(csvPath))) {
+                try (final var inputCsvStream = new BufferedReader(new InputStreamReader(inputResourceStream))) {
+                    while (inputCsvStream.ready()) {
+                        final var question = new CsvQuestionMapper().convert(inputCsvStream.readLine());
+                        result.put(question.getNumber(), question);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new QuestionDaoException(e);
+        }
+        return result;
     }
 }
