@@ -1,18 +1,18 @@
 package ru.otus.spring.hw.service.front;
 
-import ru.otus.spring.hw.controller.IOController;
+import ru.otus.spring.hw.service.IOService;
 import ru.otus.spring.hw.domain.Report;
 
 public class FrontReportServiceImpl implements FrontReportService {
-    private final IOController ioController;
+    private final IOService ioService;
 
-    public FrontReportServiceImpl(IOController ioController) {
-        this.ioController = ioController;
+    public FrontReportServiceImpl(IOService ioService) {
+        this.ioService = ioService;
     }
 
     @Override
     public void printResult(Report report) {
-        ioController.print(report.print());
+        ioService.print(report.print());
     }
 
 }

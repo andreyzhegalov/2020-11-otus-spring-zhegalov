@@ -8,23 +8,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import ru.otus.spring.hw.controller.IOController;
+import ru.otus.spring.hw.service.IOService;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 
 @ExtendWith(MockitoExtension.class)
 class FrontQuestionServiceImplTest {
     @Mock
-    private IOController ioController;
+    private IOService ioService;
 
     @Test
     void getAnswer() {
         final var question = new Question(1, "text", new Answer(""));
 
-        final var answer = new FrontQuestionServiceImpl(ioController).getAnswer(question);
+        final var answer = new FrontQuestionServiceImpl(ioService).getAnswer(question);
         assertThat(answer).isNotNull();
 
-        then(ioController).should().print(question.getText());
-        then(ioController).should().read();
+        then(ioService).should().print(question.getText());
+        then(ioService).should().read();
     }
 }

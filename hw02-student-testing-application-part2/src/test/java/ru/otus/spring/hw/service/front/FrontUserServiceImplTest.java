@@ -11,23 +11,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import ru.otus.spring.hw.controller.IOController;
+import ru.otus.spring.hw.service.IOService;
 
 @ExtendWith(MockitoExtension.class)
 public class FrontUserServiceImplTest {
 
     @Mock
-    private IOController ioController;
+    private IOService ioService;
 
     @Test
     void getStudentName() {
-        given(ioController.read()).willReturn("ivan");
-        given(ioController.read()).willReturn("ivanov");
+        given(ioService.read()).willReturn("ivan");
+        given(ioService.read()).willReturn("ivanov");
 
-        final var student = new FrontUserServiceImpl(ioController).getStudent();
+        final var student = new FrontUserServiceImpl(ioService).getStudent();
         assertThat(student).isNotNull();
 
-        then(ioController).should(times(2)).print(anyString());
-        then(ioController).should(times(2)).read();
+        then(ioService).should(times(2)).print(anyString());
+        then(ioService).should(times(2)).read();
     }
 }

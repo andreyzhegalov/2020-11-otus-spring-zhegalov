@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import ru.otus.spring.hw.controller.IOController;
+import ru.otus.spring.hw.service.IOService;
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 
@@ -16,12 +16,12 @@ import ru.otus.spring.hw.domain.Student;
 class FrontReportServiceImplTest {
 
     @Mock
-    private IOController ioController;
+    private IOService ioService;
 
     @Test
     void printResult() {
         final var report = new Report(new Student("ivan", "ivanov"));
-        new FrontReportServiceImpl( ioController).printResult(report);
-        then(ioController).should().print(anyString());
+        new FrontReportServiceImpl(ioService).printResult(report);
+        then(ioService).should().print(anyString());
     }
 }

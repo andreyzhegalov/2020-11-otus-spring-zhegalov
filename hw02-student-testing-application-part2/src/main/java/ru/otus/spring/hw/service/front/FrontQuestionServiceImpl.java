@@ -1,20 +1,20 @@
 package ru.otus.spring.hw.service.front;
 
-import ru.otus.spring.hw.controller.IOController;
+import ru.otus.spring.hw.service.IOService;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 
 public class FrontQuestionServiceImpl implements FrontQuestionService {
-    private final IOController ioController;
+    private final IOService ioService;
 
-    public FrontQuestionServiceImpl(IOController ioController) {
-        this.ioController = ioController;
+    public FrontQuestionServiceImpl(IOService ioService) {
+        this.ioService = ioService;
     }
 
     @Override
     public Answer getAnswer(Question question) {
-        ioController.print(question.getText());
-        final var answerText = ioController.read();
+        ioService.print(question.getText());
+        final var answerText = ioService.read();
         return new Answer(answerText);
     }
 
