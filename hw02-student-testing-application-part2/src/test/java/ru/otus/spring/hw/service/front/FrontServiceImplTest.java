@@ -1,7 +1,5 @@
 package ru.otus.spring.hw.service.front;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import org.junit.jupiter.api.Test;
@@ -12,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Report;
-import ru.otus.spring.hw.domain.Student;
 
 @ExtendWith(MockitoExtension.class)
 class FrontServiceImplTest {
@@ -28,7 +25,6 @@ class FrontServiceImplTest {
 
     @Test
     void getStudentName() {
-        given(frontUserService.getStudent()).willReturn(new Student("ivan", "ivanov"));
         new FrontServiceImpl(frontUserService, frontQuestionService, frontReportService).getStudent();
         then(frontUserService).should().getStudent();
     }
@@ -37,7 +33,7 @@ class FrontServiceImplTest {
     void getAnswer() {
         final var question = new Question(1, "text", new Answer(""));
         new FrontServiceImpl(frontUserService, frontQuestionService, frontReportService).getAnswer(question);
-        then(frontQuestionService).should().getAnswer(any());
+        then(frontQuestionService).should().getAnswer(question);
     }
 
     @Test
