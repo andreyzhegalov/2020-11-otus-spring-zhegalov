@@ -42,7 +42,7 @@ class FrontServiceImplTest {
 
     @Test
     void printResult() {
-        final var report = new Report(new Student("ivan", "ivanov"));
+        final var report = new Report("text");
         new FrontServiceImpl(frontUserService, frontQuestionService, frontReportService).printResult(report);
         then(frontReportService).should().printResult(report);
     }
