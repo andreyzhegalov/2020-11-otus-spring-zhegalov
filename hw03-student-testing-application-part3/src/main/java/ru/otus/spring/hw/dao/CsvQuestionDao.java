@@ -14,9 +14,13 @@ import ru.otus.spring.hw.domain.Question;
 
 public class CsvQuestionDao implements QuestionDao {
     private final Map<Integer, Question> questionMap;
+    private final QuestionLocalizer questionLocalizer;
 
-    public CsvQuestionDao(String csvPath) {
+    public CsvQuestionDao(String csvPath, QuestionLocalizer questionLocalizer) {
         Objects.requireNonNull(csvPath);
+        Objects.requireNonNull(questionLocalizer);
+
+        this.questionLocalizer = questionLocalizer;
 
         questionMap = new HashMap<>();
         try {
@@ -34,6 +38,8 @@ public class CsvQuestionDao implements QuestionDao {
         } catch (Exception e) {
             throw new QuestionDaoException(e.toString());
         }
+
+        prepareQuestionsText();
     }
 
     @Override
@@ -44,5 +50,11 @@ public class CsvQuestionDao implements QuestionDao {
     @Override
     public List<Question> getAllQuestion() {
         return new ArrayList<>(questionMap.values());
+    }
+
+    private void prepareQuestionsText(){
+        questionMap.values().forEach(q -> {
+            q.setText( questionLocalizer.getQuestionText( q.getNumber() ));
+        });
     }
 }
