@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Report;
+import ru.otus.spring.hw.service.front.FrontService;
 
 @Service
 public class QuizServiceImpl implements QuizService {

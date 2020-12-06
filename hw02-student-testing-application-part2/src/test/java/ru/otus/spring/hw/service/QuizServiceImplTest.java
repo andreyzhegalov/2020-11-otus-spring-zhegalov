@@ -17,6 +17,7 @@ import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Student;
+import ru.otus.spring.hw.service.front.FrontService;
 
 @ExtendWith(MockitoExtension.class)
 class QuizServiceImplTest {
@@ -28,7 +29,7 @@ class QuizServiceImplTest {
     private QuestionDao questionDao;
 
     @Test
-    void shouldPrintAllQuestion(){
+    void shouldPrintAllQuestion() {
         final var answer = new Answer("1");
         final var question = new Question(1, "question", answer);
 
