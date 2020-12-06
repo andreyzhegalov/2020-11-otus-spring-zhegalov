@@ -5,11 +5,8 @@ import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 
-public interface FrontService {
+public interface ReportService {
+    void addAnswer(Student student, Question question, Answer answer);
 
-    Student getStudent();
-
-    Answer getAnswer(Question question);
-
-    void printResult(Report report);
+    Report makeReport(Student student);
 }

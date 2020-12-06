@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import ru.otus.spring.hw.controller.IOController;
-import ru.otus.spring.hw.controller.IOControllerConsole;
+import ru.otus.spring.hw.service.IOService;
+import ru.otus.spring.hw.service.IOServiceConsole;
 import ru.otus.spring.hw.dao.CsvQuestionDao;
 import ru.otus.spring.hw.dao.QuestionDao;
 
@@ -23,7 +23,7 @@ public class ServiceConfig {
     }
 
     @Bean
-    IOController ioController() {
-        return new IOControllerConsole(System.out, System.in);
+    IOService ioController() {
+        return new IOServiceConsole(System.out, System.in);
     }
 }

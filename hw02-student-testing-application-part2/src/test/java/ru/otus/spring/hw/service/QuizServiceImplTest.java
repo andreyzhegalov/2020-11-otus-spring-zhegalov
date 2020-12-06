@@ -17,6 +17,7 @@ import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Student;
+import ru.otus.spring.hw.service.front.FrontService;
 
 @ExtendWith(MockitoExtension.class)
 class QuizServiceImplTest {
@@ -27,14 +28,17 @@ class QuizServiceImplTest {
     @Mock
     private QuestionDao questionDao;
 
+    @Mock
+    private ReportService reportService;
+
     @Test
-    void shouldPrintAllQuestion(){
+    void shouldPrintAllQuestion() {
         final var answer = new Answer("1");
         final var question = new Question(1, "question", answer);
 
         given(questionDao.getAllQuestion()).willReturn(Arrays.asList(question, question));
 
-        new QuizServiceImpl(questionDao, frontService).printAllQuestion();
+        new QuizServiceImpl(questionDao, frontService, reportService).printAllQuestion();
 
         then(questionDao).should().getAllQuestion();
         then(questionDao).shouldHaveNoMoreInteractions();
@@ -47,15 +51,21 @@ class QuizServiceImplTest {
         final var answer = new Answer("1");
         final var question = new Question(1, "question", answer);
 
-        given(frontService.getStudent()).willReturn(new Student("ivan", "ivanov"));
-        given(questionDao.getAllQuestion()).willReturn(Collections.singletonList(question));
+        final var student = new Student("ivan", "ivanov");
 
-        new QuizServiceImpl(questionDao, frontService).startTesting();
+        given(frontService.getStudent()).willReturn(student);
+        given(questionDao.getAllQuestion()).willReturn(Collections.singletonList(question));
+        given(frontService.getAnswer(question)).willReturn(answer);
+
+        new QuizServiceImpl(questionDao, frontService, reportService).startTesting();
 
         then(frontService).should().getStudent();
         then(questionDao).should().getAllQuestion();
         then(questionDao).shouldHaveNoMoreInteractions();
         then(frontService).should().getAnswer(any());
+        then(reportService).should().addAnswer(student, question, answer);
+        then(reportService).should().makeReport(student);
+        then(reportService).shouldHaveNoMoreInteractions();
         then(frontService).should().printResult(any());
         then(frontService).shouldHaveNoMoreInteractions();
     }
