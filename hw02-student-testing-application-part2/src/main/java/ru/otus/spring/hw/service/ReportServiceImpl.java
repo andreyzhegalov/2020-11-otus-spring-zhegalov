@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.domain.Answer;
@@ -11,6 +13,7 @@ import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 
+@Service
 public class ReportServiceImpl implements ReportService {
     private final static int THRESHOLD = 50;
     private final static String REPORT_TEMPLATE_SUCCESS = "Congratulations to %s %s! You have been tested. Correct %d questions out of %d.";
