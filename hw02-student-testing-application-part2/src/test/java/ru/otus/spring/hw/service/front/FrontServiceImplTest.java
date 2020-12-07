@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Report;
+import ru.otus.spring.hw.domain.Student;
 
 @ExtendWith(MockitoExtension.class)
 class FrontServiceImplTest {
@@ -38,7 +39,7 @@ class FrontServiceImplTest {
 
     @Test
     void printResult() {
-        final var report = new Report("text");
+        final var report = new Report(new Student("", ""));
         new FrontServiceImpl(userService, questionService, reportService).printResult(report);
         then(reportService).should().printResult(report);
     }

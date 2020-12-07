@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
+import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 import ru.otus.spring.hw.service.front.FrontService;
 
@@ -28,9 +29,6 @@ class QuizServiceImplTest {
     @Mock
     private QuestionDao questionDao;
 
-    @Mock
-    private ReportPrintService reportPrintService;
-
     @Test
     void shouldPrintAllQuestion() {
         final var answer = new Answer("1");
@@ -38,7 +36,7 @@ class QuizServiceImplTest {
 
         given(questionDao.getAllQuestion()).willReturn(Arrays.asList(question, question));
 
-        new QuizServiceImpl(questionDao, frontService, reportPrintService).printAllQuestion();
+        new QuizServiceImpl(questionDao, frontService ).printAllQuestion();
 
         then(questionDao).should().getAllQuestion();
         then(questionDao).shouldHaveNoMoreInteractions();
@@ -57,16 +55,13 @@ class QuizServiceImplTest {
         given(questionDao.getAllQuestion()).willReturn(Collections.singletonList(question));
         given(frontService.getAnswer(question)).willReturn(answer);
 
-        new QuizServiceImpl(questionDao, frontService, reportPrintService).startTesting();
+        new QuizServiceImpl(questionDao, frontService).startTesting();
 
         then(frontService).should().getStudent();
         then(questionDao).should().getAllQuestion();
         then(questionDao).shouldHaveNoMoreInteractions();
         then(frontService).should().getAnswer(any());
-        then(reportPrintService).should().addAnswer(student, question, answer);
-        then(reportPrintService).should().makeReport(student);
-        then(reportPrintService).shouldHaveNoMoreInteractions();
-        then(frontService).should().printResult(any());
+        then(frontService).should().printResult(any(Report.class));
         then(frontService).shouldHaveNoMoreInteractions();
     }
 }
