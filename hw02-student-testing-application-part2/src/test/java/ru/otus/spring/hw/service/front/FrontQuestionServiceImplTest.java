@@ -21,7 +21,7 @@ class FrontQuestionServiceImplTest {
     void getAnswer() {
         final var question = new Question(1, "text", new Answer(""));
 
-        new FrontQuestionServiceImpl(ioService).getAnswer(question);
+        new QuestionServiceImpl(ioService).getAnswer(question);
 
         then(ioService).should().print(anyString());
         then(ioService).should().read();

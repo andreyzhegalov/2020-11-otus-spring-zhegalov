@@ -8,10 +8,10 @@ import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 
 @Service
-public class FrontQuestionServiceImpl implements FrontQuestionService {
+public class QuestionServiceImpl implements QuestionService {
     private final IOService ioService;
 
-    public FrontQuestionServiceImpl(IOService ioService) {
+    public QuestionServiceImpl(IOService ioService) {
         this.ioService = ioService;
     }
 

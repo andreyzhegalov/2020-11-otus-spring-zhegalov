@@ -10,36 +10,37 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Report;
+import ru.otus.spring.hw.domain.Student;
 
 @ExtendWith(MockitoExtension.class)
 class FrontServiceImplTest {
 
     @Mock
-    private FrontUserService frontUserService;
+    private UserService userService;
 
     @Mock
-    private FrontQuestionService frontQuestionService;
+    private QuestionService questionService;
 
     @Mock
-    private FrontReportService frontReportService;
+    private ReportService reportService;
 
     @Test
     void getStudentName() {
-        new FrontServiceImpl(frontUserService, frontQuestionService, frontReportService).getStudent();
-        then(frontUserService).should().getStudent();
+        new FrontServiceImpl(userService, questionService, reportService).getStudent();
+        then(userService).should().getStudent();
     }
 
     @Test
     void getAnswer() {
         final var question = new Question(1, "text", new Answer(""));
-        new FrontServiceImpl(frontUserService, frontQuestionService, frontReportService).getAnswer(question);
-        then(frontQuestionService).should().getAnswer(question);
+        new FrontServiceImpl(userService, questionService, reportService).getAnswer(question);
+        then(questionService).should().getAnswer(question);
     }
 
     @Test
     void printResult() {
-        final var report = new Report("text");
-        new FrontServiceImpl(frontUserService, frontQuestionService, frontReportService).printResult(report);
-        then(frontReportService).should().printResult(report);
+        final var report = new Report(new Student("", ""));
+        new FrontServiceImpl(userService, questionService, reportService).printResult(report);
+        then(reportService).should().printResult(report);
     }
 }

@@ -9,29 +9,29 @@ import ru.otus.spring.hw.domain.Student;
 
 @Service
 public class FrontServiceImpl implements FrontService {
-    private final FrontUserService frontUserService;
-    private final FrontQuestionService frontQuestionService;
-    private final FrontReportService frontReportService;
+    private final UserService userService;
+    private final QuestionService questionService;
+    private final ReportService reportService;
 
-    public FrontServiceImpl(FrontUserService frontUserService, FrontQuestionService frontQuestionService,
-            FrontReportService frontReportService) {
-        this.frontUserService = frontUserService;
-        this.frontQuestionService = frontQuestionService;
-        this.frontReportService = frontReportService;
+    public FrontServiceImpl(UserService userService, QuestionService questionService,
+                            ReportService reportService) {
+        this.userService = userService;
+        this.questionService = questionService;
+        this.reportService = reportService;
     }
 
     @Override
     public Answer getAnswer(final Question question) {
-        return frontQuestionService.getAnswer(question);
+        return questionService.getAnswer(question);
     }
 
     @Override
     public Student getStudent() {
-        return frontUserService.getStudent();
+        return userService.getStudent();
     }
 
     @Override
     public void printResult(Report report) {
-        frontReportService.printResult(report);
+        reportService.printResult(report);
     }
 }

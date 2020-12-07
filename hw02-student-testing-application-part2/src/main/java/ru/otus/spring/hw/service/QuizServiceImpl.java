@@ -3,30 +3,28 @@ package ru.otus.spring.hw.service;
 import org.springframework.stereotype.Service;
 
 import ru.otus.spring.hw.dao.QuestionDao;
+import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.service.front.FrontService;
 
 @Service
 public class QuizServiceImpl implements QuizService {
     private final FrontService frontService;
     private final QuestionDao questionDao;
-    private final ReportService reportService;
 
-    public QuizServiceImpl(QuestionDao questionDao, FrontService frontService, ReportService reportService) {
+    public QuizServiceImpl(QuestionDao questionDao, FrontService frontService ) {
         this.questionDao = questionDao;
         this.frontService = frontService;
-        this.reportService = reportService;
     }
 
     @Override
     public void startTesting() {
         final var student = frontService.getStudent();
+        final var report = new Report(student);
         final var questionList = questionDao.getAllQuestion();
         questionList.forEach(q -> {
             final var answer = frontService.getAnswer(q);
-            reportService.addAnswer(student, q, answer);
+            report.addAnswer(q, answer);
         });
-
-        final var report = reportService.makeReport(student);
         frontService.printResult(report);
     }
 
