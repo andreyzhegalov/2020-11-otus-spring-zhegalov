@@ -6,6 +6,10 @@ public class QuestionDaoException extends RuntimeException {
 
     }
 
+    public QuestionDaoException(Throwable cause) {
+        super(cause);
+    }
+
     public QuestionDaoException(String msg) {
         super(msg);
     }

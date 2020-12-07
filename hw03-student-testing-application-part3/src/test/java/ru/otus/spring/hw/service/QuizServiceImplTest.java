@@ -16,7 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
+import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
+import ru.otus.spring.hw.service.front.FrontService;
 
 @ExtendWith(MockitoExtension.class)
 class QuizServiceImplTest {
@@ -28,13 +30,13 @@ class QuizServiceImplTest {
     private QuestionDao questionDao;
 
     @Test
-    void shouldPrintAllQuestion(){
+    void shouldPrintAllQuestion() {
         final var answer = new Answer("1");
         final var question = new Question(1, "question", answer);
 
         given(questionDao.getAllQuestion()).willReturn(Arrays.asList(question, question));
 
-        new QuizServiceImpl(questionDao, frontService).printAllQuestion();
+        new QuizServiceImpl(questionDao, frontService ).printAllQuestion();
 
         then(questionDao).should().getAllQuestion();
         then(questionDao).shouldHaveNoMoreInteractions();
@@ -47,8 +49,11 @@ class QuizServiceImplTest {
         final var answer = new Answer("1");
         final var question = new Question(1, "question", answer);
 
-        given(frontService.getStudent()).willReturn(new Student("ivan", "ivanov"));
+        final var student = new Student("ivan", "ivanov");
+
+        given(frontService.getStudent()).willReturn(student);
         given(questionDao.getAllQuestion()).willReturn(Collections.singletonList(question));
+        given(frontService.getAnswer(question)).willReturn(answer);
 
         new QuizServiceImpl(questionDao, frontService).startTesting();
 
@@ -56,7 +61,7 @@ class QuizServiceImplTest {
         then(questionDao).should().getAllQuestion();
         then(questionDao).shouldHaveNoMoreInteractions();
         then(frontService).should().getAnswer(any());
-        then(frontService).should().printResult(any());
+        then(frontService).should().printResult(any(Report.class));
         then(frontService).shouldHaveNoMoreInteractions();
     }
 }

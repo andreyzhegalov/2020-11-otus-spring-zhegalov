@@ -4,13 +4,14 @@ import org.springframework.stereotype.Service;
 
 import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Report;
+import ru.otus.spring.hw.service.front.FrontService;
 
 @Service
 public class QuizServiceImpl implements QuizService {
     private final FrontService frontService;
     private final QuestionDao questionDao;
 
-    public QuizServiceImpl(QuestionDao questionDao, FrontService frontService) {
+    public QuizServiceImpl(QuestionDao questionDao, FrontService frontService ) {
         this.questionDao = questionDao;
         this.frontService = frontService;
     }

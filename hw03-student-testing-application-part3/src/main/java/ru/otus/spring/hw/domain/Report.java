@@ -4,35 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@EqualsAndHashCode
 public class Report {
-    private final static int THRESHOLD = 50;
-    private final static Integer CORRECT_VALUE = 1;
-    private final static Integer INCORRECT_VALUE = 0;
-    private final static String REPORT_TEMPLATE_SUCCESS = "Congratulations to %s %s! You have been tested. Correct %d questions out of %d.";
-    private final static String REPORT_TEMPLATE_FAIL = "%s %s, you have not been tested. Correct %d questions out of %d.";
-    private final Student student;
-    private final List<Integer> resultList;
+    final Student student;
+    final List<Pair> result;
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class Pair {
+        private final Question question;
+        private final Answer answer;
+    }
 
     public Report(Student student) {
         Objects.requireNonNull(student);
         this.student = student;
-        resultList = new ArrayList<>();
+        this.result = new ArrayList<Pair>();
     }
 
     public void addAnswer(Question question, Answer answer) {
-        resultList.add((question.getAnswer().equals(answer)) ? CORRECT_VALUE : INCORRECT_VALUE);
+        result.add(new Pair(question, answer));
     }
 
-    public String print() {
-        final long totalCount = resultList.size();
-        final long correctAnswerCount = resultList.stream().filter(CORRECT_VALUE::equals).count();
-
-        boolean isSuccess = false;
-        if (totalCount != 0) {
-            isSuccess = ((double) correctAnswerCount / totalCount * 100) > THRESHOLD;
-        }
-        final var template = isSuccess ? REPORT_TEMPLATE_SUCCESS : REPORT_TEMPLATE_FAIL;
-
-        return String.format(template, student.getName(), student.getSecondName(), correctAnswerCount, totalCount);
-    }
 }
