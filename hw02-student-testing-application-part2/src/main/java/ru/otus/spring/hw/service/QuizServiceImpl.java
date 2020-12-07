@@ -9,12 +9,12 @@ import ru.otus.spring.hw.service.front.FrontService;
 public class QuizServiceImpl implements QuizService {
     private final FrontService frontService;
     private final QuestionDao questionDao;
-    private final ReportService reportService;
+    private final ReportPrintService reportPrintService;
 
-    public QuizServiceImpl(QuestionDao questionDao, FrontService frontService, ReportService reportService) {
+    public QuizServiceImpl(QuestionDao questionDao, FrontService frontService, ReportPrintService reportPrintService) {
         this.questionDao = questionDao;
         this.frontService = frontService;
-        this.reportService = reportService;
+        this.reportPrintService = reportPrintService;
     }
 
     @Override
@@ -23,10 +23,10 @@ public class QuizServiceImpl implements QuizService {
         final var questionList = questionDao.getAllQuestion();
         questionList.forEach(q -> {
             final var answer = frontService.getAnswer(q);
-            reportService.addAnswer(student, q, answer);
+            reportPrintService.addAnswer(student, q, answer);
         });
 
-        final var report = reportService.makeReport(student);
+        final var report = reportPrintService.makeReport(student);
         frontService.printResult(report);
     }
 

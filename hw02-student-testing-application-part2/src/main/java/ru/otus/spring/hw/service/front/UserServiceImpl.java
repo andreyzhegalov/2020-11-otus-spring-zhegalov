@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import ru.otus.spring.hw.domain.Student;
 
 @Service
-public class FrontUserServiceImpl implements FrontUserService {
+public class UserServiceImpl implements UserService {
     private final static String GET_NAME_MESSAGE = "Hello! Please, insert your name";
     private final static String GET_SECOND_NAME_MESSAGE = "Insert your second name";
     private final IOService ioService;
 
-    public FrontUserServiceImpl(IOService ioService) {
+    public UserServiceImpl(IOService ioService) {
         this.ioService = ioService;
     }
 

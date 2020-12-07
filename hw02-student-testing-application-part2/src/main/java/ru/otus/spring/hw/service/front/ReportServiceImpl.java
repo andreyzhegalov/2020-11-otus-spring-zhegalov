@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import ru.otus.spring.hw.domain.Report;
 
 @Service
-public class FrontReportServiceImpl implements FrontReportService {
+public class ReportServiceImpl implements ReportService {
     private final IOService ioService;
 
-    public FrontReportServiceImpl(IOService ioService) {
+    public ReportServiceImpl(IOService ioService) {
         this.ioService = ioService;
     }
 

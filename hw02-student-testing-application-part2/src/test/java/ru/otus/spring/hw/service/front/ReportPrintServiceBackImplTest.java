@@ -12,7 +12,7 @@ import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.service.IOService;
 
 @ExtendWith(MockitoExtension.class)
-class FrontReportServiceImplTest {
+class ReportPrintServiceBackImplTest {
 
     @Mock
     private IOService ioService;
@@ -20,7 +20,7 @@ class FrontReportServiceImplTest {
     @Test
     void printResult() {
         final var report = new Report("text");
-        new FrontReportServiceImpl(ioService).printResult(report);
+        new ReportServiceImpl(ioService).printResult(report);
         then(ioService).should().print(anyString());
     }
 }

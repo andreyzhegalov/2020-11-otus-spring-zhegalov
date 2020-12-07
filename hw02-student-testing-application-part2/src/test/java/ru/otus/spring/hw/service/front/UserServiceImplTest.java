@@ -12,14 +12,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.hw.service.IOService;
 
 @ExtendWith(MockitoExtension.class)
-public class FrontUserServiceImplTest {
+public class UserServiceImplTest {
 
     @Mock
     private IOService ioService;
 
     @Test
     void getStudentName() {
-        new FrontUserServiceImpl(ioService).getStudent();
+        new UserServiceImpl(ioService).getStudent();
         then(ioService).should(atLeastOnce()).print(anyString());
         then(ioService).should(atLeastOnce()).read();
     }

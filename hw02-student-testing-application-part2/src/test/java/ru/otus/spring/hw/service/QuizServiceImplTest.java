@@ -29,7 +29,7 @@ class QuizServiceImplTest {
     private QuestionDao questionDao;
 
     @Mock
-    private ReportService reportService;
+    private ReportPrintService reportPrintService;
 
     @Test
     void shouldPrintAllQuestion() {
@@ -38,7 +38,7 @@ class QuizServiceImplTest {
 
         given(questionDao.getAllQuestion()).willReturn(Arrays.asList(question, question));
 
-        new QuizServiceImpl(questionDao, frontService, reportService).printAllQuestion();
+        new QuizServiceImpl(questionDao, frontService, reportPrintService).printAllQuestion();
 
         then(questionDao).should().getAllQuestion();
         then(questionDao).shouldHaveNoMoreInteractions();
@@ -57,15 +57,15 @@ class QuizServiceImplTest {
         given(questionDao.getAllQuestion()).willReturn(Collections.singletonList(question));
         given(frontService.getAnswer(question)).willReturn(answer);
 
-        new QuizServiceImpl(questionDao, frontService, reportService).startTesting();
+        new QuizServiceImpl(questionDao, frontService, reportPrintService).startTesting();
 
         then(frontService).should().getStudent();
         then(questionDao).should().getAllQuestion();
         then(questionDao).shouldHaveNoMoreInteractions();
         then(frontService).should().getAnswer(any());
-        then(reportService).should().addAnswer(student, question, answer);
-        then(reportService).should().makeReport(student);
-        then(reportService).shouldHaveNoMoreInteractions();
+        then(reportPrintService).should().addAnswer(student, question, answer);
+        then(reportPrintService).should().makeReport(student);
+        then(reportPrintService).shouldHaveNoMoreInteractions();
         then(frontService).should().printResult(any());
         then(frontService).shouldHaveNoMoreInteractions();
     }

@@ -8,7 +8,7 @@ import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Student;
 
-public class ReportServiceImplTest {
+public class ReportPrintServiceBackImplTest {
     private final Student student = new Student("Ivan", "Ivanov");
     private final Answer incorrectAnswer = new Answer("other");
     private final Question question1 = new Question(1, "question1", new Answer("1"));
@@ -18,7 +18,7 @@ public class ReportServiceImplTest {
 
     @Test
     void reportShouldContainsUser() {
-        final var reportService = new ReportServiceImpl();
+        final var reportService = new ReportPrintServiceImpl();
         reportService.addAnswer(student, question1, question1.getAnswer());
         final var report = reportService.makeReport(student);
 
@@ -27,7 +27,7 @@ public class ReportServiceImplTest {
 
     @Test
     void testPrintQuestionCount() {
-        final var reportService = new ReportServiceImpl();
+        final var reportService = new ReportPrintServiceImpl();
         reportService.addAnswer(student, question1, question1.getAnswer());
         reportService.addAnswer(student, question2, question2.getAnswer());
         reportService.addAnswer(student, question3, incorrectAnswer);
@@ -38,7 +38,7 @@ public class ReportServiceImplTest {
 
     @Test
     void testSuccessReportForm() {
-        final var reportService = new ReportServiceImpl();
+        final var reportService = new ReportPrintServiceImpl();
         reportService.addAnswer(student, question1, question1.getAnswer());
         reportService.addAnswer(student, question2, question2.getAnswer());
         reportService.addAnswer(student, question3, incorrectAnswer);
@@ -48,7 +48,7 @@ public class ReportServiceImplTest {
 
     @Test
     void testFailReportForm() {
-        final var reportService = new ReportServiceImpl();
+        final var reportService = new ReportPrintServiceImpl();
         reportService.addAnswer(student, question1, question1.getAnswer());
         reportService.addAnswer(student, question2, incorrectAnswer);
         reportService.addAnswer(student, question3, incorrectAnswer);
@@ -58,7 +58,7 @@ public class ReportServiceImplTest {
 
     @Test
     void shouldFailReportFormIfListQuestionEmpty() {
-        final var reportService = new ReportServiceImpl();
+        final var reportService = new ReportPrintServiceImpl();
         final var report = reportService.makeReport(student);
         assertThat(report.print()).doesNotContain("!");
     }
