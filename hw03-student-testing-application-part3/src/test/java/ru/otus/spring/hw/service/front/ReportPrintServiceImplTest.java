@@ -1,15 +1,24 @@
 package ru.otus.spring.hw.service.front;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.given;
 
+import java.util.Locale;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 
+import ru.otus.spring.hw.config.AppProps;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Report;
@@ -28,20 +37,39 @@ class ReportPrintServiceImplTest {
     @Mock
     private IOService ioService;
 
+    @Mock
+    private MessageSource messageSource;
+
+    private AppProps props;
+
     @Captor
     ArgumentCaptor<String> textCaptor;
 
-    private String getSendingText() {
-        new ReportServiceImpl(ioService).printResult(report);
-        then(ioService).should().print(textCaptor.capture());
-        return textCaptor.getValue();
+    @Captor
+    ArgumentCaptor<Object[]> argsCaptor;
+
+    @BeforeEach
+    void setUp() {
+        props = new AppProps();
+        props.setLocale(Locale.US);
+    }
+
+    @Test
+    void reportShouldBeSendingToIOService() {
+        final var text = "report";
+        given(messageSource.getMessage(anyString(), any(), any())).willReturn(text);
+        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
+        then(ioService).should().print(text);
     }
 
     @Test
     void reportShouldContainsUser() {
         report.addAnswer(question1, question1.getAnswer());
-        final var text = getSendingText();
-        assertThat(text).contains(student.getName()).contains(student.getSecondName());
+
+        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
+        then(messageSource).should().getMessage(anyString(), argsCaptor.capture(), eq(props.getLocale()));
+
+        assertThat(argsCaptor.getValue()).contains(student.getName(), student.getSecondName());
     }
 
     @Test
@@ -49,8 +77,11 @@ class ReportPrintServiceImplTest {
         report.addAnswer(question1, question1.getAnswer());
         report.addAnswer(question2, question2.getAnswer());
         report.addAnswer(question3, incorrectAnswer);
-        final var text = getSendingText();
-        assertThat(text).contains("2").contains("3");
+
+        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
+        then(messageSource).should().getMessage(anyString(), argsCaptor.capture(), eq(props.getLocale()));
+
+        assertThat(argsCaptor.getValue()).contains(2).contains(3);
     }
 
     @Test
@@ -58,8 +89,11 @@ class ReportPrintServiceImplTest {
         report.addAnswer(question1, question1.getAnswer());
         report.addAnswer(question2, question2.getAnswer());
         report.addAnswer(question3, incorrectAnswer);
-        final var text = getSendingText();
-        assertThat(text).contains("!");
+
+        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
+        then(messageSource).should().getMessage(textCaptor.capture(), any(), eq(props.getLocale()));
+
+        assertThat(textCaptor.getValue()).contains("success");
     }
 
     @Test
@@ -67,13 +101,18 @@ class ReportPrintServiceImplTest {
         report.addAnswer(question1, question1.getAnswer());
         report.addAnswer(question2, incorrectAnswer);
         report.addAnswer(question3, incorrectAnswer);
-        final var text = getSendingText();
-        assertThat(text).doesNotContain("!");
+
+        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
+        then(messageSource).should().getMessage(textCaptor.capture(), any(), eq(props.getLocale()));
+
+        assertThat(textCaptor.getValue()).contains("fail");
     }
 
     @Test
     void shouldFailReportFormIfListQuestionEmpty() {
-        final var text = getSendingText();
-        assertThat(text).doesNotContain("!");
+        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
+        then(messageSource).should().getMessage(textCaptor.capture(), any(), eq(props.getLocale()));
+
+        assertThat(textCaptor.getValue()).contains("fail");
     }
 }

@@ -1,34 +1,50 @@
 package ru.otus.spring.hw.service.front;
 
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import ru.otus.spring.hw.config.AppProps;
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.service.IOService;
 
 @Service
 public class ReportServiceImpl implements ReportService {
     private final static int THRESHOLD = 50;
-    private final static String REPORT_TEMPLATE_SUCCESS = "Congratulations to %s %s! You have been tested. Correct %d questions out of %d.";
-    private final static String REPORT_TEMPLATE_FAIL = "%s %s, you have not been tested. Correct %d questions out of %d.";
+    private final static String SUCCESSFUL_REPORT_KEY = "report.success";
+    private final static String FAIL_REPORT_KEY = "report.fail";
 
     private final IOService ioService;
+    private final MessageSource messageSource;
+    private final AppProps props;
 
-    public ReportServiceImpl(IOService ioService) {
+    public ReportServiceImpl(IOService ioService, MessageSource messageSource, AppProps props) {
         this.ioService = ioService;
+        this.messageSource = messageSource;
+        this.props = props;
     }
 
     @Override
     public void printResult(Report report) {
-        final long totalCount = report.getResult().size();
-        final long correctAnswerCount = report.getResult().stream()
-                .filter(p -> p.getQuestion().getAnswer().equals(p.getAnswer())).count();
+        final int totalCount = report.getResult().size();
+        final int correctAnswerCount = getCorrectAnswerCount(report);
+        final boolean isSuccess = isSuccess(totalCount, correctAnswerCount);
+
+        final var templateKey = isSuccess ? SUCCESSFUL_REPORT_KEY : FAIL_REPORT_KEY;
+        final var message = messageSource.getMessage(templateKey, new Object[] { report.getStudent().getName(),
+                report.getStudent().getSecondName(), correctAnswerCount, totalCount }, props.getLocale());
+
+        ioService.print(message);
+    }
+
+    private int getCorrectAnswerCount(Report report) {
+        return (int)report.getResult().stream().filter(p -> p.getQuestion().getAnswer().equals(p.getAnswer())).count();
+    }
+
+    private boolean isSuccess(int totalCount, int correctCount) {
         boolean isSuccess = false;
         if (totalCount != 0) {
-            isSuccess = ((double) correctAnswerCount / totalCount * 100) > THRESHOLD;
+            isSuccess = ((double) correctCount / totalCount * 100) > THRESHOLD;
         }
-        final var template = isSuccess ? REPORT_TEMPLATE_SUCCESS : REPORT_TEMPLATE_FAIL;
-        final var text = String.format(template, report.getStudent().getName(), report.getStudent().getSecondName(),
-                correctAnswerCount, totalCount);
-        ioService.print(text);
+        return isSuccess;
     }
 }

@@ -1,26 +1,32 @@
 package ru.otus.spring.hw.service.front;
 
-import ru.otus.spring.hw.service.IOService;
-
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import ru.otus.spring.hw.config.AppProps;
 import ru.otus.spring.hw.domain.Student;
+import ru.otus.spring.hw.service.IOService;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final static String GET_NAME_MESSAGE = "Hello! Please, insert your name";
-    private final static String GET_SECOND_NAME_MESSAGE = "Insert your second name";
     private final IOService ioService;
+    private final MessageSource messageSource;
+    private final AppProps props;
 
-    public UserServiceImpl(IOService ioService) {
+    public UserServiceImpl(IOService ioService, MessageSource messageSource, AppProps props) {
         this.ioService = ioService;
+        this.messageSource = messageSource;
+        this.props = props;
     }
 
     @Override
     public Student getStudent() {
-        ioService.print(GET_NAME_MESSAGE);
+        var message = messageSource.getMessage("get.user.name", new String[0], props.getLocale());
+        ioService.print(message);
         final var name = ioService.read();
-        ioService.print(GET_SECOND_NAME_MESSAGE);
+
+        message = messageSource.getMessage("get.user.second.name", new String[0], props.getLocale());
+        ioService.print(message);
         final var secondName = ioService.read();
         return new Student(name, secondName);
     }
