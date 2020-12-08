@@ -43,6 +43,7 @@ class ReportPrintServiceImplTest {
     private AppProps props;
 
     @Captor
+            
     ArgumentCaptor<String> textCaptor;
 
     @Captor

@@ -9,14 +9,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.otus.spring.hw.dao.mapper.CsvQuestionMapper;
 import ru.otus.spring.hw.domain.Question;
 
+@Slf4j
 public class CsvQuestionDao implements QuestionDao {
     private final Map<Integer, Question> questionMap;
 
     public CsvQuestionDao(String csvPath) {
         Objects.requireNonNull(csvPath);
+        log.info("loaded file {}", csvPath);
         questionMap = load(csvPath);
     }
 
