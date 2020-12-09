@@ -4,4 +4,3 @@ public interface Mapper<I, O> {
 
     O convert(I data);
 }
-

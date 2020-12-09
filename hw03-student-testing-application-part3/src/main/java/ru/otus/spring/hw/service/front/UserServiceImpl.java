@@ -30,5 +30,4 @@ public class UserServiceImpl implements UserService {
         final var secondName = ioService.read();
         return new Student(name, secondName);
     }
-
 }

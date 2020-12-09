@@ -1,11 +1,10 @@
 package ru.otus.spring.hw.service.front;
 
-import ru.otus.spring.hw.service.IOService;
-
 import org.springframework.stereotype.Service;
 
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
+import ru.otus.spring.hw.service.IOService;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -21,5 +20,4 @@ public class QuestionServiceImpl implements QuestionService {
         final var answerText = ioService.read();
         return new Answer(answerText);
     }
-
 }

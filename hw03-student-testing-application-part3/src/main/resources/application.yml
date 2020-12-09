@@ -1,5 +1,4 @@
 application:
-    locale: en
+  locale: en
 dataset:
-    filename: datasets/quiz_dataset.csv
-
+  filename: datasets/quiz_dataset.csv

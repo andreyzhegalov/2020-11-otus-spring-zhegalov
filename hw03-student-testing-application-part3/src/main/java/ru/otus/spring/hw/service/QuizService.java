@@ -5,5 +5,4 @@ public interface QuizService {
     void startTesting();
 
     void printAllQuestion();
-
 }

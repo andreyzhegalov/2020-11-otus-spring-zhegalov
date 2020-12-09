@@ -13,8 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
-
 @ExtendWith(MockitoExtension.class)
 class IOServiceConsoleTest {
 
@@ -35,7 +33,7 @@ class IOServiceConsoleTest {
     @Test
     void testReadData() {
         final String inputMessage = "some message";
-        final InputStream stubInputStream = new ByteArrayInputStream( inputMessage.getBytes() );
+        final InputStream stubInputStream = new ByteArrayInputStream(inputMessage.getBytes());
         final String newData = new IOServiceConsole(printStream, stubInputStream).read();
         assertThat(newData).isEqualTo(inputMessage);
     }

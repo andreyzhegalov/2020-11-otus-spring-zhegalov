@@ -9,8 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix="application")
+@ConfigurationProperties(prefix = "application")
 public class AppProps {
     private Locale locale;
 }
-

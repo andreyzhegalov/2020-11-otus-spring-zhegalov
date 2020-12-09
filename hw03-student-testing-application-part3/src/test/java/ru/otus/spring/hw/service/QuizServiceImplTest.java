@@ -36,7 +36,7 @@ class QuizServiceImplTest {
 
         given(questionDao.getAllQuestion()).willReturn(Arrays.asList(question, question));
 
-        new QuizServiceImpl(questionDao, frontService ).printAllQuestion();
+        new QuizServiceImpl(questionDao, frontService).printAllQuestion();
 
         then(questionDao).should().getAllQuestion();
         then(questionDao).shouldHaveNoMoreInteractions();

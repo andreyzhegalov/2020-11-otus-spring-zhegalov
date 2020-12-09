@@ -38,5 +38,4 @@ class CsvQuestionMapperTest {
         assertThat(question.getText()).isEqualTo("question_text");
         assertThat(question.getAnswer()).isEqualTo(new Answer("answer_text"));
     }
-
 }

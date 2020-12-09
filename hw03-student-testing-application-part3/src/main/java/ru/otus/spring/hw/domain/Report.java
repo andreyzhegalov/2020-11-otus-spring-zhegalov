@@ -30,5 +30,4 @@ public class Report {
     public void addAnswer(Question question, Answer answer) {
         result.add(new Pair(question, answer));
     }
-
 }

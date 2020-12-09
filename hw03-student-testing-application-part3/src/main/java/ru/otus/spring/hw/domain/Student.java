@@ -13,7 +13,6 @@ public class Student {
 
     @Override
     public String toString() {
-        return  name + " " + secondName ;
+        return name + " " + secondName;
     }
 }
-

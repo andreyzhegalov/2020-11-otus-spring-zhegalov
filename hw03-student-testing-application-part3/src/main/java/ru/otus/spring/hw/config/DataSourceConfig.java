@@ -7,8 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix="dataset")
+@ConfigurationProperties(prefix = "dataset")
 public class DataSourceConfig {
     private String filename;
 }
-
