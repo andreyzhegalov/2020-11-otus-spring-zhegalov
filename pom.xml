@@ -16,6 +16,7 @@
 
     <modules>
         <module>hw01-student-testing-application-part1</module>
+        <module>hw02-student-testing-application-part2</module>
     </modules>
 
     <properties>
