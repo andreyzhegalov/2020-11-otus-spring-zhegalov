@@ -34,3 +34,14 @@ Production-ready приложение на Spring Boot.
 - если Ваш язык отличается от русского и английского - локализовать в нём.
 
 ### Использование
+
+Для запуска приложения необходимо:
+1. Собрать приложение
+````
+mvn clean package
+````
+2. перейти в папку подпроекта hw03-student-testing-application-part3/target
+3. запустить приложение
+````
+java -jar hw03-student-testing-application-part3-1.0.jar
+````
