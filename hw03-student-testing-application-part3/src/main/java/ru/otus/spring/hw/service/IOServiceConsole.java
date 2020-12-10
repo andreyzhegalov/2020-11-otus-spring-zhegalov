@@ -21,7 +21,7 @@ public class IOServiceConsole implements IOService {
 
     @Override
     public String read() {
-        if(in.hasNext()){
+        if (in.hasNext()) {
             return in.nextLine().strip();
         }
         return "";

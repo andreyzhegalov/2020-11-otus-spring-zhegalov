@@ -30,10 +30,9 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private boolean isSuccess(int totalCount, int correctCount) {
-        boolean isSuccess = false;
-        if (totalCount != 0) {
-            isSuccess = ((double) correctCount / totalCount * 100) > THRESHOLD;
+        if (totalCount == 0) {
+            return false;
         }
-        return isSuccess;
+        return ((double) correctCount / totalCount * 100) > THRESHOLD;
     }
 }

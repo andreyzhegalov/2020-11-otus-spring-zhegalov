@@ -24,7 +24,7 @@ public class Report {
     public Report(Student student) {
         Objects.requireNonNull(student);
         this.student = student;
-        this.result = new ArrayList<Pair>();
+        this.result = new ArrayList<>();
     }
 
     public void addAnswer(Question question, Answer answer) {

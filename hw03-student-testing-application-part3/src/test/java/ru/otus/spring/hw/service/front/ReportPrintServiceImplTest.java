@@ -2,9 +2,7 @@ package ru.otus.spring.hw.service.front;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.then;
 
 import org.junit.jupiter.api.Test;
@@ -38,12 +36,11 @@ class ReportPrintServiceImplTest {
     @Captor
     ArgumentCaptor<Object> argsCaptor;
 
-
     @Test
     void reportShouldContainsUser() {
-            new ReportServiceImpl(ioLocalizeService).printResult(report);
-            then(ioLocalizeService).should().print(anyString(), argsCaptor.capture());
-            assertThat(argsCaptor.getAllValues()).contains(student.getName()).contains(student.getSecondName());
+        new ReportServiceImpl(ioLocalizeService).printResult(report);
+        then(ioLocalizeService).should().print(anyString(), argsCaptor.capture());
+        assertThat(argsCaptor.getAllValues()).contains(student.getName()).contains(student.getSecondName());
     }
 
     @Test

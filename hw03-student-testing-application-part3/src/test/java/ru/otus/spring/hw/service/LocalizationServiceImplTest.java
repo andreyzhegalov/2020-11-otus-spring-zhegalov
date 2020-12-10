@@ -1,8 +1,8 @@
 package ru.otus.spring.hw.service;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 import java.util.Locale;
 
@@ -29,7 +29,8 @@ class LocalizationServiceImplTest {
         given(props.getLocale()).willReturn(locale);
 
         new LocalizationServiceImpl(props, messageSource).getText("key", "arg1", 1);
+
         then(props).should().getLocale();
-        then(messageSource).should().getMessage(eq("key"), eq(new Object[]{"arg1", 1}), eq(locale));
+        then(messageSource).should().getMessage(eq("key"), eq(new Object[] { "arg1", 1 }), eq(locale));
     }
 }
