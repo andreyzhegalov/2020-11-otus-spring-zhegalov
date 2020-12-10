@@ -13,8 +13,7 @@ public class FrontServiceImpl implements FrontService {
     private final QuestionService questionService;
     private final ReportService reportService;
 
-    public FrontServiceImpl(UserService userService, QuestionService questionService,
-                            ReportService reportService) {
+    public FrontServiceImpl(UserService userService, QuestionService questionService, ReportService reportService) {
         this.userService = userService;
         this.questionService = questionService;
         this.reportService = reportService;

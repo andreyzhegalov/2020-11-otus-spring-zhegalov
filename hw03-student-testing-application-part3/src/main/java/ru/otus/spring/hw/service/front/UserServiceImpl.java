@@ -1,33 +1,22 @@
 package ru.otus.spring.hw.service.front;
 
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import ru.otus.spring.hw.config.AppProps;
+import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.domain.Student;
-import ru.otus.spring.hw.service.IOService;
+import ru.otus.spring.hw.service.IOLocalizedService;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final IOService ioService;
-    private final MessageSource messageSource;
-    private final AppProps props;
-
-    public UserServiceImpl(IOService ioService, MessageSource messageSource, AppProps props) {
-        this.ioService = ioService;
-        this.messageSource = messageSource;
-        this.props = props;
-    }
+    private final IOLocalizedService ioLocalizesService;
 
     @Override
     public Student getStudent() {
-        var message = messageSource.getMessage("get.user.name", new String[0], props.getLocale());
-        ioService.print(message);
-        final var name = ioService.read();
-
-        message = messageSource.getMessage("get.user.second.name", new String[0], props.getLocale());
-        ioService.print(message);
-        final var secondName = ioService.read();
+        ioLocalizesService.print("get.user.name");
+        final var name = ioLocalizesService.read();
+        ioLocalizesService.print("get.user.second.name");
+        final var secondName = ioLocalizesService.read();
         return new Student(name, secondName);
     }
 }

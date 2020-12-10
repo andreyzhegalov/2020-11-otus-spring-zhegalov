@@ -2,28 +2,23 @@ package ru.otus.spring.hw.service.front;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
-import java.util.Locale;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.MessageSource;
 
-import ru.otus.spring.hw.config.AppProps;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
-import ru.otus.spring.hw.service.IOService;
+import ru.otus.spring.hw.service.IOLocalizedService;
 
 @ExtendWith(MockitoExtension.class)
 class ReportPrintServiceImplTest {
@@ -35,41 +30,20 @@ class ReportPrintServiceImplTest {
     private final Question question3 = new Question(3, "question3", new Answer("3"));
 
     @Mock
-    private IOService ioService;
-
-    @Mock
-    private MessageSource messageSource;
-
-    private AppProps props;
+    private IOLocalizedService ioLocalizeService;
 
     @Captor
     ArgumentCaptor<String> textCaptor;
 
     @Captor
-    ArgumentCaptor<Object[]> argsCaptor;
+    ArgumentCaptor<Object> argsCaptor;
 
-    @BeforeEach
-    void setUp() {
-        props = new AppProps();
-        props.setLocale(Locale.US);
-    }
-
-    @Test
-    void reportShouldBeSendingToIOService() {
-        final var text = "report";
-        given(messageSource.getMessage(anyString(), any(), any())).willReturn(text);
-        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
-        then(ioService).should().print(text);
-    }
 
     @Test
     void reportShouldContainsUser() {
-        report.addAnswer(question1, question1.getAnswer());
-
-        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
-        then(messageSource).should().getMessage(anyString(), argsCaptor.capture(), eq(props.getLocale()));
-
-        assertThat(argsCaptor.getValue()).contains(student.getName(), student.getSecondName());
+            new ReportServiceImpl(ioLocalizeService).printResult(report);
+            then(ioLocalizeService).should().print(anyString(), argsCaptor.capture());
+            assertThat(argsCaptor.getAllValues()).contains(student.getName()).contains(student.getSecondName());
     }
 
     @Test
@@ -78,10 +52,10 @@ class ReportPrintServiceImplTest {
         report.addAnswer(question2, question2.getAnswer());
         report.addAnswer(question3, incorrectAnswer);
 
-        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
-        then(messageSource).should().getMessage(anyString(), argsCaptor.capture(), eq(props.getLocale()));
+        new ReportServiceImpl(ioLocalizeService).printResult(report);
+        then(ioLocalizeService).should().print(anyString(), argsCaptor.capture());
 
-        assertThat(argsCaptor.getValue()).contains(2).contains(3);
+        assertThat(argsCaptor.getAllValues()).contains(2).contains(3);
     }
 
     @Test
@@ -90,8 +64,8 @@ class ReportPrintServiceImplTest {
         report.addAnswer(question2, question2.getAnswer());
         report.addAnswer(question3, incorrectAnswer);
 
-        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
-        then(messageSource).should().getMessage(textCaptor.capture(), any(), eq(props.getLocale()));
+        new ReportServiceImpl(ioLocalizeService).printResult(report);
+        then(ioLocalizeService).should().print(textCaptor.capture(), any());
 
         assertThat(textCaptor.getValue()).contains("success");
     }
@@ -102,16 +76,16 @@ class ReportPrintServiceImplTest {
         report.addAnswer(question2, incorrectAnswer);
         report.addAnswer(question3, incorrectAnswer);
 
-        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
-        then(messageSource).should().getMessage(textCaptor.capture(), any(), eq(props.getLocale()));
+        new ReportServiceImpl(ioLocalizeService).printResult(report);
+        then(ioLocalizeService).should().print(textCaptor.capture(), any());
 
         assertThat(textCaptor.getValue()).contains("fail");
     }
 
     @Test
     void shouldFailReportFormIfListQuestionEmpty() {
-        new ReportServiceImpl(ioService, messageSource, props).printResult(report);
-        then(messageSource).should().getMessage(textCaptor.capture(), any(), eq(props.getLocale()));
+        new ReportServiceImpl(ioLocalizeService).printResult(report);
+        then(ioLocalizeService).should().print(textCaptor.capture(), any());
 
         assertThat(textCaptor.getValue()).contains("fail");
     }

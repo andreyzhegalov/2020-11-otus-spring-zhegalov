@@ -2,17 +2,15 @@ package ru.otus.spring.hw.service.front;
 
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.service.IOService;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
     private final IOService ioService;
-
-    public QuestionServiceImpl(IOService ioService) {
-        this.ioService = ioService;
-    }
 
     @Override
     public Answer getAnswer(Question question) {

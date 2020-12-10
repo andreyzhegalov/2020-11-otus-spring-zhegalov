@@ -1,7 +1,10 @@
 package ru.otus.spring.hw.service;
 
+import org.springframework.stereotype.Service;
+
 import lombok.RequiredArgsConstructor;
 
+@Service
 @RequiredArgsConstructor
 public class IOLocalizedServiceImpl implements IOLocalizedService {
     private final IOService ioService;
