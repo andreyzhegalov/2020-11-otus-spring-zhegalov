@@ -13,6 +13,14 @@ public class DataSourceConfig {
     @Autowired
     private AppProps props;
 
+    public DataSourceConfig(){
+    }
+
+    public DataSourceConfig(String filename, AppProps props){
+        this.filename = filename;
+        this.props = props;
+    }
+
     public String getFilename() {
         final var fileName = filename.substring(0, filename.lastIndexOf("."));
         final var fileExtension = filename.substring(filename.lastIndexOf("."));
