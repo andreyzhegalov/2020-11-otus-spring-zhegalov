@@ -14,8 +14,7 @@ class DataSourceConfigTest {
     void fileNameShouldContainLocale(String in, String expected) {
         final var fileName = "folder/test.csv";
         final var locale = Locale.forLanguageTag(in);
-        final var props = new AppProps();
-        props.setLocale(locale);
+        final var props = new AppProps(locale);
 
         assertThat(new DataSourceConfig(fileName, props).getFilename()).isEqualTo(expected);
     }
