@@ -9,14 +9,14 @@ import ru.otus.spring.hw.service.IOLocalizedService;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final IOLocalizedService ioLocalizesService;
+    private final IOLocalizedService ioLocalizedService;
 
     @Override
     public Student getStudent() {
-        ioLocalizesService.print("get.user.name");
-        final var name = ioLocalizesService.read();
-        ioLocalizesService.print("get.user.second.name");
-        final var secondName = ioLocalizesService.read();
+        ioLocalizedService.printLocalizedMessage("get.user.name");
+        final var name = ioLocalizedService.read();
+        ioLocalizedService.printLocalizedMessage("get.user.second.name");
+        final var secondName = ioLocalizedService.read();
         return new Student(name, secondName);
     }
 }

@@ -21,7 +21,7 @@ public class ReportServiceImpl implements ReportService {
         final int correctAnswerCount = getCorrectAnswerCount(report);
         final boolean isSuccess = isSuccess(totalCount, correctAnswerCount);
         final var templateKey = isSuccess ? SUCCESSFUL_REPORT_KEY : FAIL_REPORT_KEY;
-        ioLocalizesService.print(templateKey, report.getStudent().getName(), report.getStudent().getSecondName(),
+        ioLocalizesService.printLocalizedMessage(templateKey, report.getStudent().getName(), report.getStudent().getSecondName(),
                 correctAnswerCount, totalCount);
     }
 

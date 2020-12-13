@@ -39,7 +39,7 @@ class ReportPrintServiceImplTest {
     @Test
     void reportShouldContainsUser() {
         new ReportServiceImpl(ioLocalizeService).printResult(report);
-        then(ioLocalizeService).should().print(anyString(), argsCaptor.capture());
+        then(ioLocalizeService).should().printLocalizedMessage(anyString(), argsCaptor.capture());
         assertThat(argsCaptor.getAllValues()).contains(student.getName()).contains(student.getSecondName());
     }
 
@@ -50,7 +50,7 @@ class ReportPrintServiceImplTest {
         report.addAnswer(question3, incorrectAnswer);
 
         new ReportServiceImpl(ioLocalizeService).printResult(report);
-        then(ioLocalizeService).should().print(anyString(), argsCaptor.capture());
+        then(ioLocalizeService).should().printLocalizedMessage(anyString(), argsCaptor.capture());
 
         assertThat(argsCaptor.getAllValues()).contains(2).contains(3);
     }
@@ -62,7 +62,7 @@ class ReportPrintServiceImplTest {
         report.addAnswer(question3, incorrectAnswer);
 
         new ReportServiceImpl(ioLocalizeService).printResult(report);
-        then(ioLocalizeService).should().print(textCaptor.capture(), any());
+        then(ioLocalizeService).should().printLocalizedMessage(textCaptor.capture(), any());
 
         assertThat(textCaptor.getValue()).contains("success");
     }
@@ -74,7 +74,7 @@ class ReportPrintServiceImplTest {
         report.addAnswer(question3, incorrectAnswer);
 
         new ReportServiceImpl(ioLocalizeService).printResult(report);
-        then(ioLocalizeService).should().print(textCaptor.capture(), any());
+        then(ioLocalizeService).should().printLocalizedMessage(textCaptor.capture(), any());
 
         assertThat(textCaptor.getValue()).contains("fail");
     }
@@ -82,7 +82,7 @@ class ReportPrintServiceImplTest {
     @Test
     void shouldFailReportFormIfListQuestionEmpty() {
         new ReportServiceImpl(ioLocalizeService).printResult(report);
-        then(ioLocalizeService).should().print(textCaptor.capture(), any());
+        then(ioLocalizeService).should().printLocalizedMessage(textCaptor.capture(), any());
 
         assertThat(textCaptor.getValue()).contains("fail");
     }
