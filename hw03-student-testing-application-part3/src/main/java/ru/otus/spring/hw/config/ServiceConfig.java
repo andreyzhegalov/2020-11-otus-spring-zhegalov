@@ -12,7 +12,7 @@ import ru.otus.spring.hw.service.IOServiceConsole;
 public class ServiceConfig {
 
     @Bean
-    QuestionDao questionDao(DataSourceConfig dataConfig, AppProps appProps) {
+    QuestionDao questionDao(DataSourceConfig dataConfig) {
         return new CsvQuestionDao(dataConfig.getFilename());
     }
 

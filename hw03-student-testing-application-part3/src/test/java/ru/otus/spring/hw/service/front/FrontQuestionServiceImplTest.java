@@ -10,12 +10,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
-import ru.otus.spring.hw.service.IOService;
+import ru.otus.spring.hw.service.IOLocalizedService;
 
 @ExtendWith(MockitoExtension.class)
 class FrontQuestionServiceImplTest {
     @Mock
-    private IOService ioService;
+    private IOLocalizedService ioService;
 
     @Test
     void getAnswer() {

@@ -30,7 +30,7 @@ class IOLocalizedServiceImplTest {
     void shouldPrintTextFromLocalizationService() {
         given(localizationService.getText(any(), any())).willReturn("");
 
-        new IOLocalizedServiceImpl(ioService, localizationService).print("key", "arg1", "arg2");
+        new IOLocalizedServiceImpl(ioService, localizationService).printLocalizedMessage("key", "arg1", "arg2");
 
         then(localizationService).should().getText(eq("key"), eq("arg1"), eq("arg2"));
         then(ioService).should().print(anyString());
