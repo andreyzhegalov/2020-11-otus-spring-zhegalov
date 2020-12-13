@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Report;
+import ru.otus.spring.hw.domain.Student;
 import ru.otus.spring.hw.service.front.FrontService;
 
 @Service
@@ -17,15 +18,14 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public void startTesting() {
-        final var student = frontService.getStudent();
+    public Report startTesting(Student student) {
         final var report = new Report(student);
         final var questionList = questionDao.getAllQuestion();
         questionList.forEach(q -> {
             final var answer = frontService.getAnswer(q);
             report.addAnswer(q, answer);
         });
-        frontService.printResult(report);
+        return report;
     }
 
     @Override

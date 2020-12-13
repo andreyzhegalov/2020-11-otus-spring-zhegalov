@@ -31,7 +31,7 @@ public class UserServiceImplTest {
     @Autowired
     private IOLocalizedService ioLocalizeService;
 
-    // @Test
+    @Test
     void getStudentName() {
         given(ioService.read()).willReturn("name").willReturn("second name");
 
