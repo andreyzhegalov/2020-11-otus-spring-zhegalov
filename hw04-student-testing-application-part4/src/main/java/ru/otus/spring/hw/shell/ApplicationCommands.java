@@ -12,32 +12,31 @@ import ru.otus.spring.hw.service.front.ReportService;
 import ru.otus.spring.hw.service.front.UserService;
 
 @ShellComponent
-public class ApplicationEventsCommands {
+public class ApplicationCommands {
     private final QuizService quizService;
     private final UserService userService;
     private final ReportService reportService;
     private Student student;
     private Report report;
 
-    public ApplicationEventsCommands(QuizService quizService, UserService userService, ReportService reportService){
+    public ApplicationCommands(QuizService quizService, UserService userService, ReportService reportService){
         this.quizService = quizService;
         this.userService = userService;
         this.reportService = reportService;
     }
-
 
     @ShellMethod(value = "Login command", key = {"l", "login"})
     public void login() {
          student = userService.getStudent();
     }
 
-    @ShellMethod(value = "Start quiz command", key = {"s", "startQuiz"})
+    @ShellMethod(value = "Start quiz command", key = {"s", "start-quiz"})
     @ShellMethodAvailability(value = "isStudentExist")
     public void startQuiz(){
         this.report = quizService.startTesting( this.student);
     }
 
-    @ShellMethod(value = "Print report command", key = {"p", "printReport"})
+    @ShellMethod(value = "Print report command", key = {"p", "print-report"})
     @ShellMethodAvailability(value = "isReportExist")
     public void printReport(){
         reportService.printResult(report);
