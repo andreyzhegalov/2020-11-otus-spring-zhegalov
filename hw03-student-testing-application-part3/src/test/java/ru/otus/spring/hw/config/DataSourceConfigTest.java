@@ -13,7 +13,7 @@ class DataSourceConfigTest {
     @CsvSource({ "en, folder/test_en.csv", "ru-RU, folder/test_ru_RU.csv" })
     void fileNameShouldContainLocale(String in, String expected) {
         final var fileName = "folder/test.csv";
-        final var locale = new Locale.Builder().setLanguageTag(in).build();
+        final var locale = Locale.forLanguageTag(in);
         final var props = new AppProps();
         props.setLocale(locale);
 
