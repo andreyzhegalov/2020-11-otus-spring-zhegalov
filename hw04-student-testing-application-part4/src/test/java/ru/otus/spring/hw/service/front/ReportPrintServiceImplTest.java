@@ -22,12 +22,12 @@ import ru.otus.spring.hw.service.IOLocalizedService;
 
 @SpringBootTest
 class ReportPrintServiceImplTest {
-    private final Student student = new Student("Ivan", "Ivanov");
-    private final Report report = new Report(student);
-    private final Answer incorrectAnswer = new Answer("other");
-    private final Question question1 = new Question(1, "question1", new Answer("1"));
-    private final Question question2 = new Question(2, "question2", new Answer("2"));
-    private final Question question3 = new Question(3, "question3", new Answer("3"));
+    private final static Student STUDENT = new Student("Ivan", "Ivanov");
+    private final static Report REPORT = new Report(STUDENT);
+    private final static Answer INCORRECT_ANSWER = new Answer("other");
+    private final static Question QUESTION_1 = new Question(1, "question1", new Answer("1"));
+    private final static Question QUESTION_2 = new Question(2, "question2", new Answer("2"));
+    private final static Question QUESTION_3 = new Question(3, "question3", new Answer("3"));
 
     @Import(ReportServiceImpl.class)
     @Configuration
@@ -48,18 +48,18 @@ class ReportPrintServiceImplTest {
 
     @Test
     void reportShouldContainsUser() {
-        reportService.printResult(report);
+        reportService.printResult(REPORT);
         then(ioLocalizeService).should().printLocalizedMessage(anyString(), argsCaptor.capture());
-        assertThat(argsCaptor.getAllValues()).contains(student.getName()).contains(student.getSecondName());
+        assertThat(argsCaptor.getAllValues()).contains(STUDENT.getName()).contains(STUDENT.getSecondName());
     }
 
     @Test
     void testPrintQuestionCount() {
-        report.addAnswer(question1, question1.getAnswer());
-        report.addAnswer(question2, question2.getAnswer());
-        report.addAnswer(question3, incorrectAnswer);
+        REPORT.addAnswer(QUESTION_1, QUESTION_1.getAnswer());
+        REPORT.addAnswer(QUESTION_2, QUESTION_2.getAnswer());
+        REPORT.addAnswer(QUESTION_3, INCORRECT_ANSWER);
 
-        reportService.printResult(report);
+        reportService.printResult(REPORT);
         then(ioLocalizeService).should().printLocalizedMessage(anyString(), argsCaptor.capture());
 
         assertThat(argsCaptor.getAllValues()).contains(2).contains(3);
@@ -67,11 +67,11 @@ class ReportPrintServiceImplTest {
 
     @Test
     void testSuccessReportForm() {
-        report.addAnswer(question1, question1.getAnswer());
-        report.addAnswer(question2, question2.getAnswer());
-        report.addAnswer(question3, incorrectAnswer);
+        REPORT.addAnswer(QUESTION_1, QUESTION_1.getAnswer());
+        REPORT.addAnswer(QUESTION_2, QUESTION_2.getAnswer());
+        REPORT.addAnswer(QUESTION_3, INCORRECT_ANSWER);
 
-        reportService.printResult(report);
+        reportService.printResult(REPORT);
         then(ioLocalizeService).should().printLocalizedMessage(textCaptor.capture(), any());
 
         assertThat(textCaptor.getValue()).contains("success");
@@ -79,11 +79,11 @@ class ReportPrintServiceImplTest {
 
     @Test
     void testFailReportForm() {
-        report.addAnswer(question1, question1.getAnswer());
-        report.addAnswer(question2, incorrectAnswer);
-        report.addAnswer(question3, incorrectAnswer);
+        REPORT.addAnswer(QUESTION_1, QUESTION_1.getAnswer());
+        REPORT.addAnswer(QUESTION_2, INCORRECT_ANSWER);
+        REPORT.addAnswer(QUESTION_3, INCORRECT_ANSWER);
 
-        new ReportServiceImpl(ioLocalizeService).printResult(report);
+        new ReportServiceImpl(ioLocalizeService).printResult(REPORT);
         then(ioLocalizeService).should().printLocalizedMessage(textCaptor.capture(), any());
 
         assertThat(textCaptor.getValue()).contains("fail");
@@ -91,7 +91,7 @@ class ReportPrintServiceImplTest {
 
     @Test
     void shouldFailReportFormIfListQuestionEmpty() {
-        new ReportServiceImpl(ioLocalizeService).printResult(report);
+        new ReportServiceImpl(ioLocalizeService).printResult(REPORT);
         then(ioLocalizeService).should().printLocalizedMessage(textCaptor.capture(), any());
 
         assertThat(textCaptor.getValue()).contains("fail");
