@@ -19,35 +19,36 @@ public class ApplicationCommands {
     private Student student;
     private Report report;
 
-    public ApplicationCommands(QuizService quizService, UserService userService, ReportService reportService){
+    public ApplicationCommands(QuizService quizService, UserService userService, ReportService reportService) {
         this.quizService = quizService;
         this.userService = userService;
         this.reportService = reportService;
     }
 
-    @ShellMethod(value = "Login command", key = {"l", "login"})
+    @ShellMethod(value = "Login command", key = { "l", "login" })
     public void login() {
-         student = userService.getStudent();
+        student = userService.getStudent();
+        report = null;
     }
 
-    @ShellMethod(value = "Start quiz command", key = {"s", "start-quiz"})
+    @ShellMethod(value = "Start quiz command", key = { "s", "start-quiz" })
     @ShellMethodAvailability(value = "isStudentExist")
-    public void startQuiz(){
-        this.report = quizService.startTesting( this.student);
+    public void startQuiz() {
+        this.report = quizService.startTesting(this.student);
     }
 
-    @ShellMethod(value = "Print report command", key = {"p", "print-report"})
+    @ShellMethod(value = "Print report command", key = { "p", "print-report" })
     @ShellMethodAvailability(value = "isReportExist")
-    public void printReport(){
+    public void printReport() {
         reportService.printResult(report);
     }
 
     private Availability isStudentExist() {
-        return student == null? Availability.unavailable("Should login first"): Availability.available();
+        return student == null ? Availability.unavailable("Should login first") : Availability.available();
     }
 
-    private Availability isReportExist(){
-        return report == null ? Availability.unavailable("Report not exist. Get quizzed first"): Availability.available();
+    private Availability isReportExist() {
+        return report == null ? Availability.unavailable("Report not exist. Get quizzed first")
+                : Availability.available();
     }
 }
-

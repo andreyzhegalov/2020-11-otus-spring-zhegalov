@@ -79,4 +79,21 @@ class ApplicationCommandsTest {
 
         then(reportService).should().printResult(report);
     }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void reportShouldNotBePrintedForNewUser() {
+        final var student = new Student("ivan", "ivanov");
+        final var newStudent = new Student("ivan", "neivanov");
+        final var report = new Report(student);
+        given(userService.getStudent()).willReturn(student).willReturn(newStudent);
+        given(quizService.startTesting(any())).willReturn(report);
+
+        shell.evaluate(() -> "l");
+        shell.evaluate(() -> "s");
+        shell.evaluate(() -> "l");
+        final var res = shell.evaluate(() -> "p");
+        assertThat(res).isInstanceOf(CommandNotCurrentlyAvailable.class);
+    }
+
 }

@@ -47,4 +47,11 @@ class IOServiceConsoleTest {
         final String newData = new IOServiceConsole(printStream, stubInputStream).read();
         assertThat(newData).isEqualTo(inputMessage);
     }
+
+    @Test
+    void testReadDataForEmptyStream() {
+        final InputStream stubInputStream = new ByteArrayInputStream(new byte[0]);
+        final String newData = new IOServiceConsole(printStream, stubInputStream).read();
+        assertThat(newData).isEmpty();
+    }
 }
