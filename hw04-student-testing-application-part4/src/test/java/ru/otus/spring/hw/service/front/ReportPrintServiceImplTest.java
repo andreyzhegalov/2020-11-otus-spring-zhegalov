@@ -6,11 +6,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
@@ -18,7 +17,7 @@ import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 import ru.otus.spring.hw.service.IOLocalizedService;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class ReportPrintServiceImplTest {
     private final Student student = new Student("Ivan", "Ivanov");
     private final Report report = new Report(student);
@@ -27,7 +26,7 @@ class ReportPrintServiceImplTest {
     private final Question question2 = new Question(2, "question2", new Answer("2"));
     private final Question question3 = new Question(3, "question3", new Answer("3"));
 
-    @Mock
+    @MockBean
     private IOLocalizedService ioLocalizeService;
 
     @Captor

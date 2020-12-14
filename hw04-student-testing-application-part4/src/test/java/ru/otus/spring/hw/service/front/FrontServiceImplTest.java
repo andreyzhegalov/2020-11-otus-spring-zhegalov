@@ -3,25 +3,24 @@ package ru.otus.spring.hw.service.front;
 import static org.mockito.BDDMockito.then;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class FrontServiceImplTest {
 
-    @Mock
+    @MockBean
     private UserService userService;
 
-    @Mock
+    @MockBean
     private QuestionService questionService;
 
-    @Mock
+    @MockBean
     private ReportService reportService;
 
     @Test

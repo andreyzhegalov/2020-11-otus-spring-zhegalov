@@ -7,16 +7,15 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class IOLocalizedServiceImplTest {
-    @Mock
+    @MockBean
     private IOService ioService;
 
-    @Mock
+    @MockBean
     private LocalizationService localizationService;
 
     @Test

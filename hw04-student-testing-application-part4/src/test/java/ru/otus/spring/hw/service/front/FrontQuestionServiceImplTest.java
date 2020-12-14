@@ -4,17 +4,16 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
 import ru.otus.spring.hw.service.IOLocalizedService;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class FrontQuestionServiceImplTest {
-    @Mock
+    @MockBean
     private IOLocalizedService ioService;
 
     @Test

@@ -10,8 +10,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -22,7 +20,6 @@ import ru.otus.spring.hw.domain.Student;
 import ru.otus.spring.hw.service.front.FrontService;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 class QuizServiceImplTest {
 
     @MockBean
