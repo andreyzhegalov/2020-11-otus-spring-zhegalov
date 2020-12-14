@@ -12,3 +12,6 @@ spring:
     interactive:
       enabled: false
 
+logging:
+  level:
+    ROOT: INFO
