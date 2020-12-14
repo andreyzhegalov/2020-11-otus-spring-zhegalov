@@ -1,0 +1,10 @@
+application:
+  locale: en
+
+dataset:
+  filename: datasets/quiz_dataset.csv
+
+spring:
+  messages:
+    basename: i18n.bundle
+    encoding: UTF-8
