@@ -19,9 +19,12 @@ class LocalizationServiceImplTest {
     @MockBean
     private MessageSource messageSource;
 
+    @Autowired
+    private LocalizationService localizationService;
+
     @Test
     void getText() {
-        new LocalizationServiceImpl(props, messageSource).getText("key", "arg1", 1);
+        localizationService.getText("key", "arg1", 1);
 
         then(messageSource).should().getMessage(eq("key"), eq(new Object[] { "arg1", 1 }), eq(props.getLocale()));
     }

@@ -10,32 +10,33 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import ru.otus.spring.hw.service.IOLocalizedService;
-import ru.otus.spring.hw.service.IOService;
-import ru.otus.spring.hw.service.LocalizationService;
 
 @SpringBootTest
 public class UserServiceImplTest {
 
-    @MockBean
-    private IOService ioService;
+    @Import(UserServiceImpl.class)
+    @Configuration
+    public static class UserServiceImplTestInner {
+    }
 
     @MockBean
-    private LocalizationService localizationService;
+    private IOLocalizedService ioLocalizedService;
 
     @Autowired
-    private IOLocalizedService ioLocalizeService;
+    private UserService userService;
 
     @Test
     void getStudentName() {
-        given(ioService.read()).willReturn("name").willReturn("second name");
+        given(ioLocalizedService.read()).willReturn("name").willReturn("second name");
+        final var student = userService.getStudent();
 
-        final var student = new UserServiceImpl(ioLocalizeService).getStudent();
-
-        InOrder inOrder = Mockito.inOrder(localizationService);
-        then(localizationService).should(inOrder).getText("get.user.name");
-        then(localizationService).should(inOrder).getText("get.user.second.name");
+        InOrder inOrder = Mockito.inOrder(ioLocalizedService);
+        then(ioLocalizedService).should(inOrder).printLocalizedMessage("get.user.name");
+        then(ioLocalizedService).should(inOrder).printLocalizedMessage("get.user.second.name");
 
         assertThat(student.getName()).isEqualTo("name");
         assertThat(student.getSecondName()).isEqualTo("second name");

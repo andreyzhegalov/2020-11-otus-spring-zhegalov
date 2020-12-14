@@ -10,8 +10,11 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Answer;
@@ -22,11 +25,19 @@ import ru.otus.spring.hw.service.front.FrontService;
 @SpringBootTest
 class QuizServiceImplTest {
 
+    @Import(QuizServiceImpl.class)
+    @Configuration
+    public static class QuizServiceImplInner {
+    }
+
     @MockBean
     private FrontService frontService;
 
     @MockBean
     private QuestionDao questionDao;
+
+    @Autowired
+    private QuizService quizService;
 
     @Test
     void shouldPrintAllQuestion() {
@@ -35,7 +46,7 @@ class QuizServiceImplTest {
 
         given(questionDao.getAllQuestion()).willReturn(Arrays.asList(question, question));
 
-        new QuizServiceImpl(questionDao, frontService).printAllQuestion();
+        quizService.printAllQuestion();
 
         then(questionDao).should().getAllQuestion();
         then(questionDao).shouldHaveNoMoreInteractions();
@@ -44,7 +55,7 @@ class QuizServiceImplTest {
     }
 
     @Test
-    void quizServiceShouldReturnReport(){
+    void quizServiceShouldReturnReport() {
         final var answer = new Answer("1");
         final var question = new Question(1, "question", answer);
         final var student = new Student("ivan", "ivanov");
@@ -53,7 +64,8 @@ class QuizServiceImplTest {
         given(questionDao.getAllQuestion()).willReturn(Collections.singletonList(question));
         given(frontService.getAnswer(question)).willReturn(answer);
 
-        final var report = new QuizServiceImpl(questionDao, frontService).startTesting(student);
+        final var report = quizService.startTesting(student);
+
         assertThat(report.getStudent()).isEqualTo(student);
         assertThat(report.getResult()).isNotEmpty();
 
