@@ -16,8 +16,13 @@ public class IOLocalizedServiceImpl implements IOLocalizedService {
     }
 
     @Override
-    public void print(String key, Object... args) {
+    public void printLocalizedMessage(String key, Object... args) {
         final var text = localizationService.getText(key, args);
+        print(text);
+    }
+
+    @Override
+    public void print(String text) {
         ioService.print(text);
     }
 }
