@@ -5,7 +5,6 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 
-import lombok.Getter;
 import lombok.Setter;
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
@@ -19,7 +18,6 @@ import ru.otus.spring.hw.event.events.StartQuizEvent;
 public class ApplicationCommands {
     private final EventPublisher<CustomEvent> eventPublisher;
 
-    @Getter
     @Setter
     private Student student;
 

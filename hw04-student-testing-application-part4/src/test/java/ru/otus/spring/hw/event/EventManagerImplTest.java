@@ -63,6 +63,19 @@ class EventManagerImplTest {
         assertThat(getEventConsumer2).isTrue();
     }
 
+    @Test
+    void shouldDoesNotInvokeConsumerForUnknownEvent(){
+        getEventConsumer1 = false;
+
+        eventManager.connect(CustomEvent1.class, e -> {
+            getEventConsumer1 = true;
+        });
+
+        eventPublisher.publish(new CustomEvent2(this, null));
+
+        assertThat(getEventConsumer1).isFalse();
+    }
+
     private class EventClient {
         @Setter
         @Getter

@@ -20,29 +20,21 @@ import ru.otus.spring.hw.event.events.CustomEvent;
 import ru.otus.spring.hw.event.events.LoggingEvent;
 import ru.otus.spring.hw.event.events.PrintReportEvent;
 import ru.otus.spring.hw.event.events.StartQuizEvent;
-import ru.otus.spring.hw.service.QuizService;
-import ru.otus.spring.hw.service.front.ReportService;
 
 @SpringBootTest
 class ApplicationCommandsTest {
 
-    @MockBean
-    private QuizService quizService;
-
-    @MockBean
-    private ReportService reportService;
-
     @Autowired
     private Shell shell;
+
+    @Autowired
+    private ApplicationCommands applicationCommands;
 
     @MockBean
     private EventPublisher<CustomEvent> eventPublisher;
 
     @Captor
     ArgumentCaptor<CustomEvent> captor;
-
-    @Autowired
-    private ApplicationCommands applicationCommands;
 
     @Test
     void loginShouldPublishLoginEvent() {

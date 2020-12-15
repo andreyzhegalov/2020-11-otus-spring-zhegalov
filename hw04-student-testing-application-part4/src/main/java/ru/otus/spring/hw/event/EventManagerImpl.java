@@ -11,23 +11,21 @@ import ru.otus.spring.hw.event.events.CustomEvent;
 
 @Slf4j
 public class EventManagerImpl implements EventManager<CustomEvent> {
-    //TODO add list consumers
-    private final Map<Class<? extends CustomEvent>, Consumer<CustomEvent>> consumerMap;
+    private final Map<Class<? extends CustomEvent>, Consumer<? super CustomEvent>> consumerMap;
 
-    public EventManagerImpl(){
+    public EventManagerImpl() {
         this.consumerMap = new HashMap<>();
     }
 
     @Override
-    public void connect(Class<? extends CustomEvent> eventType, Consumer<CustomEvent> consumer) {
+    public void connect(Class<? extends CustomEvent> eventType, Consumer<? super CustomEvent> consumer) {
         this.consumerMap.put(eventType, consumer);
     }
 
-    // TODO set event filter
     @EventListener
     public void onNewEvent(CustomEvent newEvent) {
         log.debug("new event received {}", newEvent);
-        if (!consumerMap.containsKey(newEvent.getClass())){
+        if (!consumerMap.containsKey(newEvent.getClass())) {
             return;
         }
         final var consumer = consumerMap.get(newEvent.getClass());
