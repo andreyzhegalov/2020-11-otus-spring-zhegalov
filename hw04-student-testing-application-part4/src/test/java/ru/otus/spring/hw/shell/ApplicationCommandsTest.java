@@ -1,12 +1,11 @@
 package ru.otus.spring.hw.shell;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,15 +15,16 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
+import ru.otus.spring.hw.event.EventPublisher;
+import ru.otus.spring.hw.event.events.CustomEvent;
+import ru.otus.spring.hw.event.events.LoggingEvent;
+import ru.otus.spring.hw.event.events.PrintReportEvent;
+import ru.otus.spring.hw.event.events.StartQuizEvent;
 import ru.otus.spring.hw.service.QuizService;
 import ru.otus.spring.hw.service.front.ReportService;
-import ru.otus.spring.hw.service.front.UserService;
 
 @SpringBootTest
 class ApplicationCommandsTest {
-
-    @MockBean
-    private UserService userService;
 
     @MockBean
     private QuizService quizService;
@@ -35,10 +35,21 @@ class ApplicationCommandsTest {
     @Autowired
     private Shell shell;
 
+    @MockBean
+    private EventPublisher<CustomEvent> eventPublisher;
+
+    @Captor
+    ArgumentCaptor<CustomEvent> captor;
+
+    @Autowired
+    private ApplicationCommands applicationCommands;
+
     @Test
-    void loginShouldInvokeGetStudent() {
+    void loginShouldPublishLoginEvent() {
         shell.evaluate(() -> "l");
-        then(userService).should().getStudent();
+
+        then(eventPublisher).should().publish(captor.capture());
+        assertThat(captor.getValue()).isInstanceOf(LoggingEvent.class);
     }
 
     @Test
@@ -51,12 +62,12 @@ class ApplicationCommandsTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void startTestingShouldBeInvokedAfterCommandStart() {
         final var student = new Student("ivan", "ivanov");
-        given(userService.getStudent()).willReturn(student);
+        applicationCommands.setStudent(student);
 
-        shell.evaluate(() -> "l");
         shell.evaluate(() -> "s");
 
-        then(quizService).should().startTesting(eq(student));
+        then(eventPublisher).should().publish(captor.capture());
+        assertThat(captor.getValue()).isInstanceOf(StartQuizEvent.class);
     }
 
     @Test
@@ -69,28 +80,23 @@ class ApplicationCommandsTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void theReportShouldBePrintedAfterTheCommandPrint() {
         final var student = new Student("ivan", "ivanov");
-        final var report = new Report(student);
-        given(userService.getStudent()).willReturn(student);
-        given(quizService.startTesting(any())).willReturn(report);
+        applicationCommands.setReport(new Report(student));
 
-        shell.evaluate(() -> "l");
-        shell.evaluate(() -> "s");
         shell.evaluate(() -> "p");
 
-        then(reportService).should().printResult(report);
+        then(eventPublisher).should().publish(captor.capture());
+        assertThat(captor.getValue()).isInstanceOf(PrintReportEvent.class);
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void reportShouldNotBePrintedForNewUser() {
         final var student = new Student("ivan", "ivanov");
-        final var newStudent = new Student("ivan", "neivanov");
         final var report = new Report(student);
-        given(userService.getStudent()).willReturn(student).willReturn(newStudent);
-        given(quizService.startTesting(any())).willReturn(report);
 
-        shell.evaluate(() -> "l");
-        shell.evaluate(() -> "s");
+        applicationCommands.setStudent(student);
+        applicationCommands.setReport(report);
+
         shell.evaluate(() -> "l");
         final var res = shell.evaluate(() -> "p");
         assertThat(res).isInstanceOf(CommandNotCurrentlyAvailable.class);
