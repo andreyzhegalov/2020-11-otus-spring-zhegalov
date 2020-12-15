@@ -2,9 +2,8 @@ package ru.otus.spring.hw.event.events;
 
 import ru.otus.spring.hw.domain.Report;
 
-public class PrintReportEvent extends CustomEvent {
-
-    private static final long serialVersionUID = 1L;
+public class PrintReportEvent extends AbstractCustomEvent {
+    private static final long serialVersionUID = 8628415201996608167L;
 
     public PrintReportEvent(Object source, Report report) {
         super(source, report);

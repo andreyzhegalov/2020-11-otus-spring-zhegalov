@@ -7,4 +7,3 @@ public interface EventManager<T> {
     void connect(Class<? extends T> eventType, Consumer<? super T> consumer);
 
 }
-
