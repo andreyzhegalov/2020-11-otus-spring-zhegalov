@@ -1,10 +1,9 @@
 package ru.otus.spring.hw.event.events;
 
-public class LoggingEvent extends CustomEvent {
+public class LoggingEvent extends AbstractCustomEvent {
+    private static final long serialVersionUID = -2880285010116233526L;
 
-	private static final long serialVersionUID = 1L;
-
-	public LoggingEvent(Object source) {
+    public LoggingEvent(Object source) {
         super(source, null);
     }
 

@@ -9,14 +9,14 @@ import lombok.Setter;
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 import ru.otus.spring.hw.event.EventPublisher;
-import ru.otus.spring.hw.event.events.CustomEvent;
+import ru.otus.spring.hw.event.events.AbstractCustomEvent;
 import ru.otus.spring.hw.event.events.LoggingEvent;
 import ru.otus.spring.hw.event.events.PrintReportEvent;
 import ru.otus.spring.hw.event.events.StartQuizEvent;
 
 @ShellComponent
 public class ApplicationCommands {
-    private final EventPublisher<CustomEvent> eventPublisher;
+    private final EventPublisher<AbstractCustomEvent> eventPublisher;
 
     @Setter
     private Student student;
@@ -24,7 +24,7 @@ public class ApplicationCommands {
     @Setter
     private Report report;
 
-    public ApplicationCommands(EventPublisher<CustomEvent> eventPublisher) {
+    public ApplicationCommands(EventPublisher<AbstractCustomEvent> eventPublisher) {
         this.eventPublisher = eventPublisher;
     }
 

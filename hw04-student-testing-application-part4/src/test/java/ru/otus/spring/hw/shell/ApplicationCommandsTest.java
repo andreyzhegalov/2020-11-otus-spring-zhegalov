@@ -16,7 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 import ru.otus.spring.hw.event.EventPublisher;
-import ru.otus.spring.hw.event.events.CustomEvent;
+import ru.otus.spring.hw.event.events.AbstractCustomEvent;
 import ru.otus.spring.hw.event.events.LoggingEvent;
 import ru.otus.spring.hw.event.events.PrintReportEvent;
 import ru.otus.spring.hw.event.events.StartQuizEvent;
@@ -31,10 +31,10 @@ class ApplicationCommandsTest {
     private ApplicationCommands applicationCommands;
 
     @MockBean
-    private EventPublisher<CustomEvent> eventPublisher;
+    private EventPublisher<AbstractCustomEvent> eventPublisher;
 
     @Captor
-    ArgumentCaptor<CustomEvent> captor;
+    ArgumentCaptor<AbstractCustomEvent> captor;
 
     @Test
     void loginShouldPublishLoginEvent() {

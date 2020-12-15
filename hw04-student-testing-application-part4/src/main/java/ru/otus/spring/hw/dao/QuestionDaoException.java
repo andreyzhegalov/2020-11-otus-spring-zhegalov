@@ -2,6 +2,8 @@ package ru.otus.spring.hw.dao;
 
 public class QuestionDaoException extends RuntimeException {
 
+    private static final long serialVersionUID = 1708479037884004754L;
+
     public QuestionDaoException() {
 
     }
