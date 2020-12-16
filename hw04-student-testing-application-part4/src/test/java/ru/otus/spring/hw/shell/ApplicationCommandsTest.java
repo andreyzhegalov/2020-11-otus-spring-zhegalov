@@ -52,7 +52,7 @@ class ApplicationCommandsTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void startTestingShouldBeInvokedAfterCommandStart() {
+    void startTestingShouldBeInvokedStartQuizEvent() {
         final var student = new Student("ivan", "ivanov");
         applicationCommands.setStudent(student);
 
@@ -63,7 +63,7 @@ class ApplicationCommandsTest {
     }
 
     @Test
-    void reportPrintingShouldNotStartIfTheTestFails() {
+    void reportPrintingShouldNotStartWithOutReport() {
         final var res = shell.evaluate(() -> "p");
         assertThat(res).isInstanceOf(CommandNotCurrentlyAvailable.class);
     }

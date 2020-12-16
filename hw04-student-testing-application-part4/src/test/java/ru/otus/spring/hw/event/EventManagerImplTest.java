@@ -2,6 +2,7 @@ package ru.otus.spring.hw.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,9 +20,14 @@ class EventManagerImplTest {
     @Autowired
     private EventPublisher<AbstractCustomEvent> eventPublisher;
 
-    @Test
-    void publishShouldInvokeSupplierMethod() {
+    @BeforeEach
+    void setUp() {
         getEventConsumer1 = false;
+        getEventConsumer2 = false;
+    }
+
+    @Test
+    void publishShouldInvokeConsumerMethod() {
         eventManager.connect(CustomEvent1.class, e -> getEventConsumer1 = true);
 
         eventPublisher.publish(new CustomEvent1(this, null));
@@ -30,10 +36,7 @@ class EventManagerImplTest {
     }
 
     @Test
-    void publishShouldInvokeOnlyClientSupplierMethod() {
-        getEventConsumer1 = false;
-        getEventConsumer2 = false;
-
+    void publishShouldInvokeOnlyClientConsumerMethod() {
         eventManager.connect(CustomEvent1.class, e -> getEventConsumer1 = true);
         eventManager.connect(CustomEvent2.class, e -> getEventConsumer2 = true);
 
@@ -45,8 +48,6 @@ class EventManagerImplTest {
 
     @Test
     void shouldDoesNotInvokeConsumerForUnknownEvent() {
-        getEventConsumer1 = false;
-
         eventManager.connect(CustomEvent1.class, e -> getEventConsumer1 = true);
 
         eventPublisher.publish(new CustomEvent2(this, null));
@@ -57,11 +58,11 @@ class EventManagerImplTest {
     @Test
     void testEventWithPayload() {
         final var customSupplier = new EventClient();
-
         eventManager.connect(CustomEvent1.class, e -> customSupplier.setData((String) e.getPayload()));
-
         final String payload = "test data";
+
         eventPublisher.publish(new CustomEvent1(this, payload));
+
         assertThat(customSupplier.getData()).isEqualTo(payload);
     }
 }
