@@ -49,12 +49,12 @@ public class ApplicationCommands {
 
     @EventListener
     public void onUserLoggingEvent(UserLoggingEvent newEvent) {
-        this.student = (Student) newEvent.getPayload();
+        this.student = newEvent.getStudent();
     }
 
     @EventListener
     public void onReportEvent(ReportEvent event) {
-        this.report = (Report) event.getPayload();
+        this.report = event.getReport();
     }
 
     private Availability isStudentExist() {
