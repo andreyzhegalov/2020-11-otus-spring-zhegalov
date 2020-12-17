@@ -19,7 +19,9 @@ import ru.otus.spring.hw.event.EventPublisher;
 import ru.otus.spring.hw.event.events.AbstractCustomEvent;
 import ru.otus.spring.hw.event.events.LoggingEvent;
 import ru.otus.spring.hw.event.events.PrintReportEvent;
+import ru.otus.spring.hw.event.events.ReportEvent;
 import ru.otus.spring.hw.event.events.StartQuizEvent;
+import ru.otus.spring.hw.event.events.UserLoggingEvent;
 
 @SpringBootTest
 class ApplicationCommandsTest {
@@ -34,7 +36,7 @@ class ApplicationCommandsTest {
     private EventPublisher<AbstractCustomEvent> eventPublisher;
 
     @Captor
-    ArgumentCaptor<AbstractCustomEvent> captor;
+    private ArgumentCaptor<AbstractCustomEvent> captor;
 
     @Test
     void loginShouldPublishLoginEvent() {
@@ -54,7 +56,7 @@ class ApplicationCommandsTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void startTestingShouldBeInvokedStartQuizEvent() {
         final var student = new Student("ivan", "ivanov");
-        applicationCommands.setStudent(student);
+        applicationCommands.onUserLoggingEvent(new UserLoggingEvent(this, student));
 
         shell.evaluate(() -> "s");
 
@@ -72,7 +74,7 @@ class ApplicationCommandsTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void theReportShouldBePrintedAfterTheCommandPrint() {
         final var student = new Student("ivan", "ivanov");
-        applicationCommands.setReport(new Report(student));
+        applicationCommands.onReportEvent(new ReportEvent(this, new Report(student)));
 
         shell.evaluate(() -> "p");
 
@@ -85,9 +87,8 @@ class ApplicationCommandsTest {
     void reportShouldNotBePrintedForNewUser() {
         final var student = new Student("ivan", "ivanov");
         final var report = new Report(student);
-
-        applicationCommands.setStudent(student);
-        applicationCommands.setReport(report);
+        applicationCommands.onUserLoggingEvent(new UserLoggingEvent(this, student));
+        applicationCommands.onReportEvent(new ReportEvent(this, report));
 
         shell.evaluate(() -> "l");
         final var res = shell.evaluate(() -> "p");

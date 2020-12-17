@@ -1,27 +1,27 @@
 package ru.otus.spring.hw.shell;
 
+import org.springframework.context.event.EventListener;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 
-import lombok.Setter;
 import ru.otus.spring.hw.domain.Report;
 import ru.otus.spring.hw.domain.Student;
 import ru.otus.spring.hw.event.EventPublisher;
 import ru.otus.spring.hw.event.events.AbstractCustomEvent;
 import ru.otus.spring.hw.event.events.LoggingEvent;
 import ru.otus.spring.hw.event.events.PrintReportEvent;
+import ru.otus.spring.hw.event.events.ReportEvent;
 import ru.otus.spring.hw.event.events.StartQuizEvent;
+import ru.otus.spring.hw.event.events.UserLoggingEvent;
 
 @ShellComponent
 public class ApplicationCommands {
     private final EventPublisher<AbstractCustomEvent> eventPublisher;
 
-    @Setter
     private Student student;
 
-    @Setter
     private Report report;
 
     public ApplicationCommands(EventPublisher<AbstractCustomEvent> eventPublisher) {
@@ -30,6 +30,7 @@ public class ApplicationCommands {
 
     @ShellMethod(value = "Login command", key = { "l", "login" })
     public void login() {
+
         eventPublisher.publish(new LoggingEvent(this));
         report = null;
     }
@@ -44,6 +45,16 @@ public class ApplicationCommands {
     @ShellMethodAvailability(value = "isReportExist")
     public void printReport() {
         eventPublisher.publish(new PrintReportEvent(this, report));
+    }
+
+    @EventListener
+    public void onUserLoggingEvent(UserLoggingEvent newEvent) {
+        this.student = (Student) newEvent.getPayload();
+    }
+
+    @EventListener
+    public void onReportEvent(ReportEvent event) {
+        this.report = (Report) event.getPayload();
     }
 
     private Availability isStudentExist() {
