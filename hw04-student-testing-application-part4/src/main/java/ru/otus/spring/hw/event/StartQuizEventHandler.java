@@ -12,13 +12,14 @@ import ru.otus.spring.hw.service.QuizService;
 
 @RequiredArgsConstructor
 @Component
-public class StartQuizEventHandler {
+public class StartQuizEventHandler implements EventHandler<StartQuizEvent>{
     private final EventPublisher<AbstractCustomEvent> eventPublisher;
     private final QuizService quizService;
 
     @EventListener
-    public void onStartQuizEvent(StartQuizEvent event) {
+	@Override
+	public void handle(StartQuizEvent event) {
         final var report = quizService.startTesting((Student) event.getPayload());
         eventPublisher.publish(new ReportEvent(this, report));
-    }
+	}
 }

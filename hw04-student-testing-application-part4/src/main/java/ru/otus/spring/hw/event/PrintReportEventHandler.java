@@ -10,12 +10,13 @@ import ru.otus.spring.hw.service.front.ReportService;
 
 @RequiredArgsConstructor
 @Component
-public class PrintReportEventHandler {
+public class PrintReportEventHandler implements EventHandler<PrintReportEvent>{
     private final ReportService reportService;
 
     @EventListener
-    public void onPrintReportEvent(PrintReportEvent event) {
+	@Override
+	public void handle(PrintReportEvent event) {
         final var report = (Report) event.getPayload();
         reportService.printResult(report);
-    }
+	}
 }

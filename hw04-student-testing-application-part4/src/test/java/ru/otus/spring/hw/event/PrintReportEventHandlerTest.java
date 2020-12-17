@@ -26,7 +26,7 @@ class PrintReportEventHandlerTest {
         final var student = new Student("ivan", "ivanov");
         final var report = new Report(student);
 
-        eventHandler.onPrintReportEvent(new PrintReportEvent(this, report));
+        eventHandler.handle(new PrintReportEvent(this, report));
 
         then(reportService).should().printResult(eq(report));
     }

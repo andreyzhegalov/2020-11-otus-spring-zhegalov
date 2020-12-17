@@ -35,7 +35,7 @@ class StartQuizEventHandlerTest {
     void shouldGetReportFromTheQuizServiceAndThenPublishReportEvent() {
         final var student = new Student("ivan", "ivanov");
 
-        eventHandler.onStartQuizEvent(new StartQuizEvent(this, student));
+        eventHandler.handle(new StartQuizEvent(this, student));
 
         then(quizService).should().startTesting(eq(student));
         then(eventPublisher).should().publish(captor.capture());

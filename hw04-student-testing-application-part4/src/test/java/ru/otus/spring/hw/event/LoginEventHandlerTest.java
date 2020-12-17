@@ -31,7 +31,7 @@ class LoginEventHandlerTest {
 
     @Test
     void shouldGetNewUserFromTheUserServiceAndThenPublishUserLogginingEvent() {
-        eventHandler.onLoggingEvent(new LoggingEvent(this));
+        eventHandler.handle(new LoggingEvent(this));
 
         then(userService).should().getStudent();
         then(eventPublisher).should().publish(captor.capture());

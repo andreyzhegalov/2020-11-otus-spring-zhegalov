@@ -11,13 +11,14 @@ import ru.otus.spring.hw.service.front.UserService;
 
 @RequiredArgsConstructor
 @Component
-public class LoginEventHandler {
+public class LoginEventHandler implements EventHandler<LoggingEvent>{
     private final EventPublisher<AbstractCustomEvent> eventPublisher;
     private final UserService userService;
 
     @EventListener
-    public void onLoggingEvent(LoggingEvent event) {
+	@Override
+	public void handle(LoggingEvent event) {
         final var newStudent = userService.getStudent();
         eventPublisher.publish(new UserLoggingEvent(this, newStudent));
-    }
+	}
 }
