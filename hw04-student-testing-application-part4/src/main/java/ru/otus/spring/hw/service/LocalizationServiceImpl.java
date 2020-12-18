@@ -1,5 +1,6 @@
 package ru.otus.spring.hw.service;
 
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,7 @@ import ru.otus.spring.hw.config.AppProps;
 @RequiredArgsConstructor
 public class LocalizationServiceImpl implements LocalizationService {
     private final AppProps props;
-    private final MessageSourceService messageSource;
+    private final MessageSource messageSource;
 
     @Override
     public String getText(String key, Object... args) {
