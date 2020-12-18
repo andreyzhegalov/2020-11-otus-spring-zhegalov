@@ -1,10 +1,10 @@
 package ru.otus.spring.hw.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 
@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import ru.otus.spring.hw.io.ScannerInputStream;
 
 @SpringBootTest
 class IOServiceConsoleTest {
@@ -29,6 +30,9 @@ class IOServiceConsoleTest {
     @MockBean
     private InputStream inputStream;
 
+    @MockBean
+    private ScannerInputStream scannerInputStream;
+
     @Autowired
     private IOService ioService;
 
@@ -41,17 +45,21 @@ class IOServiceConsoleTest {
     }
 
     @Test
-    void testReadData() {
-        final String inputMessage = "some message";
-        final InputStream stubInputStream = new ByteArrayInputStream(inputMessage.getBytes());
-        final String newData = new IOServiceConsole(printStream, stubInputStream).read();
-        assertThat(newData).isEqualTo(inputMessage);
+    void ioServiceShouldReadFromScanner() {
+        given(scannerInputStream.hasNext()).willReturn(true);
+        given(scannerInputStream.nextLine()).willReturn("any string");
+
+        ioService.read();
+
+        then(scannerInputStream).should().nextLine();
     }
 
     @Test
-    void testReadDataForEmptyStream() {
-        final InputStream stubInputStream = new ByteArrayInputStream(new byte[0]);
-        final String newData = new IOServiceConsole(printStream, stubInputStream).read();
-        assertThat(newData).isEmpty();
+    void ioServiceShouldNotReadIfStreamIsEmpty(){
+        given(scannerInputStream.hasNext()).willReturn(false);
+
+        ioService.read();
+
+        then(scannerInputStream).should(never()).nextLine();
     }
 }

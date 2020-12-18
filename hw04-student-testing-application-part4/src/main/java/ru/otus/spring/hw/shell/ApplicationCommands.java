@@ -30,7 +30,6 @@ public class ApplicationCommands {
 
     @ShellMethod(value = "Login command", key = { "l", "login" })
     public void login() {
-
         eventPublisher.publish(new LoggingEvent(this));
         report = null;
     }

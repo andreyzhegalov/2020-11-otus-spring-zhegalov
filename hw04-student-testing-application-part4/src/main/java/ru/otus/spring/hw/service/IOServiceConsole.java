@@ -1,16 +1,16 @@
 package ru.otus.spring.hw.service;
 
-import java.io.InputStream;
+import ru.otus.spring.hw.io.ScannerInputStream;
+
 import java.io.PrintStream;
-import java.util.Scanner;
 
 public class IOServiceConsole implements IOService {
     private final PrintStream out;
-    private final Scanner in;
+    private final ScannerInputStream in;
 
-    public IOServiceConsole(PrintStream out, InputStream in) {
+    public IOServiceConsole(PrintStream out, ScannerInputStream in) {
         this.out = out;
-        this.in = new Scanner(in);
+        this.in = in;
     }
 
     @Override
