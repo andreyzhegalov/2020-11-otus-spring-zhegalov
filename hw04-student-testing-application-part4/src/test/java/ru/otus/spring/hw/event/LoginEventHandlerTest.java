@@ -30,7 +30,7 @@ class LoginEventHandlerTest {
     private ArgumentCaptor<AbstractCustomEvent> captor;
 
     @Test
-    void shouldGetNewUserFromTheUserServiceAndThenPublishUserLogginingEvent() {
+    void shouldGetNewUserFromTheUserServiceAndThenPublishUserLoggingEvent() {
         eventHandler.handle(new LoggingEvent(this));
 
         then(userService).should().getStudent();

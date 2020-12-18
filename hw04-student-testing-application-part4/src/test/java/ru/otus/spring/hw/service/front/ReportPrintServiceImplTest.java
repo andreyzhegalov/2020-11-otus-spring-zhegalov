@@ -41,10 +41,10 @@ class ReportPrintServiceImplTest {
     private IOLocalizedService ioLocalizeService;
 
     @Captor
-    ArgumentCaptor<String> textCaptor;
+    private ArgumentCaptor<String> textCaptor;
 
     @Captor
-    ArgumentCaptor<Object> argsCaptor;
+    private ArgumentCaptor<Object> argsCaptor;
 
     @Test
     void reportShouldContainsUser() {
