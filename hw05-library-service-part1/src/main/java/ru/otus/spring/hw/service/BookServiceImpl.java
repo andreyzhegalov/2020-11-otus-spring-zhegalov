@@ -12,8 +12,8 @@ public class BookServiceImpl implements BookService{
     private final BookDao bookDao;
 
     @Override
-    public long saveBook(Book book) {
-        return bookDao.insertOrUpdate(book);
+    public void saveBook(Book book) {
+        bookDao.insertOrUpdate(book);
     }
 
 }

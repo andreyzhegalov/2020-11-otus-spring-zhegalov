@@ -4,6 +4,6 @@ import ru.otus.spring.hw.model.Book;
 
 public interface BookService {
 
-    long saveBook(Book book);
+    void saveBook(Book book);
 
 }
