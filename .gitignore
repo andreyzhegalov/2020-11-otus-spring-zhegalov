@@ -24,3 +24,5 @@ target/
 /.nb-gradle/
 
 .vim/*
+
+**.log

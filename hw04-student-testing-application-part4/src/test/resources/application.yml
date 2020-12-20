@@ -1,0 +1,19 @@
+application:
+  locale: en
+
+dataset:
+  filename: datasets/quiz_dataset.csv
+
+spring:
+  messages:
+    basename: i18n.bundle
+    encoding: UTF-8
+  shell:
+    interactive:
+      enabled: false
+
+logging:
+  level:
+    ROOT: INFO
+    org.springframework: INFO
+    ru.otus.spring.hw: DEBUG

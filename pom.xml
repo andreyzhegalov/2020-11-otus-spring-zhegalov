@@ -32,6 +32,7 @@
         <module>hw01-student-testing-application-part1</module>
         <module>hw02-student-testing-application-part2</module>
         <module>hw03-student-testing-application-part3</module>
+        <module>hw04-student-testing-application-part4</module>
     </modules>
 
     <build>
