@@ -1,4 +1,13 @@
 spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    data: test-data.sql
+
+  h2:
+    console:
+      path: /h2-console
+      settings:
+        web-allow-others: true
   shell:
     interactive:
       enabled: false

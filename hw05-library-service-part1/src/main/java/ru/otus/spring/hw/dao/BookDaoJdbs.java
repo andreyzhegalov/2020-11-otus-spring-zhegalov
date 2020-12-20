@@ -1,5 +1,8 @@
 package ru.otus.spring.hw.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -13,5 +16,10 @@ public class BookDaoJdbs implements BookDao {
     public long insertOrUpdate(Book book) {
         return 0L;
     }
+
+    @Override
+	public List<Book> getAll() {
+        return new ArrayList<>();
+	}
 
 }

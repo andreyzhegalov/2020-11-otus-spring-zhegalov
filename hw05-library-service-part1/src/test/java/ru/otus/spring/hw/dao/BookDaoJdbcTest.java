@@ -4,22 +4,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import ru.otus.spring.hw.model.Book;
 
-@SpringBootTest
+@JdbcTest
+@Import(BookDaoJdbs.class)
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class BookDaoJdbcTest {
-
-    @Import(BookDaoJdbs.class)
-    @Configuration
-    public static class BookDaoInner {
-    }
 
     @Autowired
     private BookDaoJdbs bookDao;
+
+    @Test
+    void shouldReturnBooks(){
+        assertThat(bookDao.getAll()).isNotEmpty();
+    }
 
     @Test
     void insertOrUpdateTest() {
