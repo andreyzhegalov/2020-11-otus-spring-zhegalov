@@ -11,6 +11,8 @@ spring:
   shell:
     interactive:
       enabled: false
+  flyway:
+    enabled: true
 
 logging:
   level:

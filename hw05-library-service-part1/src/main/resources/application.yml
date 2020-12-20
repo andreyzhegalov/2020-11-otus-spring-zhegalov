@@ -2,3 +2,5 @@ logging:
   level:
     ROOT: OFF
 
+flyway:
+  enabled: true

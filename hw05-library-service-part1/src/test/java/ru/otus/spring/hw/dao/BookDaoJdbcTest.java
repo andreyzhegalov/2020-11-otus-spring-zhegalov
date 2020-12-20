@@ -26,7 +26,7 @@ public class BookDaoJdbcTest {
 
     @Test
     void insertOrUpdateTest() {
-        assertThat(bookDao.insertOrUpdate(new Book())).isNotZero();
+        assertThat(bookDao.insertOrUpdate(new Book(1L))).isNotZero();
     }
 
 }
