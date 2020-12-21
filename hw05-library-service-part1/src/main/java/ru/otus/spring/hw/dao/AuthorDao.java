@@ -3,20 +3,20 @@ package ru.otus.spring.hw.dao;
 import java.util.List;
 import java.util.Optional;
 
-import ru.otus.spring.hw.model.dto.AuthorDto;
+import ru.otus.spring.hw.model.Author;
 
 
 public interface AuthorDao {
 
-    Optional<AuthorDto> getById(long id);
+    Optional<Author> getById(long id);
 
-    List<AuthorDto> getAll();
+    List<Author> getAll();
 
-    long insertAuthor(AuthorDto book);
+    long insertAuthor(Author author);
 
-    void updateAuthor(AuthorDto book);
+    void updateAuthor(Author author);
 
-    void insertOrUpdate(AuthorDto book);
+    void insertOrUpdate(Author author);
 
     void deleteAuthor(long id);
 

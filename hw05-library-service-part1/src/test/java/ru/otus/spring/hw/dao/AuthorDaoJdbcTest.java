@@ -12,7 +12,7 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.otus.spring.hw.model.dto.AuthorDto;
+import ru.otus.spring.hw.model.Author;
 
 @JdbcTest
 @Import(AuthorDaoJdbc.class)
@@ -44,7 +44,7 @@ public class AuthorDaoJdbcTest {
     @Test
     void shouldUpdateIfIdExist() {
         final var initAuthor = authorDao.getById(EXISTED_ID).get();
-        final var updatedAuthor = new AuthorDto(initAuthor.getId(), initAuthor.getName() + "_modify");
+        final var updatedAuthor = new Author(initAuthor.getId(), initAuthor.getName() + "_modify");
 
         assertThatCode(() -> authorDao.updateAuthor(updatedAuthor)).doesNotThrowAnyException();
 
@@ -54,7 +54,7 @@ public class AuthorDaoJdbcTest {
 
     @Test
     void shouldThrowExceptionWhenUpdateNotExistedId() {
-        final var updatedAuthor = new AuthorDto(NOT_EXISTED_ID, "name");
+        final var updatedAuthor = new Author(NOT_EXISTED_ID, "name");
         assertThatCode(() -> authorDao.updateAuthor(updatedAuthor)).isInstanceOf(DaoException.class);
         assertThat(authorDao.getAll().size()).isEqualTo(AUTHOR_COUNT);
     }
@@ -62,7 +62,7 @@ public class AuthorDaoJdbcTest {
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
     @Test
     void shouldInsertAuthor() {
-        final var newAuthor = new AuthorDto("new name");
+        final var newAuthor = new Author("new name");
 
         final var id = authorDao.insertAuthor(newAuthor);
 
@@ -73,7 +73,7 @@ public class AuthorDaoJdbcTest {
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
     @Test
     void insertOrUpdateShouldInsertNewAuthor() {
-        final var newAuthor = new AuthorDto(NOT_EXISTED_ID, "new author");
+        final var newAuthor = new Author(NOT_EXISTED_ID, "new author");
 
         authorDao.insertOrUpdate(newAuthor);
 
@@ -86,7 +86,7 @@ public class AuthorDaoJdbcTest {
     @Test
     void insertOrUpdateShouldUpdateExistedAuthor() {
         final var existedAuthor = authorDao.getById(EXISTED_ID).get();
-        final var updatedAuthor = new AuthorDto(existedAuthor.getId(), existedAuthor.getName() + "_modify");
+        final var updatedAuthor = new Author(existedAuthor.getId(), existedAuthor.getName() + "_modify");
 
         authorDao.insertOrUpdate(updatedAuthor);
 

@@ -1,6 +1,19 @@
 package ru.otus.spring.hw.model;
 
-public class Book {
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+@EqualsAndHashCode
+@ToString
+@RequiredArgsConstructor
+public class Book {
+    @Getter
+    private final long id;
+    @Getter
+    private final String title;
+    @Getter
+    private final Author author;
 }
 
