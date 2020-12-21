@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -19,10 +18,10 @@ import ru.otus.spring.hw.model.Book;
 @RequiredArgsConstructor
 @Component
 public class BookDaoJdbs implements BookDao {
-    private final static String SELECT_BY_ID = "select id,title from books where id=:id";
-    private final static String SELECT_ALL_QUERY = "select id, title from books";
-    private final static String INSERT_QUERY = "insert into books (title) values (:title)";
-    private final static String UPDATE_QUERY = "update books set title=:title where id=:id";
+    private final static String SELECT_BY_ID = "select id,title, author_id from books where id=:id";
+    private final static String SELECT_ALL_QUERY = "select id, title, author_id from books";
+    private final static String INSERT_QUERY = "insert into books (title, author_id) values (:title, :author_id)";
+    private final static String UPDATE_QUERY = "update books set title=:title, author_id=:author_id where id=:id";
     private final static String DELETE_QUERY = "delete from books where id=:id";
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
@@ -40,7 +39,7 @@ public class BookDaoJdbs implements BookDao {
     @Override
     public long insertBook(Book book) {
         final var keyHolder = new GeneratedKeyHolder();
-        final var namedParameters = new MapSqlParameterSource().addValue("title", book.getTitle());
+        final var namedParameters = new MapSqlParameterSource().addValue("title", book.getTitle()).addValue("author_id", book.getAuthorId());
         final var result = namedParameterJdbcOperations.update(INSERT_QUERY, namedParameters, keyHolder);
         if (result == 0) {
             throw new DaoException("Book not added");
@@ -51,7 +50,7 @@ public class BookDaoJdbs implements BookDao {
     @Override
     public void updateBook(Book book) {
         final var namedParameters = new MapSqlParameterSource().addValue("id", book.getId()).addValue("title",
-                book.getTitle());
+                book.getTitle()).addValue("author_id", book.getAuthorId());
         final var result = namedParameterJdbcOperations.update(UPDATE_QUERY, namedParameters);
         if (result == 0) {
             throw new DaoException("No book found with id " + book.getId());
@@ -82,7 +81,8 @@ public class BookDaoJdbs implements BookDao {
         public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
             final long id = rs.getLong("id");
             final String title = rs.getNString("title");
-            return new Book(id, title);
+            final long authorId = rs.getLong("author_id");
+            return new Book(id, title, authorId);
         }
     }
 

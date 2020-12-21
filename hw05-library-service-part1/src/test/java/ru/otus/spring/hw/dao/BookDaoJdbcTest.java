@@ -21,6 +21,7 @@ public class BookDaoJdbcTest {
     private final static long EXISTED_ID = 1L;
     private final static long NOT_EXISTED_ID = 3L;
     private final static int BOOK_COUNT = 2;
+    private final static long EXISTED_AUTHOR_ID = 1L;
 
     @Autowired
     private BookDaoJdbs bookDao;
@@ -44,7 +45,7 @@ public class BookDaoJdbcTest {
     @Test
     void shouldUpdateIfIdExist() {
         final var initBook = bookDao.getById(EXISTED_ID).get();
-        final var updatedBook = new Book(initBook.getId(), initBook.getTitle() + "_modify");
+        final var updatedBook = new Book(initBook.getId(), initBook.getTitle() + "_modify", initBook.getAuthorId());
 
         assertThatCode(() -> bookDao.updateBook(updatedBook)).doesNotThrowAnyException();
 
@@ -54,7 +55,7 @@ public class BookDaoJdbcTest {
 
     @Test
     void shouldThrowExceptionWhenUpdateNotExistedId() {
-        final var updatedBook = new Book(NOT_EXISTED_ID, "title");
+        final var updatedBook = new Book(NOT_EXISTED_ID, "title", EXISTED_AUTHOR_ID);
         assertThatCode(() -> bookDao.updateBook(updatedBook)).isInstanceOf(DaoException.class);
         assertThat(bookDao.getAll().size()).isEqualTo(BOOK_COUNT);
     }
@@ -62,7 +63,7 @@ public class BookDaoJdbcTest {
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
     @Test
     void shouldInsertBook() {
-        final var newBook = new Book("new title");
+        final var newBook = new Book("new title", EXISTED_AUTHOR_ID);
 
         final var id = bookDao.insertBook(newBook);
 
@@ -73,7 +74,7 @@ public class BookDaoJdbcTest {
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
     @Test
     void insertOrUpdateShouldInsertNewBook() {
-        final var newBook = new Book(NOT_EXISTED_ID, "new book");
+        final var newBook = new Book(NOT_EXISTED_ID, "new book", EXISTED_AUTHOR_ID);
 
         bookDao.insertOrUpdate(newBook);
 
@@ -86,7 +87,7 @@ public class BookDaoJdbcTest {
     @Test
     void insertOrUpdateShouldUpdateExistedBook() {
         final var existedBook = bookDao.getById(EXISTED_ID).get();
-        final var updatedBook = new Book(existedBook.getId(), existedBook.getTitle() + "_modify");
+        final var updatedBook = new Book(existedBook.getId(), existedBook.getTitle() + "_modify", existedBook.getAuthorId());
 
         bookDao.insertOrUpdate(updatedBook);
 
