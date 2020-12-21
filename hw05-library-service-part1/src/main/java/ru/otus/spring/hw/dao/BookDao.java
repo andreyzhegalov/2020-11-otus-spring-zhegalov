@@ -3,19 +3,20 @@ package ru.otus.spring.hw.dao;
 import java.util.List;
 import java.util.Optional;
 
-import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.dto.BookDto;
+
 
 public interface BookDao {
 
-    Optional<Book> getById(long id);
+    Optional<BookDto> getById(long id);
 
-    List<Book> getAll();
+    List<BookDto> getAll();
 
-    long insertBook(Book book);
+    long insertBook(BookDto book);
 
-    void updateBook(Book book);
+    void updateBook(BookDto book);
 
-    void insertOrUpdate(Book book);
+    void insertOrUpdate(BookDto book);
 
     void deleteBook(long id);
 

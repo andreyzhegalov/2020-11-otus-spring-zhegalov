@@ -12,7 +12,7 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.dto.BookDto;
 
 @JdbcTest
 @Import(BookDaoJdbs.class)
@@ -45,7 +45,7 @@ public class BookDaoJdbcTest {
     @Test
     void shouldUpdateIfIdExist() {
         final var initBook = bookDao.getById(EXISTED_ID).get();
-        final var updatedBook = new Book(initBook.getId(), initBook.getTitle() + "_modify", initBook.getAuthorId());
+        final var updatedBook = new BookDto(initBook.getId(), initBook.getTitle() + "_modify", initBook.getAuthorId());
 
         assertThatCode(() -> bookDao.updateBook(updatedBook)).doesNotThrowAnyException();
 
@@ -55,7 +55,7 @@ public class BookDaoJdbcTest {
 
     @Test
     void shouldThrowExceptionWhenUpdateNotExistedId() {
-        final var updatedBook = new Book(NOT_EXISTED_ID, "title", EXISTED_AUTHOR_ID);
+        final var updatedBook = new BookDto(NOT_EXISTED_ID, "title", EXISTED_AUTHOR_ID);
         assertThatCode(() -> bookDao.updateBook(updatedBook)).isInstanceOf(DaoException.class);
         assertThat(bookDao.getAll().size()).isEqualTo(BOOK_COUNT);
     }
@@ -63,7 +63,7 @@ public class BookDaoJdbcTest {
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
     @Test
     void shouldInsertBook() {
-        final var newBook = new Book("new title", EXISTED_AUTHOR_ID);
+        final var newBook = new BookDto("new title", EXISTED_AUTHOR_ID);
 
         final var id = bookDao.insertBook(newBook);
 
@@ -74,7 +74,7 @@ public class BookDaoJdbcTest {
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
     @Test
     void insertOrUpdateShouldInsertNewBook() {
-        final var newBook = new Book(NOT_EXISTED_ID, "new book", EXISTED_AUTHOR_ID);
+        final var newBook = new BookDto(NOT_EXISTED_ID, "new book", EXISTED_AUTHOR_ID);
 
         bookDao.insertOrUpdate(newBook);
 
@@ -87,7 +87,7 @@ public class BookDaoJdbcTest {
     @Test
     void insertOrUpdateShouldUpdateExistedBook() {
         final var existedBook = bookDao.getById(EXISTED_ID).get();
-        final var updatedBook = new Book(existedBook.getId(), existedBook.getTitle() + "_modify", existedBook.getAuthorId());
+        final var updatedBook = new BookDto(existedBook.getId(), existedBook.getTitle() + "_modify", existedBook.getAuthorId());
 
         bookDao.insertOrUpdate(updatedBook);
 

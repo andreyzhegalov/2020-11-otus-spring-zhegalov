@@ -13,7 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.dto.BookDto;
 
 @RequiredArgsConstructor
 @Component
@@ -26,18 +26,18 @@ public class BookDaoJdbs implements BookDao {
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
     @Override
-    public List<Book> getAll() {
+    public List<BookDto> getAll() {
         return namedParameterJdbcOperations.query(SELECT_ALL_QUERY, new BookMapper());
     }
 
     @Override
-    public Optional<Book> getById(long id) {
+    public Optional<BookDto> getById(long id) {
         final var result = namedParameterJdbcOperations.query(SELECT_BY_ID, Map.of("id", id), new BookMapper());
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     @Override
-    public long insertBook(Book book) {
+    public long insertBook(BookDto book) {
         final var keyHolder = new GeneratedKeyHolder();
         final var namedParameters = new MapSqlParameterSource().addValue("title", book.getTitle()).addValue("author_id", book.getAuthorId());
         final var result = namedParameterJdbcOperations.update(INSERT_QUERY, namedParameters, keyHolder);
@@ -48,7 +48,7 @@ public class BookDaoJdbs implements BookDao {
     }
 
     @Override
-    public void updateBook(Book book) {
+    public void updateBook(BookDto book) {
         final var namedParameters = new MapSqlParameterSource().addValue("id", book.getId()).addValue("title",
                 book.getTitle()).addValue("author_id", book.getAuthorId());
         final var result = namedParameterJdbcOperations.update(UPDATE_QUERY, namedParameters);
@@ -58,7 +58,7 @@ public class BookDaoJdbs implements BookDao {
     }
 
     @Override
-    public void insertOrUpdate(Book book) {
+    public void insertOrUpdate(BookDto book) {
         final var bookFromDb = getById(book.getId());
         if (bookFromDb.isEmpty()) {
             insertBook(book);
@@ -76,13 +76,13 @@ public class BookDaoJdbs implements BookDao {
         }
     }
 
-    private static class BookMapper implements RowMapper<Book> {
+    private static class BookMapper implements RowMapper<BookDto> {
         @Override
-        public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
+        public BookDto mapRow(ResultSet rs, int rowNum) throws SQLException {
             final long id = rs.getLong("id");
             final String title = rs.getNString("title");
             final long authorId = rs.getLong("author_id");
-            return new Book(id, title, authorId);
+            return new BookDto(id, title, authorId);
         }
     }
 

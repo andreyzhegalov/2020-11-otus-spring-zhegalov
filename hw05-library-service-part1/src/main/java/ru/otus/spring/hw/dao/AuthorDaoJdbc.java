@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.model.Author;
+import ru.otus.spring.hw.model.dto.AuthorDto;
 
 @RequiredArgsConstructor
 public class AuthorDaoJdbc implements AuthorDao {
@@ -24,18 +24,18 @@ public class AuthorDaoJdbc implements AuthorDao {
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
     @Override
-    public Optional<Author> getById(long id) {
+    public Optional<AuthorDto> getById(long id) {
         final var result = namedParameterJdbcOperations.query(SELECT_BY_ID, Map.of("id", id), new AuthorMapper());
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     @Override
-    public List<Author> getAll() {
+    public List<AuthorDto> getAll() {
         return namedParameterJdbcOperations.query(SELECT_ALL_QUERY, new AuthorMapper());
     }
 
     @Override
-    public long insertAuthor(Author author) {
+    public long insertAuthor(AuthorDto author) {
         final var keyHolder = new GeneratedKeyHolder();
         final var namedParameters = new MapSqlParameterSource().addValue("name", author.getName());
         final var result = namedParameterJdbcOperations.update(INSERT_QUERY, namedParameters, keyHolder);
@@ -46,7 +46,7 @@ public class AuthorDaoJdbc implements AuthorDao {
     }
 
     @Override
-    public void updateAuthor(Author author) {
+    public void updateAuthor(AuthorDto author) {
         final var namedParameters = new MapSqlParameterSource().addValue("id", author.getId()).addValue("name",
                 author.getName());
         final var result = namedParameterJdbcOperations.update(UPDATE_QUERY, namedParameters);
@@ -56,7 +56,7 @@ public class AuthorDaoJdbc implements AuthorDao {
     }
 
     @Override
-    public void insertOrUpdate(Author author) {
+    public void insertOrUpdate(AuthorDto author) {
         final var authorFromDb = getById(author.getId());
         if (authorFromDb.isEmpty()) {
             insertAuthor(author);
@@ -74,12 +74,12 @@ public class AuthorDaoJdbc implements AuthorDao {
         }
     }
 
-    private static class AuthorMapper implements RowMapper<Author> {
+    private static class AuthorMapper implements RowMapper<AuthorDto> {
         @Override
-        public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
+        public AuthorDto mapRow(ResultSet rs, int rowNum) throws SQLException {
             final long id = rs.getLong("id");
             final String name = rs.getNString("name");
-            return new Author(id, name);
+            return new AuthorDto(id, name);
         }
     }
 }
