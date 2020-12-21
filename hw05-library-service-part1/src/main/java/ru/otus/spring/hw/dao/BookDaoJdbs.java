@@ -19,6 +19,8 @@ import ru.otus.spring.hw.model.Book;
 @RequiredArgsConstructor
 @Component
 public class BookDaoJdbs implements BookDao {
+    private final static String SELECT_BY_ID = "select id,title from books where id=:id";
+    private final static String SELECT_ALL_QUERY = "select id, title from books";
     private final static String INSERT_QUERY = "insert into books (title) values (:title)";
     private final static String UPDATE_QUERY = "update books set title=:title where id=:id";
     private final static String DELETE_QUERY = "delete from books where id=:id";
@@ -26,29 +28,18 @@ public class BookDaoJdbs implements BookDao {
 
     @Override
     public List<Book> getAll() {
-        return namedParameterJdbcOperations.query("select id, title from books", new BookMapper());
+        return namedParameterJdbcOperations.query(SELECT_ALL_QUERY, new BookMapper());
     }
 
     @Override
     public Optional<Book> getById(long id) {
-        final var result = namedParameterJdbcOperations.query("select id,title from books where id=:id ",
-                Map.of("id", id), new BookMapper());
+        final var result = namedParameterJdbcOperations.query(SELECT_BY_ID, Map.of("id", id), new BookMapper());
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
-    }
-
-    private static class BookMapper implements RowMapper<Book> {
-
-        @Override
-        public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
-            final long id = rs.getLong("id");
-            final String title = rs.getNString("title");
-            return new Book(id, title);
-        }
     }
 
     @Override
     public long insertBook(Book book) {
-        final KeyHolder keyHolder = new GeneratedKeyHolder();
+        final var keyHolder = new GeneratedKeyHolder();
         final var namedParameters = new MapSqlParameterSource().addValue("title", book.getTitle());
         final var result = namedParameterJdbcOperations.update(INSERT_QUERY, namedParameters, keyHolder);
         if (result == 0) {
@@ -83,6 +74,15 @@ public class BookDaoJdbs implements BookDao {
         final var result = namedParameterJdbcOperations.update(DELETE_QUERY, namedParameters);
         if (result == 0) {
             throw new DaoException(String.format("Book with id %d was not deleted", id));
+        }
+    }
+
+    private static class BookMapper implements RowMapper<Book> {
+        @Override
+        public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
+            final long id = rs.getLong("id");
+            final String title = rs.getNString("title");
+            return new Book(id, title);
         }
     }
 
