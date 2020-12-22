@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.service;
+package ru.otus.spring.hw.service.io;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -15,33 +15,36 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.model.Author;
+import ru.otus.spring.hw.model.Genre;
+import ru.otus.spring.hw.service.io.IOGenreService;
+import ru.otus.spring.hw.service.io.IOModelService;
+import ru.otus.spring.hw.service.io.IOService;
 
 @SpringBootTest
-public class IOAuthorServiceTest {
-    @Import(IOAuthorService.class)
+public class IOGenreServiceTest {
+    @Import(IOGenreService.class)
     @Configuration
-    public static class IOAuthorServiceTestInner {
+    public static class IOGenreServiceTestInner {
     }
 
     @Autowired
-    private IOModelService<Author> ioAuthorService;
+    private IOModelService<Genre> ioGenreService;
 
     @MockBean
     private IOService ioService;
 
     @Test
-    void printAuthorShouldPrintViaIOService() {
-        final var author1 = new Author(1L, "author");
-        final var author2 = new Author(2L, "author");
+    void printGenreShouldPrintViaIOService() {
+        final var genre1 = new Genre(1L, "genre");
+        final var genre2 = new Genre(2L, "genre");
 
-        ioAuthorService.print(List.of(author1, author2));
+        ioGenreService.print(List.of(genre1, genre2));
         then(ioService).should(atLeastOnce()).print(anyString());
         then(ioService).should(never()).read();
     }
 
     @Test
-    void shouldReadAuthorFromIOService() {
-        assertThatCode(() -> ioAuthorService.get()).isInstanceOf(UnsupportedOperationException.class);
+    void shouldReadGenreFromIOService() {
+        assertThatCode(() -> ioGenreService.get()).isInstanceOf(UnsupportedOperationException.class);
     }
 }

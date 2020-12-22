@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.service;
+package ru.otus.spring.hw.service.io;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import ru.otus.spring.hw.model.Genre;
 
 @RequiredArgsConstructor
 @Service
-public class IOBookServiceImpl implements IOModelService<Book> {
+public class IOBookService implements IOModelService<Book> {
     private static final String GET_TITLE_MESSAGE = "Введите название книги:";
     private static final String GET_AUTHOR_ID = "Введите идентификатор автора:";
     private static final String GET_GENRE_ID = "Введите идентификатор жанра:";

@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.service;
+package ru.otus.spring.hw.service.io;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -20,8 +20,8 @@ import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
 
 @SpringBootTest
-public class IOBookServiceImplTest {
-    @Import(IOBookServiceImpl.class)
+public class IOBookServiceTest {
+    @Import(IOBookService.class)
     @Configuration
     public static class IOBookServiceTestInner {
     }

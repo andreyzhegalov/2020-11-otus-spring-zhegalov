@@ -15,7 +15,7 @@ import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.service.BookService;
-import ru.otus.spring.hw.service.IOModelService;
+import ru.otus.spring.hw.service.io.IOModelService;
 
 @SpringBootTest
 class ApplicationCommandsTest {
@@ -35,7 +35,6 @@ class ApplicationCommandsTest {
     @MockBean
     private AuthorDao authorDao;
 
-
     @MockBean
     private IOModelService<Genre> ioGenreService;
 
@@ -44,7 +43,7 @@ class ApplicationCommandsTest {
 
     @Test
     void printShouldPrintAllBooks() {
-        shell.evaluate(() -> "p");
+        shell.evaluate(() -> "pb");
         then(bookService).should().getAllBooks();
         then(ioBookService).should().print(any());
     }

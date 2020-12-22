@@ -10,7 +10,7 @@ import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.service.BookService;
-import ru.otus.spring.hw.service.IOModelService;
+import ru.otus.spring.hw.service.io.IOModelService;
 
 @RequiredArgsConstructor
 @ShellComponent
@@ -22,7 +22,7 @@ public class ApplicationCommands {
     private final IOModelService<Genre> ioGenreService;
     private final IOModelService<Author> ioAuthorService;
 
-    @ShellMethod(value = "Print all books", key = { "p", "print-books" })
+    @ShellMethod(value = "Print all books", key = { "pb", "print-books" })
     public void printAllBooks() {
         final var books = bookService.getAllBooks();
         ioBookService.print(books);
