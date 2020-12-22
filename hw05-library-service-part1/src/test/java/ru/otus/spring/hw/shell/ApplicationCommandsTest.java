@@ -9,6 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.shell.Shell;
 
+import ru.otus.spring.hw.dao.AuthorDao;
+import ru.otus.spring.hw.dao.GenreDao;
+import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.service.BookService;
@@ -27,7 +30,17 @@ class ApplicationCommandsTest {
     private IOModelService<Book> ioBookService;
 
     @MockBean
+    private GenreDao genreDao;
+
+    @MockBean
+    private AuthorDao authorDao;
+
+
+    @MockBean
     private IOModelService<Genre> ioGenreService;
+
+    @MockBean
+    private IOModelService<Author> ioAuthorService;
 
     @Test
     void printShouldPrintAllBooks() {
@@ -46,6 +59,14 @@ class ApplicationCommandsTest {
     @Test
     void shouldPrintAllGenre() {
         shell.evaluate(() -> "pg");
+        then(genreDao).should().getAll();
         then(ioGenreService).should().print(any());
+    }
+
+    @Test
+    void shouldPrintAllAuthors() {
+        shell.evaluate(() -> "pa");
+        then(authorDao).should().getAll();
+        then(ioAuthorService).should().print(any());
     }
 }
