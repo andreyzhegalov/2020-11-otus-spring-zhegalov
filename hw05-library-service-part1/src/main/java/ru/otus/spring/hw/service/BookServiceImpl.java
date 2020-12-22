@@ -9,9 +9,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dao.AuthorDao;
 import ru.otus.spring.hw.dao.BookDao;
+import ru.otus.spring.hw.dao.dto.BookDto;
 import ru.otus.spring.hw.model.Book;
-import ru.otus.spring.hw.model.Converters;
-import ru.otus.spring.hw.model.dto.BookDto;
 
 @RequiredArgsConstructor
 @Service
@@ -46,7 +45,7 @@ public class BookServiceImpl implements BookService {
         if (author.isEmpty()) {
             throw new ServiceException(String.format("Author with id = %d not existed", bookDto.getAuthorId()));
         }
-        return Converters.convert(bookDto, author.get());
+        return new Book(bookDto.getId(), bookDto.getTitle(), author.get());
     }
 
 }

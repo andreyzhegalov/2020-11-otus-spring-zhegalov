@@ -13,7 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.model.dto.BookDto;
+import ru.otus.spring.hw.dao.dto.BookDto;
 
 @RequiredArgsConstructor
 @Component

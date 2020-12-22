@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.model.dto;
+package ru.otus.spring.hw.dao.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

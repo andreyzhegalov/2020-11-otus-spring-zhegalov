@@ -3,7 +3,7 @@ package ru.otus.spring.hw.dao;
 import java.util.List;
 import java.util.Optional;
 
-import ru.otus.spring.hw.model.dto.BookDto;
+import ru.otus.spring.hw.dao.dto.BookDto;
 
 
 public interface BookDao {

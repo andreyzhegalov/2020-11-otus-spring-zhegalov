@@ -20,7 +20,7 @@ import ru.otus.spring.hw.dao.AuthorDao;
 import ru.otus.spring.hw.dao.BookDao;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
-import ru.otus.spring.hw.model.dto.BookDto;
+import ru.otus.spring.hw.dao.dto.BookDto;
 
 @SpringBootTest
 public class BookServiceTest {

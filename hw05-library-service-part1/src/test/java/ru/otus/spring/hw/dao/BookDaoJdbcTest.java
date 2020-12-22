@@ -12,7 +12,7 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.otus.spring.hw.model.dto.BookDto;
+import ru.otus.spring.hw.dao.dto.BookDto;
 
 @JdbcTest
 @Import(BookDaoJdbs.class)
