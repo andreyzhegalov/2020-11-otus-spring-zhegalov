@@ -15,8 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import ru.otus.spring.hw.io.ScannerInputStream;
-import ru.otus.spring.hw.service.io.IOService;
-import ru.otus.spring.hw.service.io.IOServiceConsole;
 
 @SpringBootTest
 class IOServiceConsoleTest {

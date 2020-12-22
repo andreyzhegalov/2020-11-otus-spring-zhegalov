@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.shell;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.then;
 
 import org.junit.jupiter.api.Test;
@@ -67,5 +68,11 @@ class ApplicationCommandsTest {
         shell.evaluate(() -> "pa");
         then(authorDao).should().getAll();
         then(ioAuthorService).should().print(any());
+    }
+
+    @Test
+    void shouldDeleteBook() {
+        shell.evaluate(() -> "bd 1");
+        then(bookService).should().deleteBook(anyLong());
     }
 }

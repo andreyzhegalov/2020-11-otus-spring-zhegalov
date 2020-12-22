@@ -13,4 +13,8 @@ public interface BookService {
 
     List<Book> getAllBooks();
 
+    void deleteBook(long id);
+
+    void updateBook(Book book);
+
 }

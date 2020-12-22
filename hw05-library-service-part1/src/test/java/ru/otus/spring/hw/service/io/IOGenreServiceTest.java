@@ -16,9 +16,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import ru.otus.spring.hw.model.Genre;
-import ru.otus.spring.hw.service.io.IOGenreService;
-import ru.otus.spring.hw.service.io.IOModelService;
-import ru.otus.spring.hw.service.io.IOService;
 
 @SpringBootTest
 public class IOGenreServiceTest {

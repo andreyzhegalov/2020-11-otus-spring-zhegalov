@@ -2,6 +2,7 @@ package ru.otus.spring.hw.shell;
 
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellOption;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dao.AuthorDao;
@@ -32,6 +33,11 @@ public class ApplicationCommands {
     public void addBook() {
         final var book = ioBookService.get();
         bookService.saveBook(book);
+    }
+
+    @ShellMethod(value = "Delete book", key = { "bd", "delete-book" })
+    public void deleteBook(@ShellOption long id) {
+        bookService.deleteBook(id);
     }
 
     @ShellMethod(value = "Print all genres", key = { "pg", "print-genres" })

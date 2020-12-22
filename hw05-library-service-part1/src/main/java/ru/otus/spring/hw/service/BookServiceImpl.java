@@ -47,6 +47,11 @@ public class BookServiceImpl implements BookService {
 
     }
 
+    @Override
+    public void deleteBook(long id) {
+        bookDao.deleteBook(id);
+    }
+
     private Author getAuthor(long id) {
         final var author = authorDao.getById(id);
         if (author.isEmpty()) {
@@ -69,4 +74,11 @@ public class BookServiceImpl implements BookService {
         return new Book(bookDto.getId(), bookDto.getTitle(), author, genre);
     }
 
+    @Override
+    public void updateBook(Book book) {
+        final var author = getAuthor(book.getAuthor().getId());
+        final var genre = getGenre(book.getGenre().getId());
+        final var bookDto = new BookDto(book.getId(), book.getTitle(), author.getId(), genre.getId());
+        bookDao.updateBook(bookDto);
+    }
 }

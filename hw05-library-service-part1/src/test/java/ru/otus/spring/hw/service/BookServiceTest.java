@@ -125,4 +125,24 @@ public class BookServiceTest {
         then(bookDao).should(atMostOnce()).getById(anyLong());
         then(authorDao).should(atMostOnce()).getById(anyLong());
     }
+
+    @Test
+    void shouldDeleteBook() {
+        final var id = 1L;
+        bookService.deleteBook(id);
+        then(bookDao).should().deleteBook(id);
+    }
+
+    @Test
+    void shouldUpdateBook() {
+        final var author = new Author(1L, "name");
+        final var genre = new Genre(2L, "genre");
+        final var book = new Book(1L, "title", author, genre);
+        given(authorDao.getById(author.getId())).willReturn(Optional.of(author));
+        given(genreDao.getById(genre.getId())).willReturn(Optional.of(genre));
+
+        bookService.updateBook(book);
+
+        then(bookDao).should().updateBook(any());
+    }
 }
