@@ -21,8 +21,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void saveBook(Book book) {
-        authorDao.insertOrUpdate(book.getAuthor());
-        bookDao.insertOrUpdate(Converters.convert(book));
+        final var authorId = authorDao.insertOrUpdate(book.getAuthor());
+        final var bookDto = new BookDto(book.getId(), book.getTitle(), authorId);
+        bookDao.insertOrUpdate(bookDto);
     }
 
     @Override

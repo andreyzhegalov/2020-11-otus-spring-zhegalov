@@ -1,6 +1,6 @@
 logging:
   level:
-    ROOT: OFF
+    ROOT: INFO
 
 flyway:
   enabled: true

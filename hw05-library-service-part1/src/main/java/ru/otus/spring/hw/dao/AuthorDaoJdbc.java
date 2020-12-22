@@ -10,11 +10,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.model.Author;
 
 @RequiredArgsConstructor
+@Component
 public class AuthorDaoJdbc implements AuthorDao {
     private final static String SELECT_BY_ID = "select id,name from authors where id=:id";
     private final static String SELECT_ALL_QUERY = "select id, name from authors";
@@ -40,7 +42,7 @@ public class AuthorDaoJdbc implements AuthorDao {
         final var namedParameters = new MapSqlParameterSource().addValue("name", author.getName());
         final var result = namedParameterJdbcOperations.update(INSERT_QUERY, namedParameters, keyHolder);
         if (result == 0) {
-            throw new DaoException("Author not added");
+            throw new DaoException(String.format("Author %s was not added", author));
         }
         return (long) keyHolder.getKey();
     }
@@ -56,12 +58,13 @@ public class AuthorDaoJdbc implements AuthorDao {
     }
 
     @Override
-    public void insertOrUpdate(Author author) {
+    public long insertOrUpdate(Author author) {
         final var authorFromDb = getById(author.getId());
         if (authorFromDb.isEmpty()) {
-            insertAuthor(author);
+            return insertAuthor(author);
         } else {
             updateAuthor(author);
+            return author.getId();
         }
     }
 

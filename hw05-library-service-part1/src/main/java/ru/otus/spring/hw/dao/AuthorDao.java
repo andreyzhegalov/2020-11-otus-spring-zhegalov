@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import ru.otus.spring.hw.model.Author;
 
-
 public interface AuthorDao {
 
     Optional<Author> getById(long id);
@@ -16,7 +15,7 @@ public interface AuthorDao {
 
     void updateAuthor(Author author);
 
-    void insertOrUpdate(Author author);
+    long insertOrUpdate(Author author);
 
     void deleteAuthor(long id);
 
