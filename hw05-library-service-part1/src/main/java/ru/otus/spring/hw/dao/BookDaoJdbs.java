@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.RowMapper;
@@ -38,22 +39,19 @@ public class BookDaoJdbs implements BookDao {
 
     @Override
     public long insertBook(BookDto book) {
+        final var mapSqlParameter = new MapSqlParameterSource().addValues(makeParameterMap(book));
         final var keyHolder = new GeneratedKeyHolder();
-        final var namedParameters = new MapSqlParameterSource().addValue("title", book.getTitle())
-                .addValue("author_id", book.getAuthorId()).addValue("genre_id", book.getGenreId());
-        final var result = namedParameterJdbcOperations.update(INSERT_QUERY, namedParameters, keyHolder);
+        final var result = namedParameterJdbcOperations.update(INSERT_QUERY, mapSqlParameter, keyHolder);
         if (result == 0) {
             throw new DaoException("Book not added");
         }
-        return (long) keyHolder.getKey();
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     @Override
     public void updateBook(BookDto book) {
-        final var namedParameters = new MapSqlParameterSource().addValue("id", book.getId())
-                .addValue("title", book.getTitle()).addValue("author_id", book.getAuthorId())
-                .addValue("genre_id", book.getGenreId());
-        final var result = namedParameterJdbcOperations.update(UPDATE_QUERY, namedParameters);
+        final var mapSqlParameter = new MapSqlParameterSource().addValues(makeParameterMap(book));
+        final var result = namedParameterJdbcOperations.update(UPDATE_QUERY, mapSqlParameter);
         if (result == 0) {
             throw new DaoException("No book found with id " + book.getId());
         }
@@ -89,8 +87,8 @@ public class BookDaoJdbs implements BookDao {
         }
     }
 
-    private final Map<String, Object> makeMapSqlParametrs(BookDto book) {
-        return Map.of("title", book.getTitle(), "author_id", book.getAuthorId());
+    private final Map<String, Object> makeParameterMap(BookDto book) {
+        return Map.of("id", book.getId(), "title", book.getTitle(), "author_id", book.getAuthorId(), "genre_id",
+                book.getGenreId());
     }
-
 }

@@ -8,12 +8,12 @@ import lombok.ToString;
 @ToString
 public class Genre {
     @Getter
-    private long id;
+    private final long id;
     @Getter
-    private String name;
+    private final String name;
 
     public Genre(String name) {
-        this.id = 0;
+        this.id = 0L;
         this.name = name;
     }
 

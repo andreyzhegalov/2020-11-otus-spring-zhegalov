@@ -3,9 +3,11 @@ package ru.otus.spring.hw.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.atMostOnce;
 
 import java.util.Optional;
 
@@ -50,6 +52,7 @@ public class BookServiceTest {
         final var genre = new Genre("genre");
         bookService.saveBook(new Book(1L, "title", author, genre));
         then(authorDao).should().insertOrUpdate(eq(author));
+        then(genreDao).should().insertOrUpdate(eq(genre));
         then(bookDao).should().insertOrUpdate(any());
     }
 
@@ -61,6 +64,7 @@ public class BookServiceTest {
         assertThat(bookService.getBook(id)).isEmpty();
 
         then(authorDao).shouldHaveNoInteractions();
+        then(genreDao).shouldHaveNoInteractions();
     }
 
     @Test
@@ -75,6 +79,7 @@ public class BookServiceTest {
 
         then(bookDao).should().getById(id);
         then(authorDao).should().getById(authorId);
+        then(genreDao).shouldHaveNoInteractions();
     }
 
     @Test
@@ -90,6 +95,7 @@ public class BookServiceTest {
 
         then(bookDao).should().getById(id);
         then(authorDao).should().getById(authorId);
+        then(genreDao).should().getById(genreId);
     }
 
     @Test
@@ -101,7 +107,8 @@ public class BookServiceTest {
         given(authorDao.getById(authorId)).willReturn(Optional.of(new Author(authorId, "name")));
         given(genreDao.getById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));
 
-        assertThat(bookService.getBook(id)).isPresent();
+        final var book = bookService.getBook(id);
+        assertThat(book).isPresent();
 
         then(bookDao).should().getById(id);
         then(authorDao).should().getById(authorId);
@@ -112,5 +119,7 @@ public class BookServiceTest {
         bookService.getAllBooks();
 
         then(bookDao).should().getAll();
+        then(bookDao).should(atMostOnce()).getById(anyLong());
+        then(authorDao).should(atMostOnce()).getById(anyLong());
     }
 }

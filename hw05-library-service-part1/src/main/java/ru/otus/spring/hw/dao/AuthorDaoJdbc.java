@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.RowMapper;
@@ -44,7 +45,7 @@ public class AuthorDaoJdbc implements AuthorDao {
         if (result == 0) {
             throw new DaoException(String.format("Author %s was not added", author));
         }
-        return (long) keyHolder.getKey();
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     @Override

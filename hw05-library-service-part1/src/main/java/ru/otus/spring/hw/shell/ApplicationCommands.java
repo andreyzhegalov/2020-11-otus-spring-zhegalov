@@ -11,17 +11,17 @@ import ru.otus.spring.hw.service.IOBookService;
 @ShellComponent
 public class ApplicationCommands {
     private final BookService bookService;
-    private final IOBookService ioBoolService;
+    private final IOBookService ioBookService;
 
     @ShellMethod(value = "Print all books", key = { "p", "print-books" })
     public void printAllBooks() {
         final var books = bookService.getAllBooks();
-        ioBoolService.printBooks(books);
+        ioBookService.printBooks(books);
     }
 
     @ShellMethod(value = "Add new book", key = { "a", "add-book" })
     public void addBook() {
-        final var book = ioBoolService.getBook();
+        final var book = ioBookService.getBook();
         bookService.saveBook(book);
     }
 }

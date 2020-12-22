@@ -12,13 +12,14 @@ public class Author {
     @Getter
     private final String name;
 
+    public Author(String name) {
+        this.id = 0L;
+        this.name = name;
+    }
+
     public Author(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Author(String name) {
-        this.id = 0;
-        this.name = name;
-    }
 }
