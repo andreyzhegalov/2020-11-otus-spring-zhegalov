@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atMostOnce;
@@ -48,11 +47,15 @@ public class BookServiceTest {
 
     @Test
     void saveBookTest() {
-        final var author = new Author("name");
-        final var genre = new Genre("genre");
-        bookService.saveBook(new Book(1L, "title", author, genre));
-        then(authorDao).should().insertOrUpdate(eq(author));
-        then(genreDao).should().insertOrUpdate(eq(genre));
+        final var author = new Author(1L, "name");
+        final var genre = new Genre(2L, "genre");
+        given(authorDao.getById(author.getId())).willReturn(Optional.of(author));
+        given(genreDao.getById(genre.getId())).willReturn(Optional.of(genre));
+
+        bookService.saveBook(new Book(3L, "title", author, genre));
+
+        then(authorDao).should().getById(author.getId());
+        then(genreDao).should().getById(genre.getId());
         then(bookDao).should().insertOrUpdate(any());
     }
 

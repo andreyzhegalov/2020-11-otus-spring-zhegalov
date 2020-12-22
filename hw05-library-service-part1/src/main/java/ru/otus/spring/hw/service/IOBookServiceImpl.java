@@ -11,28 +11,28 @@ import ru.otus.spring.hw.model.Genre;
 
 @RequiredArgsConstructor
 @Service
-public class IOBookServiceImpl implements IOBookService {
+public class IOBookServiceImpl implements IOModelService<Book> {
     private static final String GET_TITLE_MESSAGE = "Введите название книги:";
-    private static final String GET_AUTHOR = "Введите автора:";
-    private static final String GET_GENRE = "Введите жанр:";
+    private static final String GET_AUTHOR_ID = "Введите идентификатор автора:";
+    private static final String GET_GENRE_ID = "Введите идентификатор жанра:";
     private final IOService ioService;
 
     @Override
-    public void printBooks(List<Book> books) {
+    public void print(List<Book> books) {
         books.forEach(b -> ioService.print(b.toString()));
     }
 
     @Override
-    public Book getBook() {
+    public Book get() {
         ioService.print(GET_TITLE_MESSAGE);
         final var bookTitle = ioService.read();
-        ioService.print(GET_AUTHOR);
-        final var authorName = ioService.read();
-        final var author = new Author(authorName);
-        ioService.print(GET_GENRE);
-        final var genreName = ioService.read();
-        final var genre = new Genre(genreName);
-        return new Book(0L, bookTitle, author, genre);
+        ioService.print(GET_AUTHOR_ID);
+        final var authorId = Long.valueOf(ioService.read());
+        final var author = new Author(authorId, "");
+        ioService.print(GET_GENRE_ID);
+        final var genreId = Long.valueOf(ioService.read());
+        final var genre = new Genre(genreId, "");
+        return new Book(bookTitle, author, genre);
     }
 
 }

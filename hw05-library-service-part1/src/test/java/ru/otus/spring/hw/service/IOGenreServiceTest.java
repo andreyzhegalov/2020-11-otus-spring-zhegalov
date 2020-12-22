@@ -1,7 +1,7 @@
 package ru.otus.spring.hw.service;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -15,40 +15,33 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
 
 @SpringBootTest
-public class IOBookServiceImplTest {
-    @Import(IOBookServiceImpl.class)
+public class IOGenreServiceTest {
+    @Import(IOGenreService.class)
     @Configuration
-    public static class IOBookServiceTestInner {
+    public static class IOGenreServiceTestInner {
     }
 
     @Autowired
-    private IOModelService<Book> ioBookService;
+    private IOModelService<Genre> ioGenreService;
 
     @MockBean
     private IOService ioService;
 
     @Test
-    void printBooksShouldPrintViaIOService() {
-        final var book1 = new Book(1L, "title", new Author(1L, "name"), new Genre(1L, "genre"));
-        final var book2 = new Book(2L, "title", new Author(2L, "name"), new Genre(2L, "genre"));
+    void printGenreShouldPrintViaIOService() {
+        final var genre1 = new Genre(1L, "genre");
+        final var genre2 = new Genre(2L, "genre");
 
-        ioBookService.print(List.of(book1, book2));
+        ioGenreService.print(List.of(genre1, genre2));
         then(ioService).should(atLeastOnce()).print(anyString());
         then(ioService).should(never()).read();
     }
 
     @Test
-    void shouldReadBookFromIOService() {
-        given(ioService.read()).willReturn("title").willReturn("1").willReturn("1");
-        ioBookService.get();
-
-        then(ioService).should(atLeastOnce()).print(anyString());
-        then(ioService).should(atLeastOnce()).read();
+    void shouldReadGenreFromIOService() {
+        assertThatCode(() -> ioGenreService.get()).isInstanceOf(UnsupportedOperationException.class);
     }
-
 }

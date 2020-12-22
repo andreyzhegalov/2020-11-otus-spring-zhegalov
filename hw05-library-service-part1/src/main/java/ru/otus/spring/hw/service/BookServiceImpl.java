@@ -11,7 +11,9 @@ import ru.otus.spring.hw.dao.AuthorDao;
 import ru.otus.spring.hw.dao.BookDao;
 import ru.otus.spring.hw.dao.GenreDao;
 import ru.otus.spring.hw.dao.dto.BookDto;
+import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.Genre;
 
 @RequiredArgsConstructor
 @Service
@@ -22,9 +24,11 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void saveBook(Book book) {
-        final var authorId = authorDao.insertOrUpdate(book.getAuthor());
-        final var genreId = genreDao.insertOrUpdate(book.getGenre());
-        final var bookDto = new BookDto(book.getId(), book.getTitle(), authorId, genreId);
+        final var authorId = book.getAuthor().getId();
+        final var author = getAuthor(authorId);
+        final var genreId = book.getGenre().getId();
+        final var genre = getGenre(genreId);
+        final var bookDto = new BookDto(book.getId(), book.getTitle(), author.getId(), genre.getId());
         bookDao.insertOrUpdate(bookDto);
     }
 
@@ -43,16 +47,26 @@ public class BookServiceImpl implements BookService {
 
     }
 
-    private Book getBook(BookDto bookDto) {
-        final var author = authorDao.getById(bookDto.getAuthorId());
+    private Author getAuthor(long id) {
+        final var author = authorDao.getById(id);
         if (author.isEmpty()) {
-            throw new ServiceException(String.format("Author with id = %d not existed", bookDto.getAuthorId()));
+            throw new ServiceException(String.format("Author with id = %d not existed", id));
         }
-        final var genre = genreDao.getById(bookDto.getGenreId());
+        return author.get();
+    }
+
+    private Genre getGenre(long id) {
+        final var genre = genreDao.getById(id);
         if (genre.isEmpty()) {
-            throw new ServiceException(String.format("Genre with id = %d not existed", bookDto.getGenreId()));
+            throw new ServiceException(String.format("Genre with id = %d not existed", id));
         }
-        return new Book(bookDto.getId(), bookDto.getTitle(), author.get(), genre.get());
+        return genre.get();
+    }
+
+    private Book getBook(BookDto bookDto) {
+        final var author = getAuthor(bookDto.getAuthorId());
+        final var genre = getGenre(bookDto.getGenreId());
+        return new Book(bookDto.getId(), bookDto.getTitle(), author, genre);
     }
 
 }
