@@ -82,4 +82,11 @@ public class BookServiceTest {
         then(bookDao).should().getById(id);
         then(authorDao).should().getById(authorId);
     }
+
+    @Test
+    void shouldReturnListOfBooks() {
+        bookService.getAllBooks();
+
+        then(bookDao).should().getAll();
+    }
 }
