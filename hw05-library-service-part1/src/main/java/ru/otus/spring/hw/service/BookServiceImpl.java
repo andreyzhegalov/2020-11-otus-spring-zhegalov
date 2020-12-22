@@ -36,7 +36,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getAllBooks() {
-        return bookDao.getAll().stream().map(b -> getBook(b)).collect(Collectors.toList());
+        return bookDao.getAll().stream().map(this::getBook).collect(Collectors.toList());
 
     }
 
