@@ -15,5 +15,6 @@ public class Book {
     private final String title;
     @Getter
     private final Author author;
+    @Getter
+    private final Genre genre;
 }
-

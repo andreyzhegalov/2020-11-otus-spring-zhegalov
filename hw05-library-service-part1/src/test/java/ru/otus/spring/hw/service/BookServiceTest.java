@@ -18,9 +18,11 @@ import org.springframework.context.annotation.Import;
 
 import ru.otus.spring.hw.dao.AuthorDao;
 import ru.otus.spring.hw.dao.BookDao;
+import ru.otus.spring.hw.dao.GenreDao;
+import ru.otus.spring.hw.dao.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
-import ru.otus.spring.hw.dao.dto.BookDto;
+import ru.otus.spring.hw.model.Genre;
 
 @SpringBootTest
 public class BookServiceTest {
@@ -39,10 +41,14 @@ public class BookServiceTest {
     @MockBean
     private AuthorDao authorDao;
 
+    @MockBean
+    private GenreDao genreDao;
+
     @Test
     void saveBookTest() {
         final var author = new Author("name");
-        bookService.saveBook(new Book(1L, "title", author));
+        final var genre = new Genre("genre");
+        bookService.saveBook(new Book(1L, "title", author, genre));
         then(authorDao).should().insertOrUpdate(eq(author));
         then(bookDao).should().insertOrUpdate(any());
     }
@@ -61,8 +67,24 @@ public class BookServiceTest {
     void shouldThrowExceptionIfAuthorNotExisted() {
         final long id = 1L;
         final long authorId = 2L;
-        given(bookDao.getById(id)).willReturn(Optional.of(new BookDto(id, "title", authorId)));
+        final long genreId = 1L;
+        given(bookDao.getById(id)).willReturn(Optional.of(new BookDto(id, "title", authorId, genreId)));
         given(authorDao.getById(authorId)).willReturn(Optional.empty());
+
+        assertThatCode(() -> bookService.getBook(id)).isInstanceOf(ServiceException.class);
+
+        then(bookDao).should().getById(id);
+        then(authorDao).should().getById(authorId);
+    }
+
+    @Test
+    void shouldThrowExceptionIfGenreNotExisted() {
+        final long id = 1L;
+        final long authorId = 2L;
+        final long genreId = 1L;
+        given(bookDao.getById(id)).willReturn(Optional.of(new BookDto(id, "title", authorId, genreId)));
+        given(authorDao.getById(authorId)).willReturn(Optional.of(new Author(authorId, "name")));
+        given(genreDao.getById(genreId)).willReturn(Optional.empty());
 
         assertThatCode(() -> bookService.getBook(id)).isInstanceOf(ServiceException.class);
 
@@ -74,8 +96,10 @@ public class BookServiceTest {
     void shouldReturnBook() {
         final long id = 1L;
         final long authorId = 2L;
-        given(bookDao.getById(id)).willReturn(Optional.of(new BookDto(id, "title", authorId)));
+        final long genreId = 2L;
+        given(bookDao.getById(id)).willReturn(Optional.of(new BookDto(id, "title", authorId, genreId)));
         given(authorDao.getById(authorId)).willReturn(Optional.of(new Author(authorId, "name")));
+        given(genreDao.getById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));
 
         assertThat(bookService.getBook(id)).isPresent();
 

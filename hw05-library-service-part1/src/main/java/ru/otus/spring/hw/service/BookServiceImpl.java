@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dao.AuthorDao;
 import ru.otus.spring.hw.dao.BookDao;
+import ru.otus.spring.hw.dao.GenreDao;
 import ru.otus.spring.hw.dao.dto.BookDto;
 import ru.otus.spring.hw.model.Book;
 
@@ -17,11 +18,13 @@ import ru.otus.spring.hw.model.Book;
 public class BookServiceImpl implements BookService {
     private final BookDao bookDao;
     private final AuthorDao authorDao;
+    private final GenreDao genreDao;
 
     @Override
     public void saveBook(Book book) {
         final var authorId = authorDao.insertOrUpdate(book.getAuthor());
-        final var bookDto = new BookDto(book.getId(), book.getTitle(), authorId);
+        final var genreId = genreDao.insertOrUpdate(book.getGenre());
+        final var bookDto = new BookDto(book.getId(), book.getTitle(), authorId, genreId);
         bookDao.insertOrUpdate(bookDto);
     }
 
@@ -45,7 +48,11 @@ public class BookServiceImpl implements BookService {
         if (author.isEmpty()) {
             throw new ServiceException(String.format("Author with id = %d not existed", bookDto.getAuthorId()));
         }
-        return new Book(bookDto.getId(), bookDto.getTitle(), author.get());
+        final var genre = genreDao.getById(bookDto.getGenreId());
+        if (genre.isEmpty()) {
+            throw new ServiceException(String.format("Genre with id = %d not existed", bookDto.getGenreId()));
+        }
+        return new Book(bookDto.getId(), bookDto.getTitle(), author.get(), genre.get());
     }
 
 }
