@@ -15,8 +15,8 @@ import ru.otus.spring.hw.model.Genre;
 @JdbcTest
 @Import(GenreDaoJdbc.class)
 public class GenreDaoJdbcTest {
-    private final static long EXISTED_ID = 1L;
-    private final static long NOT_EXISTED_ID = 3L;
+    private final static long EXISTED_GENRE_ID = 1L;
+    private final static long NOT_EXISTED_GENRE_ID = 3L;
     private final static int AUTHOR_COUNT = 2;
 
     @Autowired
@@ -29,29 +29,29 @@ public class GenreDaoJdbcTest {
 
     @Test
     void shouldReturnGenreByIdForExistingGenre() {
-        assertThat(genreDao.getById(EXISTED_ID).get().getId()).isEqualTo(EXISTED_ID);
+        assertThat(genreDao.getById(EXISTED_GENRE_ID).get().getId()).isEqualTo(EXISTED_GENRE_ID);
     }
 
     @Test
     void shouldNotReturnGenreByIdForNotExistingGenre() {
-        assertThat(genreDao.getById(NOT_EXISTED_ID)).isNotPresent();
+        assertThat(genreDao.getById(NOT_EXISTED_GENRE_ID)).isNotPresent();
     }
 
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
     @Test
     void shouldUpdateIfIdExist() {
-        final var initGenre = genreDao.getById(EXISTED_ID).get();
+        final var initGenre = genreDao.getById(EXISTED_GENRE_ID).get();
         final var updatedGenre = new Genre(initGenre.getId(), initGenre.getName() + "_modify");
 
         assertThatCode(() -> genreDao.updateGenre(updatedGenre)).doesNotThrowAnyException();
 
-        assertThat(genreDao.getById(EXISTED_ID).get()).isEqualTo(updatedGenre);
+        assertThat(genreDao.getById(EXISTED_GENRE_ID).get()).isEqualTo(updatedGenre);
         assertThat(genreDao.getAll().size()).isEqualTo(AUTHOR_COUNT);
     }
 
     @Test
     void shouldThrowExceptionWhenUpdateNotExistedId() {
-        final var updatedGenre = new Genre(NOT_EXISTED_ID, "name");
+        final var updatedGenre = new Genre(NOT_EXISTED_GENRE_ID, "name");
         assertThatCode(() -> genreDao.updateGenre(updatedGenre)).isInstanceOf(DaoException.class);
         assertThat(genreDao.getAll().size()).isEqualTo(AUTHOR_COUNT);
     }
@@ -69,40 +69,16 @@ public class GenreDaoJdbcTest {
 
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
     @Test
-    void insertOrUpdateShouldInsertNewGenre() {
-        final var newGenre = new Genre(NOT_EXISTED_ID, "new genre");
-
-        genreDao.insertOrUpdate(newGenre);
-
-        assertThat(genreDao.getById(NOT_EXISTED_ID)).isPresent();
-        assertThat(genreDao.getById(NOT_EXISTED_ID).get()).isEqualTo(newGenre);
-        assertThat(genreDao.getAll().size()).isEqualTo(AUTHOR_COUNT + 1);
-    }
-
-    @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
-    @Test
-    void insertOrUpdateShouldUpdateExistedGenre() {
-        final var existedGenre = genreDao.getById(EXISTED_ID).get();
-        final var updatedGenre = new Genre(existedGenre.getId(), existedGenre.getName() + "_modify");
-
-        genreDao.insertOrUpdate(updatedGenre);
-
-        assertThat(genreDao.getById(EXISTED_ID).get()).isEqualTo(updatedGenre);
-        assertThat(genreDao.getAll().size()).isEqualTo(AUTHOR_COUNT);
-    }
-
-    @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
-    @Test
     void deletingAExistingWorkbookShouldDeleteGenre() {
-        genreDao.deleteGenre(EXISTED_ID);
+        genreDao.deleteGenre(EXISTED_GENRE_ID);
 
-        assertThat(genreDao.getById(EXISTED_ID)).isNotPresent();
+        assertThat(genreDao.getById(EXISTED_GENRE_ID)).isNotPresent();
         assertThat(genreDao.getAll().size()).isEqualTo(AUTHOR_COUNT - 1);
     }
 
     @Test
     void deletingANonExistingWorkbookShouldThrowAnException() {
-        assertThatCode(() -> genreDao.deleteGenre(NOT_EXISTED_ID)).isInstanceOf(DaoException.class);
+        assertThatCode(() -> genreDao.deleteGenre(NOT_EXISTED_GENRE_ID)).isInstanceOf(DaoException.class);
         assertThat(genreDao.getAll().size()).isEqualTo(AUTHOR_COUNT);
     }
 

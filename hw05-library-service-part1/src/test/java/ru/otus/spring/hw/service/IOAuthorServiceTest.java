@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.service.io;
+package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.anyString;

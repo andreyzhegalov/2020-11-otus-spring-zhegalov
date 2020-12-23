@@ -10,7 +10,7 @@
         <constructor-arg ref="questionDao" />
     </bean>
 
-    <bean id="ioService" class="ru.otus.spring.hw.service.io.IOServiceConsole">
+    <bean id="ioService" class="ru.otus.spring.hw.service.IOServiceConsole">
         <constructor-arg name="out" value="#{T(java.lang.System).out}" />
     </bean>
 

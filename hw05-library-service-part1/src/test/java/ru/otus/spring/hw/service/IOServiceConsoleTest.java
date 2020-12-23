@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.service.io;
+package ru.otus.spring.hw.service;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;

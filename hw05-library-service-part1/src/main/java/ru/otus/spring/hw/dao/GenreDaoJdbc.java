@@ -41,10 +41,7 @@ public class GenreDaoJdbc implements GenreDao {
     public long insertGenre(Genre genre) {
         final var keyHolder = new GeneratedKeyHolder();
         final var namedParameters = new MapSqlParameterSource().addValue("name", genre.getName());
-        final var result = namedParameterJdbcOperations.update(INSERT_QUERY, namedParameters, keyHolder);
-        if (result == 0) {
-            throw new DaoException(String.format("Genre %s was not added", genre));
-        }
+        namedParameterJdbcOperations.update(INSERT_QUERY, namedParameters, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
@@ -55,17 +52,6 @@ public class GenreDaoJdbc implements GenreDao {
         final var result = namedParameterJdbcOperations.update(UPDATE_QUERY, namedParameters);
         if (result == 0) {
             throw new DaoException("No genre found with id " + genre.getId());
-        }
-    }
-
-    @Override
-    public long insertOrUpdate(Genre genre) {
-        final var genreFromDb = getById(genre.getId());
-        if (genreFromDb.isEmpty()) {
-            return insertGenre(genre);
-        } else {
-            updateGenre(genre);
-            return genre.getId();
         }
     }
 

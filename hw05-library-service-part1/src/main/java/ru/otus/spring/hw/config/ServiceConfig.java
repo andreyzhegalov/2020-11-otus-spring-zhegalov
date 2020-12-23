@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 import ru.otus.spring.hw.io.ScannerInputStream;
 import ru.otus.spring.hw.io.ScannerInputStreamImpl;
-import ru.otus.spring.hw.service.io.IOService;
-import ru.otus.spring.hw.service.io.IOServiceConsole;
+import ru.otus.spring.hw.service.IOService;
+import ru.otus.spring.hw.service.IOServiceConsole;
 
 @Configuration
 public class ServiceConfig {

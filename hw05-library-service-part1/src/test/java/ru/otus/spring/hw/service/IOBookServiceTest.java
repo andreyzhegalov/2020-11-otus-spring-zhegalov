@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.service.io;
+package ru.otus.spring.hw.service;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -27,7 +27,7 @@ public class IOBookServiceTest {
     }
 
     @Autowired
-    private  IOBookService ioBookService;
+    private IOBookService ioBookService;
 
     @MockBean
     private IOService ioService;

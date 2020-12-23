@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.service.io;
+package ru.otus.spring.hw.service;
 
 import java.util.List;
 

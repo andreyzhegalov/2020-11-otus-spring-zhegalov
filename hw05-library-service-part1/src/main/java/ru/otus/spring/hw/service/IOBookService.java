@@ -1,11 +1,11 @@
-package ru.otus.spring.hw.service.io;
+package ru.otus.spring.hw.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.dao.dto.BookDto;
+import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Book;
 
 @RequiredArgsConstructor

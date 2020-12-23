@@ -41,10 +41,7 @@ public class AuthorDaoJdbc implements AuthorDao {
     public long insertAuthor(Author author) {
         final var keyHolder = new GeneratedKeyHolder();
         final var namedParameters = new MapSqlParameterSource().addValue("name", author.getName());
-        final var result = namedParameterJdbcOperations.update(INSERT_QUERY, namedParameters, keyHolder);
-        if (result == 0) {
-            throw new DaoException(String.format("Author %s was not added", author));
-        }
+        namedParameterJdbcOperations.update(INSERT_QUERY, namedParameters, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
@@ -55,17 +52,6 @@ public class AuthorDaoJdbc implements AuthorDao {
         final var result = namedParameterJdbcOperations.update(UPDATE_QUERY, namedParameters);
         if (result == 0) {
             throw new DaoException("No author found with id " + author.getId());
-        }
-    }
-
-    @Override
-    public long insertOrUpdate(Author author) {
-        final var authorFromDb = getById(author.getId());
-        if (authorFromDb.isEmpty()) {
-            return insertAuthor(author);
-        } else {
-            updateAuthor(author);
-            return author.getId();
         }
     }
 

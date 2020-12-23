@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dao.AuthorDao;
 import ru.otus.spring.hw.dao.BookDao;
 import ru.otus.spring.hw.dao.GenreDao;
-import ru.otus.spring.hw.service.io.IOAuthorService;
-import ru.otus.spring.hw.service.io.IOBookService;
-import ru.otus.spring.hw.service.io.IOGenreService;
+import ru.otus.spring.hw.service.IOAuthorService;
+import ru.otus.spring.hw.service.IOBookService;
+import ru.otus.spring.hw.service.IOGenreService;
 
 @RequiredArgsConstructor
 @ShellComponent

@@ -14,7 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.dao.dto.BookDto;
+import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
@@ -32,7 +32,6 @@ public class BookDaoJdbs implements BookDao {
     private static final String SELECT_BY_ID_QUERY = SELECT_ALL_QUERY + " where books.id=:id";
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
-
     @Override
     public List<Book> getAll() {
         return namedParameterJdbcOperations.query(SELECT_ALL_QUERY, new BookMapper());
@@ -48,10 +47,7 @@ public class BookDaoJdbs implements BookDao {
     public long insertBook(BookDto book) {
         final var mapSqlParameter = new MapSqlParameterSource().addValues(makeBookDtoParameterMap(book));
         final var keyHolder = new GeneratedKeyHolder();
-        final var result = namedParameterJdbcOperations.update(INSERT_QUERY, mapSqlParameter, keyHolder);
-        if (result == 0) {
-            throw new DaoException("Book not added");
-        }
+        namedParameterJdbcOperations.update(INSERT_QUERY, mapSqlParameter, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
