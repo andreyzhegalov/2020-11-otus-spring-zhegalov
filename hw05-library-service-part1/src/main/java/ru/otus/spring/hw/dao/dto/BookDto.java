@@ -3,6 +3,7 @@ package ru.otus.spring.hw.dao.dto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import ru.otus.spring.hw.model.Book;
 
 @EqualsAndHashCode
 @ToString
@@ -28,5 +29,12 @@ public class BookDto {
         this.title = title;
         this.authorId = authorId;
         this.genreId = genreId;
+    }
+
+    public BookDto(Book book){
+        this.id = book.getId();
+        this.title = book.getTitle();
+        this.authorId = book.getAuthor().getId();
+        this.genreId = book.getAuthor().getId();
     }
 }

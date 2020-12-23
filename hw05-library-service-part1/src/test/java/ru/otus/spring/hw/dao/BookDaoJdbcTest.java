@@ -33,6 +33,12 @@ public class BookDaoJdbcTest {
     }
 
     @Test
+    void shouldReturnBooksNew() {
+        assertThat(bookDao.getAll()).hasSize(BOOK_COUNT).allMatch(s -> !s.getTitle().equals(""))
+                .allMatch(s -> s.getAuthor() != null).allMatch(s -> s.getGenre() != null);
+    }
+
+    @Test
     void shouldReturnBookByIdForExistingBook() {
         assertThat(bookDao.getById(EXISTED_ID).get().getId()).isEqualTo(EXISTED_ID);
     }
@@ -46,12 +52,15 @@ public class BookDaoJdbcTest {
     @Test
     void shouldUpdateIfIdExist() {
         final var initBook = bookDao.getById(EXISTED_ID).get();
-        final var updatedBook = new BookDto(initBook.getId(), initBook.getTitle() + "_modify", initBook.getAuthorId(),
-                initBook.getGenreId());
+        final var initBookDto = new BookDto(initBook);
+        final var updatedBookDto = new BookDto(initBookDto.getId(), initBookDto.getTitle() + "_modify", initBookDto.getAuthorId(),
+                initBookDto.getGenreId());
 
-        assertThatCode(() -> bookDao.updateBook(updatedBook)).doesNotThrowAnyException();
+        assertThatCode(() -> bookDao.updateBook(updatedBookDto)).doesNotThrowAnyException();
 
-        assertThat(bookDao.getById(EXISTED_ID).get()).isEqualTo(updatedBook);
+
+        final var afterUpdateDto = new BookDto(bookDao.getById(EXISTED_ID).get());
+        assertThat(afterUpdateDto).isEqualTo(updatedBookDto);
         assertThat(bookDao.getAll().size()).isEqualTo(BOOK_COUNT);
     }
 
@@ -71,31 +80,6 @@ public class BookDaoJdbcTest {
 
         assertThat(bookDao.getById(id)).isPresent();
         assertThat(bookDao.getAll().size()).isEqualTo(BOOK_COUNT + 1);
-    }
-
-    @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
-    @Test
-    void insertOrUpdateShouldInsertNewBook() {
-        final var newBook = new BookDto(NOT_EXISTED_ID, "new book", EXISTED_AUTHOR_ID, EXISTED_GENRE_ID);
-
-        bookDao.insertOrUpdate(newBook);
-
-        assertThat(bookDao.getById(NOT_EXISTED_ID)).isPresent();
-        assertThat(bookDao.getById(NOT_EXISTED_ID).get()).isEqualTo(newBook);
-        assertThat(bookDao.getAll().size()).isEqualTo(BOOK_COUNT + 1);
-    }
-
-    @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
-    @Test
-    void insertOrUpdateShouldUpdateExistedBook() {
-        final var existedBook = bookDao.getById(EXISTED_ID).get();
-        final var updatedBook = new BookDto(existedBook.getId(), existedBook.getTitle() + "_modify",
-                existedBook.getAuthorId(), existedBook.getGenreId());
-
-        bookDao.insertOrUpdate(updatedBook);
-
-        assertThat(bookDao.getById(EXISTED_ID).get()).isEqualTo(updatedBook);
-        assertThat(bookDao.getAll().size()).isEqualTo(BOOK_COUNT);
     }
 
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)

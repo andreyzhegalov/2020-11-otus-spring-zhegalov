@@ -15,31 +15,38 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dao.dto.BookDto;
+import ru.otus.spring.hw.model.Author;
+import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.Genre;
 
 @RequiredArgsConstructor
 @Component
 public class BookDaoJdbs implements BookDao {
-    private final static String SELECT_BY_ID = "select id,title, author_id, genre_id from books where id=:id";
-    private final static String SELECT_ALL_QUERY = "select id, title, author_id, genre_id from books";
     private final static String INSERT_QUERY = "insert into books (title, author_id, genre_id) values (:title, :author_id, :genre_id)";
     private final static String UPDATE_QUERY = "update books set title=:title, author_id=:author_id, genre_id=:genre_id where id=:id";
     private final static String DELETE_QUERY = "delete from books where id=:id";
+    private static final String SELECT_ALL_QUERY = "select " + "books.id as book_id," + "title,"
+            + "authors.id as author_id," + "authors.name as author_name," + "genres.id as genre_id,"
+            + "genres.name as genre_name " + "from  books " + "left join authors on books.author_id=authors.id "
+            + "left join genres  on books.genre_id=genres.id";
+    private static final String SELECT_BY_ID_QUERY = SELECT_ALL_QUERY + " where books.id=:id";
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
+
     @Override
-    public List<BookDto> getAll() {
+    public List<Book> getAll() {
         return namedParameterJdbcOperations.query(SELECT_ALL_QUERY, new BookMapper());
     }
 
     @Override
-    public Optional<BookDto> getById(long id) {
-        final var result = namedParameterJdbcOperations.query(SELECT_BY_ID, Map.of("id", id), new BookMapper());
+    public Optional<Book> getById(long id) {
+        final var result = namedParameterJdbcOperations.query(SELECT_BY_ID_QUERY, Map.of("id", id), new BookMapper());
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     @Override
     public long insertBook(BookDto book) {
-        final var mapSqlParameter = new MapSqlParameterSource().addValues(makeParameterMap(book));
+        final var mapSqlParameter = new MapSqlParameterSource().addValues(makeBookDtoParameterMap(book));
         final var keyHolder = new GeneratedKeyHolder();
         final var result = namedParameterJdbcOperations.update(INSERT_QUERY, mapSqlParameter, keyHolder);
         if (result == 0) {
@@ -50,20 +57,10 @@ public class BookDaoJdbs implements BookDao {
 
     @Override
     public void updateBook(BookDto book) {
-        final var mapSqlParameter = new MapSqlParameterSource().addValues(makeParameterMap(book));
+        final var mapSqlParameter = new MapSqlParameterSource().addValues(makeBookDtoParameterMap(book));
         final var result = namedParameterJdbcOperations.update(UPDATE_QUERY, mapSqlParameter);
         if (result == 0) {
             throw new DaoException("No book found with id " + book.getId());
-        }
-    }
-
-    @Override
-    public void insertOrUpdate(BookDto book) {
-        final var bookFromDb = getById(book.getId());
-        if (bookFromDb.isEmpty()) {
-            insertBook(book);
-        } else {
-            updateBook(book);
         }
     }
 
@@ -76,19 +73,25 @@ public class BookDaoJdbs implements BookDao {
         }
     }
 
-    private static class BookMapper implements RowMapper<BookDto> {
-        @Override
-        public BookDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-            final long id = rs.getLong("id");
-            final String title = rs.getNString("title");
-            final long authorId = rs.getLong("author_id");
-            final long genreId = rs.getLong("genre_id");
-            return new BookDto(id, title, authorId, genreId);
-        }
-    }
-
-    private final Map<String, Object> makeParameterMap(BookDto book) {
+    private final Map<String, Object> makeBookDtoParameterMap(BookDto book) {
         return Map.of("id", book.getId(), "title", book.getTitle(), "author_id", book.getAuthorId(), "genre_id",
                 book.getGenreId());
     }
+
+    private static class BookMapper implements RowMapper<Book> {
+        @Override
+        public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
+            final long book_id = rs.getLong("book_id");
+            final String title = rs.getNString("title");
+            final long authorId = rs.getLong("author_id");
+            final String authorName = rs.getNString("author_name");
+            final long genreId = rs.getLong("genre_id");
+            final String genreName = rs.getNString("genre_name");
+
+            final var author = new Author(authorId, authorName);
+            final var genre = new Genre(genreId, genreName);
+            return new Book(book_id, title, author, genre);
+        }
+    }
+
 }

@@ -6,45 +6,44 @@ import org.springframework.shell.standard.ShellOption;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dao.AuthorDao;
+import ru.otus.spring.hw.dao.BookDao;
 import ru.otus.spring.hw.dao.GenreDao;
 import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
-import ru.otus.spring.hw.service.BookService;
+import ru.otus.spring.hw.service.io.IOBookService;
 import ru.otus.spring.hw.service.io.IOModelService;
 
 @RequiredArgsConstructor
 @ShellComponent
 public class ApplicationCommands {
-    private final BookService bookService;
+    private final BookDao bookDao;
     private final GenreDao genreDao;
     private final AuthorDao authorDao;
-    private final IOModelService<Book> ioBookService;
+    private final IOBookService ioBookService;
     private final IOModelService<Genre> ioGenreService;
     private final IOModelService<Author> ioAuthorService;
 
     @ShellMethod(value = "Print all books", key = { "pb", "print-books" })
     public void printAllBooks() {
-        final var books = bookService.getAllBooks();
+        final var books = bookDao.getAll();
         ioBookService.print(books);
     }
 
-    @ShellMethod(value = "Add new book", key = { "a", "add-book" })
+    @ShellMethod(value = "Add new book", key = { "ab", "add-book" })
     public void addBook() {
-        final var book = ioBookService.get();
-        bookService.saveBook(book);
+        final var bookDto = ioBookService.get();
+        bookDao.insertBook(bookDto);
     }
 
     @ShellMethod(value = "Delete book", key = { "db", "delete-book" })
     public void deleteBook(@ShellOption long id) {
-        bookService.deleteBook(id);
+        bookDao.deleteBook(id);
     }
 
     @ShellMethod(value = "Update book", key = { "ub", "update-book" })
     public void updateBook(@ShellOption long id) {
-        final var book = ioBookService.get();
-        book.setId(id);
-        bookService.updateBook(book);
+        final var bookDto = ioBookService.get();
+        bookDao.updateBook(bookDto);
     }
 
     @ShellMethod(value = "Print all genres", key = { "pg", "print-genres" })

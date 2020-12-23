@@ -1,22 +1,26 @@
 package ru.otus.spring.hw.shell;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.shell.Shell;
 
 import ru.otus.spring.hw.dao.AuthorDao;
+import ru.otus.spring.hw.dao.BookDao;
 import ru.otus.spring.hw.dao.GenreDao;
+import ru.otus.spring.hw.dao.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
-import ru.otus.spring.hw.service.BookService;
+import ru.otus.spring.hw.service.io.IOBookService;
 import ru.otus.spring.hw.service.io.IOModelService;
 
 @SpringBootTest
@@ -26,10 +30,7 @@ class ApplicationCommandsTest {
     private Shell shell;
 
     @MockBean
-    private BookService bookService;
-
-    @MockBean
-    private IOModelService<Book> ioBookService;
+    private  IOBookService ioBookService;
 
     @MockBean
     private GenreDao genreDao;
@@ -38,23 +39,29 @@ class ApplicationCommandsTest {
     private AuthorDao authorDao;
 
     @MockBean
+    private BookDao bookDao;
+
+    @MockBean
     private IOModelService<Genre> ioGenreService;
 
     @MockBean
     private IOModelService<Author> ioAuthorService;
 
+    @Captor
+    private ArgumentCaptor<BookDto> bookDtoCaptor;
+
     @Test
     void printShouldPrintAllBooks() {
         shell.evaluate(() -> "pb");
-        then(bookService).should().getAllBooks();
+        then(bookDao).should().getAll();
         then(ioBookService).should().print(any());
     }
 
     @Test
     void shouldReadNewBook() {
-        shell.evaluate(() -> "a");
+        shell.evaluate(() -> "ab");
         then(ioBookService).should().get();
-        then(bookService).should().saveBook(any());
+        then(bookDao).should().insertBook(any());
     }
 
     @Test
@@ -73,15 +80,18 @@ class ApplicationCommandsTest {
 
     @Test
     void shouldDeleteBook() {
-        shell.evaluate(() -> "db 1");
-        then(bookService).should().deleteBook(anyLong());
+        final var id = 1L;
+        shell.evaluate(() -> "db " + id);
+        then(bookDao).should().deleteBook(eq(id));
     }
 
     @Test
     void shouldUpdateBook() {
-        given(ioBookService.get()).willReturn(new Book("title", new Author("name"), new Genre("genre")));
-        shell.evaluate(() -> "ub 1");
+        final long id = 3L;
+        given(ioBookService.get()).willReturn(new BookDto(id, "title", 1L, 1L));
+        shell.evaluate(() -> "ub " + id);
         then(ioBookService).should().get();
-        then(bookService).should().updateBook(any());
+        then(bookDao).should().updateBook(bookDtoCaptor.capture());
+        assertThat(bookDtoCaptor.getValue()).extracting("id").isEqualTo(id);
     }
 }

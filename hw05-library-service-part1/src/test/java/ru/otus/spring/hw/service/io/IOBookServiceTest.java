@@ -27,7 +27,7 @@ public class IOBookServiceTest {
     }
 
     @Autowired
-    private IOModelService<Book> ioBookService;
+    private  IOBookService ioBookService;
 
     @MockBean
     private IOService ioService;
