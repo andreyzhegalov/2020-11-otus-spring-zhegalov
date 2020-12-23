@@ -129,7 +129,9 @@ public class BookServiceTest {
     @Test
     void shouldDeleteBook() {
         final var id = 1L;
+
         bookService.deleteBook(id);
+
         then(bookDao).should().deleteBook(id);
     }
 

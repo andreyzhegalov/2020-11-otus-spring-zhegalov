@@ -2,13 +2,15 @@ package ru.otus.spring.hw.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @EqualsAndHashCode
 @ToString
 public class Book {
+    @Setter
     @Getter
-    private final long id;
+    private long id;
     @Getter
     private final String title;
     @Getter

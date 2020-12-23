@@ -2,6 +2,7 @@ package ru.otus.spring.hw.shell;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import org.junit.jupiter.api.Test;
@@ -72,7 +73,15 @@ class ApplicationCommandsTest {
 
     @Test
     void shouldDeleteBook() {
-        shell.evaluate(() -> "bd 1");
+        shell.evaluate(() -> "db 1");
         then(bookService).should().deleteBook(anyLong());
+    }
+
+    @Test
+    void shouldUpdateBook() {
+        given(ioBookService.get()).willReturn(new Book("title", new Author("name"), new Genre("genre")));
+        shell.evaluate(() -> "ub 1");
+        then(ioBookService).should().get();
+        then(bookService).should().updateBook(any());
     }
 }

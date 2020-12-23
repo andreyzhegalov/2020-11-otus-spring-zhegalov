@@ -35,9 +35,16 @@ public class ApplicationCommands {
         bookService.saveBook(book);
     }
 
-    @ShellMethod(value = "Delete book", key = { "bd", "delete-book" })
+    @ShellMethod(value = "Delete book", key = { "db", "delete-book" })
     public void deleteBook(@ShellOption long id) {
         bookService.deleteBook(id);
+    }
+
+    @ShellMethod(value = "Update book", key = { "ub", "update-book" })
+    public void updateBook(@ShellOption long id) {
+        final var book = ioBookService.get();
+        book.setId(id);
+        bookService.updateBook(book);
     }
 
     @ShellMethod(value = "Print all genres", key = { "pg", "print-genres" })
