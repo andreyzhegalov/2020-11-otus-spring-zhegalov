@@ -1,8 +1,8 @@
 package ru.otus.spring.hw.service.io;
 
-import ru.otus.spring.hw.io.ScannerInputStream;
-
 import java.io.PrintStream;
+
+import ru.otus.spring.hw.io.ScannerInputStream;
 
 public class IOServiceConsole implements IOService {
     private final PrintStream out;

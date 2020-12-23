@@ -18,10 +18,9 @@ import ru.otus.spring.hw.dao.AuthorDao;
 import ru.otus.spring.hw.dao.BookDao;
 import ru.otus.spring.hw.dao.GenreDao;
 import ru.otus.spring.hw.dao.dto.BookDto;
-import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.model.Genre;
+import ru.otus.spring.hw.service.io.IOAuthorService;
 import ru.otus.spring.hw.service.io.IOBookService;
-import ru.otus.spring.hw.service.io.IOModelService;
+import ru.otus.spring.hw.service.io.IOGenreService;
 
 @SpringBootTest
 class ApplicationCommandsTest {
@@ -30,7 +29,7 @@ class ApplicationCommandsTest {
     private Shell shell;
 
     @MockBean
-    private  IOBookService ioBookService;
+    private IOBookService ioBookService;
 
     @MockBean
     private GenreDao genreDao;
@@ -42,10 +41,10 @@ class ApplicationCommandsTest {
     private BookDao bookDao;
 
     @MockBean
-    private IOModelService<Genre> ioGenreService;
+    private IOGenreService ioGenreService;
 
     @MockBean
-    private IOModelService<Author> ioAuthorService;
+    private IOAuthorService ioAuthorService;
 
     @Captor
     private ArgumentCaptor<BookDto> bookDtoCaptor;
@@ -88,7 +87,7 @@ class ApplicationCommandsTest {
     @Test
     void shouldUpdateBook() {
         final long id = 3L;
-        given(ioBookService.get()).willReturn(new BookDto(id, "title", 1L, 1L));
+        given(ioBookService.get()).willReturn(new BookDto("title", 1L, 1L));
         shell.evaluate(() -> "ub " + id);
         then(ioBookService).should().get();
         then(bookDao).should().updateBook(bookDtoCaptor.capture());

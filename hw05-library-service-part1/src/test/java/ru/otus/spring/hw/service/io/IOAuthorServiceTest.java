@@ -25,7 +25,7 @@ public class IOAuthorServiceTest {
     }
 
     @Autowired
-    private IOModelService<Author> ioAuthorService;
+    private IOAuthorService ioAuthorService;
 
     @MockBean
     private IOService ioService;

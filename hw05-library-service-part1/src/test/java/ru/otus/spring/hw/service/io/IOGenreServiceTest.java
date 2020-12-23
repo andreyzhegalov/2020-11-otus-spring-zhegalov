@@ -25,7 +25,7 @@ public class IOGenreServiceTest {
     }
 
     @Autowired
-    private IOModelService<Genre> ioGenreService;
+    private IOGenreService ioGenreService;
 
     @MockBean
     private IOService ioService;

@@ -8,10 +8,9 @@ import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dao.AuthorDao;
 import ru.otus.spring.hw.dao.BookDao;
 import ru.otus.spring.hw.dao.GenreDao;
-import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.model.Genre;
+import ru.otus.spring.hw.service.io.IOAuthorService;
 import ru.otus.spring.hw.service.io.IOBookService;
-import ru.otus.spring.hw.service.io.IOModelService;
+import ru.otus.spring.hw.service.io.IOGenreService;
 
 @RequiredArgsConstructor
 @ShellComponent
@@ -20,8 +19,8 @@ public class ApplicationCommands {
     private final GenreDao genreDao;
     private final AuthorDao authorDao;
     private final IOBookService ioBookService;
-    private final IOModelService<Genre> ioGenreService;
-    private final IOModelService<Author> ioAuthorService;
+    private final IOGenreService ioGenreService;
+    private final IOAuthorService ioAuthorService;
 
     @ShellMethod(value = "Print all books", key = { "pb", "print-books" })
     public void printAllBooks() {
@@ -43,6 +42,7 @@ public class ApplicationCommands {
     @ShellMethod(value = "Update book", key = { "ub", "update-book" })
     public void updateBook(@ShellOption long id) {
         final var bookDto = ioBookService.get();
+        bookDto.setId(id);
         bookDao.updateBook(bookDto);
     }
 

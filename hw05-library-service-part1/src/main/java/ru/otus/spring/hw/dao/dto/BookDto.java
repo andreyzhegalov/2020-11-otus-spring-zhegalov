@@ -2,14 +2,16 @@ package ru.otus.spring.hw.dao.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import ru.otus.spring.hw.model.Book;
 
 @EqualsAndHashCode
 @ToString
 public class BookDto {
+    @Setter
     @Getter
-    private final long id;
+    private long id;
     @Getter
     private final String title;
     @Getter
@@ -31,7 +33,7 @@ public class BookDto {
         this.genreId = genreId;
     }
 
-    public BookDto(Book book){
+    public BookDto(Book book) {
         this.id = book.getId();
         this.title = book.getTitle();
         this.authorId = book.getAuthor().getId();

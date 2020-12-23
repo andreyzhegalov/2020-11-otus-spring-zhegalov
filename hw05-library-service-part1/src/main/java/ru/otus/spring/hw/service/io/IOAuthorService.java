@@ -9,15 +9,13 @@ import ru.otus.spring.hw.model.Author;
 
 @RequiredArgsConstructor
 @Service
-public class IOAuthorService implements IOModelService<Author> {
+public class IOAuthorService {
     private final IOService ioService;
 
-    @Override
     public void print(List<Author> authors) {
         authors.forEach(b -> ioService.print(b.toString()));
     }
 
-    @Override
     public Author get() {
         throw new UnsupportedOperationException();
     }
