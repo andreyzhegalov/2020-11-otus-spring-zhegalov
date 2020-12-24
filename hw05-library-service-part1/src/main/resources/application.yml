@@ -7,9 +7,9 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: true
+  flyway:
+    enabled: true
+
 logging:
   level:
     ROOT: OFF
-
-flyway:
-  enabled: true
