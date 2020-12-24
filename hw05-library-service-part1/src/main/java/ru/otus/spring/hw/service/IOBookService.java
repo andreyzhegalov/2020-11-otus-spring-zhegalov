@@ -20,7 +20,7 @@ public class IOBookService {
         books.forEach(b -> ioService.print(b.toString()));
     }
 
-    public BookDto get() {
+    public BookDto getBook() {
         ioService.print(GET_TITLE_MESSAGE);
         final var bookTitle = ioService.read();
         ioService.print(GET_AUTHOR_ID);

@@ -15,9 +15,4 @@ public class IOGenreService {
     public void print(List<Genre> genres) {
         genres.forEach(b -> ioService.print(b.toString()));
     }
-
-    public Genre get() {
-        throw new UnsupportedOperationException();
-    }
-
 }

@@ -30,7 +30,7 @@ public class ApplicationCommands {
 
     @ShellMethod(value = "Add new book", key = { "ab", "add-book" })
     public void addBook() {
-        final var bookDto = ioBookService.get();
+        final var bookDto = ioBookService.getBook();
         bookDao.insertBook(bookDto);
     }
 
@@ -41,7 +41,7 @@ public class ApplicationCommands {
 
     @ShellMethod(value = "Update book", key = { "ub", "update-book" })
     public void updateBook(@ShellOption long id) {
-        final var bookDto = ioBookService.get();
+        final var bookDto = ioBookService.getBook();
         bookDto.setId(id);
         bookDao.updateBook(bookDto);
     }

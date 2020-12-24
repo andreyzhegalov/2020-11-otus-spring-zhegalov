@@ -11,13 +11,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.model.Author;
 
 @RequiredArgsConstructor
-@Component
+@Repository
 public class AuthorDaoJdbc implements AuthorDao {
     private final static String SELECT_BY_ID = "select id,name from authors where id=:id";
     private final static String SELECT_ALL_QUERY = "select id, name from authors";

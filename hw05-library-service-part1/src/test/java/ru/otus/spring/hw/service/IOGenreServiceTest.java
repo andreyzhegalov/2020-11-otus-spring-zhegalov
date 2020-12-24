@@ -1,6 +1,5 @@
 package ru.otus.spring.hw.service;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
@@ -38,10 +37,5 @@ public class IOGenreServiceTest {
         ioGenreService.print(List.of(genre1, genre2));
         then(ioService).should(atLeastOnce()).print(anyString());
         then(ioService).should(never()).read();
-    }
-
-    @Test
-    void shouldReadGenreFromIOService() {
-        assertThatCode(() -> ioGenreService.get()).isInstanceOf(UnsupportedOperationException.class);
     }
 }

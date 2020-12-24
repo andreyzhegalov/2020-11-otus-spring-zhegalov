@@ -59,7 +59,7 @@ class ApplicationCommandsTest {
     @Test
     void shouldReadNewBook() {
         shell.evaluate(() -> "ab");
-        then(ioBookService).should().get();
+        then(ioBookService).should().getBook();
         then(bookDao).should().insertBook(any());
     }
 
@@ -87,9 +87,9 @@ class ApplicationCommandsTest {
     @Test
     void shouldUpdateBook() {
         final long id = 3L;
-        given(ioBookService.get()).willReturn(new BookDto("title", 1L, 1L));
+        given(ioBookService.getBook()).willReturn(new BookDto("title", 1L, 1L));
         shell.evaluate(() -> "ub " + id);
-        then(ioBookService).should().get();
+        then(ioBookService).should().getBook();
         then(bookDao).should().updateBook(bookDtoCaptor.capture());
         assertThat(bookDtoCaptor.getValue()).extracting("id").isEqualTo(id);
     }

@@ -2,6 +2,7 @@ package ru.otus.spring.hw.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,8 @@ public class BookDaoJdbcTest {
 
     @Test
     void shouldReturnBookByIdForExistingBook() {
-        assertThat(bookDao.getById(EXISTED_BOOK_ID).get().getId()).isEqualTo(EXISTED_BOOK_ID);
+        assertThat(bookDao.getById(EXISTED_BOOK_ID).orElseGet(() -> fail("book not exist")).getId())
+                .isEqualTo(EXISTED_BOOK_ID);
     }
 
     @Test
@@ -51,14 +53,15 @@ public class BookDaoJdbcTest {
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
     @Test
     void shouldUpdateIfIdExist() {
-        final var initBook = bookDao.getById(EXISTED_BOOK_ID).get();
+        final var initBook = bookDao.getById(EXISTED_BOOK_ID).orElseGet(() -> fail("book not exist"));
         final var initBookDto = new BookDto(initBook);
         final var updatedBookDto = new BookDto(initBookDto.getId(), initBookDto.getTitle() + "_modify",
                 initBookDto.getAuthorId(), initBookDto.getGenreId());
 
         assertThatCode(() -> bookDao.updateBook(updatedBookDto)).doesNotThrowAnyException();
 
-        final var afterUpdateDto = new BookDto(bookDao.getById(EXISTED_BOOK_ID).get());
+        final var afterUpdateDto = new BookDto(
+                bookDao.getById(EXISTED_BOOK_ID).orElseGet(() -> fail("book not exist")));
         assertThat(afterUpdateDto).isEqualTo(updatedBookDto);
         assertThat(bookDao.getAll().size()).isEqualTo(BOOK_COUNT);
     }

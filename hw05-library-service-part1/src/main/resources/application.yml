@@ -9,7 +9,7 @@ spring:
         web-allow-others: true
 logging:
   level:
-    ROOT: INFO
+    ROOT: OFF
 
 flyway:
   enabled: true

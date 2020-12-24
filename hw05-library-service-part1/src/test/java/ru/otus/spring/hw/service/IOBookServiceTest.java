@@ -45,7 +45,7 @@ public class IOBookServiceTest {
     @Test
     void shouldReadBookFromIOService() {
         given(ioService.read()).willReturn("title").willReturn("1").willReturn("1");
-        ioBookService.get();
+        ioBookService.getBook();
 
         then(ioService).should(atLeastOnce()).print(anyString());
         then(ioService).should(atLeastOnce()).read();

@@ -15,8 +15,4 @@ public class IOAuthorService {
     public void print(List<Author> authors) {
         authors.forEach(b -> ioService.print(b.toString()));
     }
-
-    public Author get() {
-        throw new UnsupportedOperationException();
-    }
 }

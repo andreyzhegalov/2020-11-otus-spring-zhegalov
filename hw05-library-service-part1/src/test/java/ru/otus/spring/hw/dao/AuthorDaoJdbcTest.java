@@ -2,6 +2,7 @@ package ru.otus.spring.hw.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,8 @@ public class AuthorDaoJdbcTest {
 
     @Test
     void shouldReturnAuthorByIdForExistingAuthor() {
-        assertThat(authorDao.getById(EXISTED_AUTHOR_ID)).isNotEmpty();
-        assertThat(authorDao.getById(EXISTED_AUTHOR_ID).get().getId()).isEqualTo(EXISTED_AUTHOR_ID);
+        assertThat(authorDao.getById(EXISTED_AUTHOR_ID).orElseGet(() -> fail("author not exist")).getId())
+                .isEqualTo(EXISTED_AUTHOR_ID);
     }
 
     @Test
@@ -44,12 +45,13 @@ public class AuthorDaoJdbcTest {
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
     @Test
     void shouldUpdateIfIdExist() {
-        final var initAuthor = authorDao.getById(EXISTED_AUTHOR_ID).get();
+        final var initAuthor = authorDao.getById(EXISTED_AUTHOR_ID).orElseGet(() -> fail("author not exist"));
         final var updatedAuthor = new Author(initAuthor.getId(), initAuthor.getName() + "_modify");
 
         assertThatCode(() -> authorDao.updateAuthor(updatedAuthor)).doesNotThrowAnyException();
 
-        assertThat(authorDao.getById(EXISTED_AUTHOR_ID).get()).isEqualTo(updatedAuthor);
+        assertThat(authorDao.getById(EXISTED_AUTHOR_ID).orElseGet(() -> fail("author not exist")))
+                .isEqualTo(updatedAuthor);
         assertThat(authorDao.getAll().size()).isEqualTo(AUTHOR_COUNT);
     }
 

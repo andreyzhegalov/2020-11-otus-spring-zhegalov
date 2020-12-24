@@ -2,6 +2,7 @@ package ru.otus.spring.hw.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,8 @@ public class GenreDaoJdbcTest {
 
     @Test
     void shouldReturnGenreByIdForExistingGenre() {
-        assertThat(genreDao.getById(EXISTED_GENRE_ID).get().getId()).isEqualTo(EXISTED_GENRE_ID);
+        assertThat(genreDao.getById(EXISTED_GENRE_ID).orElseGet(() -> fail("genre not exist")).getId())
+                .isEqualTo(EXISTED_GENRE_ID);
     }
 
     @Test
@@ -40,12 +42,12 @@ public class GenreDaoJdbcTest {
     @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
     @Test
     void shouldUpdateIfIdExist() {
-        final var initGenre = genreDao.getById(EXISTED_GENRE_ID).get();
+        final var initGenre = genreDao.getById(EXISTED_GENRE_ID).orElseGet(() -> fail("genre not exist"));
         final var updatedGenre = new Genre(initGenre.getId(), initGenre.getName() + "_modify");
 
         assertThatCode(() -> genreDao.updateGenre(updatedGenre)).doesNotThrowAnyException();
 
-        assertThat(genreDao.getById(EXISTED_GENRE_ID).get()).isEqualTo(updatedGenre);
+        assertThat(genreDao.getById(EXISTED_GENRE_ID).orElseGet(() -> fail("genre not exist"))).isEqualTo(updatedGenre);
         assertThat(genreDao.getAll().size()).isEqualTo(AUTHOR_COUNT);
     }
 
