@@ -42,7 +42,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
         final var query = em.createQuery("delete from Author a where a.id = :id");
         query.setParameter("id", id);
         final int result = query.executeUpdate();
-        if (result == 0) {
+        if (result != 1) {
             throw new DaoException(String.format("Author with id %d was not deleted", id));
         }
     }

@@ -70,7 +70,7 @@ public class AuthorRepositoryJpaTest {
     }
 
     @Test
-    void deletingAExistingWorkbookShouldDeleteAuthor() {
+    void deletingAExistingAuthorShouldDeleteAuthor() {
         authorRepository.remove(EXISTED_AUTHOR_ID);
 
         assertThat(authorRepository.findById(EXISTED_AUTHOR_ID)).isNotPresent();
@@ -78,7 +78,7 @@ public class AuthorRepositoryJpaTest {
     }
 
     @Test
-    void deletingANonExistingWorkbookShouldThrowAnException() {
+    void deletingANonExistingAuthorSouldThrowAnException() {
         assertThatCode(() -> authorRepository.remove(NOT_EXISTED_AUTHOR_ID)).isInstanceOf(DaoException.class);
         assertThat(authorRepository.findAll()).hasSize(AUTHOR_COUNT);
     }
