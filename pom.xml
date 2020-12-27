@@ -33,6 +33,7 @@
         <module>hw02-student-testing-application-part2</module>
         <module>hw03-student-testing-application-part3</module>
         <module>hw04-student-testing-application-part4</module>
+        <module>hw05-library-service-part1</module>
     </modules>
 
     <build>
