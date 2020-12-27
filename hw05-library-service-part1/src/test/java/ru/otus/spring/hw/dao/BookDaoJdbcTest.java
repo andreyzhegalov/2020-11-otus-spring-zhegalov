@@ -41,7 +41,7 @@ public class BookDaoJdbcTest {
 
     @Test
     void shouldReturnBookByIdForExistingBook() {
-        assertThat(bookDao.getById(EXISTED_BOOK_ID).orElseGet(() -> fail("book not exist")).getId())
+        assertThat(bookDao.getById(EXISTED_BOOK_ID)).isPresent().get().extracting("id")
                 .isEqualTo(EXISTED_BOOK_ID);
     }
 

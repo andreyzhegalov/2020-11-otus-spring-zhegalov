@@ -30,8 +30,7 @@ public class GenreDaoJdbcTest {
 
     @Test
     void shouldReturnGenreByIdForExistingGenre() {
-        assertThat(genreDao.getById(EXISTED_GENRE_ID).orElseGet(() -> fail("genre not exist")).getId())
-                .isEqualTo(EXISTED_GENRE_ID);
+        assertThat(genreDao.getById(EXISTED_GENRE_ID)).isPresent().get().extracting("id").isEqualTo(EXISTED_GENRE_ID);
     }
 
     @Test

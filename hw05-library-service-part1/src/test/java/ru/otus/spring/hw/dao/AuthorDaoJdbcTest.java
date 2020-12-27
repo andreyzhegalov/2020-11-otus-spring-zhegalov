@@ -33,7 +33,7 @@ public class AuthorDaoJdbcTest {
 
     @Test
     void shouldReturnAuthorByIdForExistingAuthor() {
-        assertThat(authorDao.getById(EXISTED_AUTHOR_ID).orElseGet(() -> fail("author not exist")).getId())
+        assertThat(authorDao.getById(EXISTED_AUTHOR_ID)).isPresent().get().extracting("id")
                 .isEqualTo(EXISTED_AUTHOR_ID);
     }
 
