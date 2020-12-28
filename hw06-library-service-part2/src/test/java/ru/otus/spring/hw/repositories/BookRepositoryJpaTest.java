@@ -104,6 +104,10 @@ public class BookRepositoryJpaTest {
 
     @Test
     void deletingAExistingBookShouldDeleteBook() {
+        final var mayBeBook = bookRepository.findById(EXISTED_BOOK_ID);
+        assertThat(mayBeBook).isPresent().get().isInstanceOf(Book.class);
+        em.detach(mayBeBook.get());
+
         bookRepository.remove(EXISTED_BOOK_ID);
 
         assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isNotPresent();

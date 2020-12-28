@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
 import ru.otus.spring.hw.model.Genre;
@@ -20,6 +21,9 @@ public class GenreRepositoryJpaTest {
 
     @Autowired
     private GenreRepositoryJpa genreRepository;
+
+    @Autowired
+    private TestEntityManager em;
 
     @Test
     void shouldReturnGenreList() {
@@ -51,14 +55,19 @@ public class GenreRepositoryJpaTest {
 
     @Test
     void shouldInsertIfGenreIdNotExisted() {
-        final var updatedGenre = new Genre(NOT_EXISTED_GENRE_ID, "name");
+        final var updatedGenre = new Genre(0L, "name");
+        assertThat(updatedGenre.hasId()).isFalse();
         final var genre = genreRepository.save(updatedGenre);
+        assertThat(genre.hasId()).isTrue();
         assertThat(genreRepository.findAll()).hasSize(GENRE_COUNT + 1);
-        assertThat(genre).isEqualTo(updatedGenre);
     }
 
     @Test
     void deletingAExistingWorkbookShouldDeleteGenre() {
+        final var mayBeGenre = genreRepository.findById(EXISTED_GENRE_ID);
+        assertThat(mayBeGenre).isPresent();
+        em.detach(mayBeGenre.get());
+
         genreRepository.remove(EXISTED_GENRE_ID);
 
         assertThat(genreRepository.findById(EXISTED_GENRE_ID)).isNotPresent();

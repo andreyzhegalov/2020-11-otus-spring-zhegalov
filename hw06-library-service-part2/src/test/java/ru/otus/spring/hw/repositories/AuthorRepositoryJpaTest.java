@@ -62,14 +62,21 @@ public class AuthorRepositoryJpaTest {
 
     @Test
     void shouldInsertIfAuthorIdNotExisted() {
-        final var updatedAuthor = new Author(NOT_EXISTED_AUTHOR_ID, "name");
-        final var author = authorRepository.save(updatedAuthor);
+        final var insertedAuthor = new Author(0L, "name");
+        assertThat(insertedAuthor.hasId()).isFalse();
+
+        final var author = authorRepository.save(insertedAuthor);
+
+        assertThat(author.hasId()).isTrue();
         assertThat(authorRepository.findAll()).hasSize(AUTHOR_COUNT + 1);
-        assertThat(author).isEqualTo(updatedAuthor);
     }
 
     @Test
     void deletingAExistingAuthorShouldDeleteAuthor() {
+        final var mayBeAuthor = authorRepository.findById(EXISTED_AUTHOR_ID);
+        assertThat(mayBeAuthor).isPresent().get().isInstanceOf(Author.class);
+        em.detach(mayBeAuthor.get());
+
         authorRepository.remove(EXISTED_AUTHOR_ID);
 
         assertThat(authorRepository.findById(EXISTED_AUTHOR_ID)).isNotPresent();
