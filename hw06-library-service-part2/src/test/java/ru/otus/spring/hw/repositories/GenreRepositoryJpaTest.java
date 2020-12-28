@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.dao.DaoException;
 import ru.otus.spring.hw.model.Genre;
 
 @DataJpaTest
@@ -68,7 +67,7 @@ public class GenreRepositoryJpaTest {
 
     @Test
     void deletingANonExistingWorkbookShouldThrowAnException() {
-        assertThatCode(() -> genreRepository.remove(NOT_EXISTED_GENRE_ID)).isInstanceOf(DaoException.class);
+        assertThatCode(() -> genreRepository.remove(NOT_EXISTED_GENRE_ID)).isInstanceOf(RepositoryException.class);
         assertThat(genreRepository.findAll()).hasSize(GENRE_COUNT);
     }
 }

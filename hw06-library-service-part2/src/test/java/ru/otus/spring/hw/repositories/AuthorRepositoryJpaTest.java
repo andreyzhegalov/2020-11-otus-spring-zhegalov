@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.dao.DaoException;
 import ru.otus.spring.hw.model.Author;
 
 @DataJpaTest
@@ -79,7 +78,7 @@ public class AuthorRepositoryJpaTest {
 
     @Test
     void deletingANonExistingAuthorSouldThrowAnException() {
-        assertThatCode(() -> authorRepository.remove(NOT_EXISTED_AUTHOR_ID)).isInstanceOf(DaoException.class);
+        assertThatCode(() -> authorRepository.remove(NOT_EXISTED_AUTHOR_ID)).isInstanceOf(RepositoryException.class);
         assertThat(authorRepository.findAll()).hasSize(AUTHOR_COUNT);
     }
 }

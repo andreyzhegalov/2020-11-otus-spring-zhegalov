@@ -7,8 +7,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import ru.otus.spring.hw.dao.DaoException;
 import ru.otus.spring.hw.model.Genre;
 
 @Repository
@@ -16,6 +16,7 @@ public class GenreRepositoryJpa implements GenreRepository {
     @PersistenceContext
     private EntityManager em;
 
+    @Transactional(readOnly = true)
     @Override
     public List<Genre> findAll() {
         return em.createQuery("select g from Genre g", Genre.class).getResultList();
@@ -42,7 +43,7 @@ public class GenreRepositoryJpa implements GenreRepository {
         query.setParameter("id", id);
         final var result = query.executeUpdate();
         if (result == 0) {
-            throw new DaoException(String.format("Genre with id %d was not deleted", id));
+            throw new RepositoryException(String.format("Genre with id %d was not deleted", id));
         }
     }
 

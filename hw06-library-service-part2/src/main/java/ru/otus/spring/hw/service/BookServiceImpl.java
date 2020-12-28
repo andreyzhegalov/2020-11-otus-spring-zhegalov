@@ -13,23 +13,25 @@ import ru.otus.spring.hw.repositories.BookRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
 
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
 
+    @Transactional
     @Override
     public void deleteBook(long id) {
         bookRepository.remove(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Book> findAll() {
         return bookRepository.findAll();
     }
 
+    @Transactional
     @Override
     public void save(BookDto bookDto) {
         final var author = authorRepository.findById(bookDto.getAuthorId())

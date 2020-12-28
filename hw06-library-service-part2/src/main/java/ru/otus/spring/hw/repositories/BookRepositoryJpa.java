@@ -9,7 +9,6 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
 
-import ru.otus.spring.hw.dao.DaoException;
 import ru.otus.spring.hw.model.Book;
 
 @Repository
@@ -47,7 +46,7 @@ public class BookRepositoryJpa implements BookRepository {
         query.setParameter("id", id);
         final var updatedCount = query.executeUpdate();
         if (updatedCount != 1) {
-            throw new DaoException(String.format("Author with id %d was not deleted", id));
+            throw new RepositoryException(String.format("Author with id %d was not deleted", id));
         }
     }
 }

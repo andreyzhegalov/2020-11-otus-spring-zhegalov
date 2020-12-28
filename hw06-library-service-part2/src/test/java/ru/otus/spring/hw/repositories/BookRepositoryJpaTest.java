@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.dao.DaoException;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
@@ -113,7 +112,7 @@ public class BookRepositoryJpaTest {
 
     @Test
     void deletingANonExistingBookShouldThrowAnException() {
-        assertThatCode(() -> bookRepository.remove(NOT_EXISTED_BOOK_ID)).isInstanceOf(DaoException.class);
+        assertThatCode(() -> bookRepository.remove(NOT_EXISTED_BOOK_ID)).isInstanceOf(RepositoryException.class);
         assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT);
     }
 

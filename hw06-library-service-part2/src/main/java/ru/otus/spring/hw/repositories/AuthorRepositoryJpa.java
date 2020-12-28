@@ -7,8 +7,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import ru.otus.spring.hw.dao.DaoException;
 import ru.otus.spring.hw.model.Author;
 
 @Repository
@@ -17,6 +17,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     @PersistenceContext
     private EntityManager em;
 
+    @Transactional(readOnly = true)
     @Override
     public List<Author> findAll() {
         return em.createQuery("select a from Author a", Author.class).getResultList();
@@ -43,7 +44,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
         query.setParameter("id", id);
         final int result = query.executeUpdate();
         if (result != 1) {
-            throw new DaoException(String.format("Author with id %d was not deleted", id));
+            throw new RepositoryException(String.format("Author with id %d was not deleted", id));
         }
     }
 }
