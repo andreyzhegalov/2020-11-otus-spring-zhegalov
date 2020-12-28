@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Import;
 
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
 
 @Import(BookRepositoryJpa.class)
@@ -50,8 +51,9 @@ public class BookRepositoryJpaTest {
     void shouldReturnBookList() {
         var books = bookRepository.findAll();
         assertThat(books).isNotNull().hasSize(BOOK_COUNT).allMatch(s -> !s.getTitle().equals(""))
-                .allMatch(s -> s.getGenre() != null).allMatch(s -> s.getGenre().getName() != "")
-                .allMatch(s -> s.getAuthor() != null).allMatch(s -> s.getAuthor().getName() != "");
+                .allMatch(b -> b.getGenre() != null).allMatch(b -> b.getGenre().getName() != "")
+                .allMatch(b -> b.getAuthor() != null).allMatch(b -> b.getAuthor().getName() != "")
+                .allMatch(b -> b.getComments() != null && b.getComments().size() > 0);
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
     }
 
@@ -78,8 +80,10 @@ public class BookRepositoryJpaTest {
                 updatedGenre);
 
         bookRepository.save(updatedBook);
+        em.flush();
 
-        assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent().get().isEqualTo(updatedBook);
+        assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent().get().usingRecursiveComparison()
+                .isEqualTo(updatedBook);
         assertThat(bookRepository.findAll().size()).isEqualTo(BOOK_COUNT);
         assertThat(statistic.getEntityUpdateCount()).isEqualTo(3);
     }
@@ -89,17 +93,22 @@ public class BookRepositoryJpaTest {
         final var notExistedAuthor = new Author(0L, "new author");
         final var notExistedGenre = new Genre(0L, "new genre");
         final var notExistedBook = new Book(0L, "new title", notExistedAuthor, notExistedGenre);
+        notExistedBook.addComment(new Comment(0L, "new comment 1"));
+        notExistedBook.addComment(new Comment(0L, "new comment 2"));
 
         final var insertedBook = bookRepository.save(notExistedBook);
+        em.flush();
 
-        final var mayBeBook = bookRepository.findById(insertedBook.getId());
+        final var insertedBookId = insertedBook.getId();
+        final var mayBeBook = bookRepository.findById(insertedBookId);
         assertThat(mayBeBook).isPresent().get().extracting("title").isEqualTo(notExistedBook.getTitle());
         assertThat(mayBeBook.get().getAuthor()).isNotNull().extracting("name").isEqualTo(notExistedAuthor.getName());
         assertThat(mayBeBook.get().getGenre()).isNotNull().extracting("name").isEqualTo(notExistedGenre.getName());
+        assertThat(mayBeBook.get().getComments()).isNotNull().hasSize(2);
         assertThat(bookRepository.findAll().size()).isEqualTo(BOOK_COUNT + 1);
 
-        assertThat(statistic.getEntityUpdateCount()).isEqualTo(0);
-        assertThat(statistic.getEntityInsertCount()).isEqualTo(3);
+        assertThat(statistic.getEntityUpdateCount()).isEqualTo(0);  // Not worked. How to control update queries?
+        assertThat(statistic.getEntityInsertCount()).isEqualTo(5);
     }
 
     @Test

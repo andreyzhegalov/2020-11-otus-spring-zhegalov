@@ -47,7 +47,7 @@ public class GenreRepositoryJpaTest {
         final var initGenre = genreRepository.findById(EXISTED_GENRE_ID).orElseGet(() -> fail("genre not exist"));
         final var updatedGenre = new Genre(initGenre.getId(), initGenre.getName() + "_modify");
 
-        assertThatCode(() -> genreRepository.save(updatedGenre)).doesNotThrowAnyException();
+        genreRepository.save(updatedGenre);
 
         assertThat(genreRepository.findById(EXISTED_GENRE_ID)).isPresent().get().isEqualTo(updatedGenre);
         assertThat(genreRepository.findAll()).hasSize(GENRE_COUNT);
@@ -57,7 +57,9 @@ public class GenreRepositoryJpaTest {
     void shouldInsertIfGenreIdNotExisted() {
         final var updatedGenre = new Genre(0L, "name");
         assertThat(updatedGenre.hasId()).isFalse();
+
         final var genre = genreRepository.save(updatedGenre);
+
         assertThat(genre.hasId()).isTrue();
         assertThat(genreRepository.findAll()).hasSize(GENRE_COUNT + 1);
     }

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -28,14 +27,8 @@ public class AuthorRepositoryJpaTest {
 
     @Test
     void shouldReturnAuthorList() {
-        final SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
-                .unwrap(SessionFactory.class);
-        sessionFactory.getStatistics().setStatisticsEnabled(true);
-
         var authors = authorRepository.findAll();
         assertThat(authors).isNotNull().hasSize(AUTHOR_COUNT).allMatch(s -> !s.getName().equals(""));
-
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
     }
 
     @Test

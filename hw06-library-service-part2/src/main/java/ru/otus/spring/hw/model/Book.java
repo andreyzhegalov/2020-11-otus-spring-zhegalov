@@ -1,5 +1,8 @@
 package ru.otus.spring.hw.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,10 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -22,6 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@EqualsAndHashCode
 @NamedEntityGraph(name = "book-author-genre-entity-graph", attributeNodes = { @NamedAttributeNode("author"),
         @NamedAttributeNode("genre") })
 public class Book {
@@ -40,6 +46,22 @@ public class Book {
     @ManyToOne(targetEntity = Genre.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
+    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "book_id")
+    private List<Comment> comments;
+
+    public Book(long id, String title, Author author, Genre genre) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.genre = genre;
+        this.comments = new ArrayList<>();
+    }
+
+    public boolean addComment(Comment comment) {
+        return comments.add(comment);
+    }
 
     public boolean hasId() {
         return id > 0L;
