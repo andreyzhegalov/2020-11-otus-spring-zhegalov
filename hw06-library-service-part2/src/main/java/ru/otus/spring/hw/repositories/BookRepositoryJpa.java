@@ -33,7 +33,7 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public Book save(Book book) {
-        if (book.getId() <= 0) {
+        if (!book.hasId()) {
             em.persist(book);
             return book;
         } else {

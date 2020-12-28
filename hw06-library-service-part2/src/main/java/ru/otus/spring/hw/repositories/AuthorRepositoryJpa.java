@@ -29,7 +29,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
 
     @Override
     public Author save(Author author) {
-        if (author.getId() <= 0) {
+        if (!author.hasId()) {
             em.persist(author);
             return author;
         } else {

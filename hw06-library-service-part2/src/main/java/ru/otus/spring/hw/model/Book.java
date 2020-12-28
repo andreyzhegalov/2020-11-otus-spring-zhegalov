@@ -40,4 +40,8 @@ public class Book {
     @ManyToOne(targetEntity = Genre.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
+    public boolean hasId() {
+        return id > 0L;
+    }
 }

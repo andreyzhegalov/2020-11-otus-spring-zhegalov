@@ -14,10 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.shell.Shell;
 
-import ru.otus.spring.hw.dao.AuthorDao;
-import ru.otus.spring.hw.dao.BookDao;
-import ru.otus.spring.hw.dao.GenreDao;
 import ru.otus.spring.hw.dto.BookDto;
+import ru.otus.spring.hw.repositories.AuthorRepository;
+import ru.otus.spring.hw.repositories.GenreRepository;
+import ru.otus.spring.hw.service.BookService;
 import ru.otus.spring.hw.service.IOAuthorService;
 import ru.otus.spring.hw.service.IOBookService;
 import ru.otus.spring.hw.service.IOGenreService;
@@ -29,13 +29,13 @@ class ApplicationCommandsTest {
     private Shell shell;
 
     @MockBean
-    private GenreDao genreDao;
+    private GenreRepository genreRepository;
 
     @MockBean
-    private AuthorDao authorDao;
+    private AuthorRepository authorRepository;
 
     @MockBean
-    private BookDao bookDao;
+    private BookService bookService;
 
     @MockBean
     private IOBookService ioBookService;
@@ -52,7 +52,7 @@ class ApplicationCommandsTest {
     @Test
     void printShouldPrintAllBooks() {
         shell.evaluate(() -> "pb");
-        then(bookDao).should().getAll();
+        then(bookService).should().findAll();
         then(ioBookService).should().print(any());
     }
 
@@ -60,20 +60,20 @@ class ApplicationCommandsTest {
     void shouldReadNewBook() {
         shell.evaluate(() -> "ab");
         then(ioBookService).should().getBook();
-        then(bookDao).should().insertBook(any());
+        then(bookService).should().save(any());
     }
 
     @Test
     void shouldPrintAllGenre() {
         shell.evaluate(() -> "pg");
-        then(genreDao).should().getAll();
+        then(genreRepository).should().findAll();
         then(ioGenreService).should().print(any());
     }
 
     @Test
     void shouldPrintAllAuthors() {
         shell.evaluate(() -> "pa");
-        then(authorDao).should().getAll();
+        then(authorRepository).should().findAll();
         then(ioAuthorService).should().print(any());
     }
 
@@ -81,7 +81,7 @@ class ApplicationCommandsTest {
     void shouldDeleteBook() {
         final var id = 1L;
         shell.evaluate(() -> "db " + id);
-        then(bookDao).should().deleteBook(eq(id));
+        then(bookService).should().deleteBook(eq(id));
     }
 
     @Test
@@ -90,7 +90,7 @@ class ApplicationCommandsTest {
         given(ioBookService.getBook()).willReturn(new BookDto("title", 1L, 1L));
         shell.evaluate(() -> "ub " + id);
         then(ioBookService).should().getBook();
-        then(bookDao).should().updateBook(bookDtoCaptor.capture());
+        then(bookService).should().save(bookDtoCaptor.capture());
         assertThat(bookDtoCaptor.getValue()).extracting("id").isEqualTo(id);
     }
 }

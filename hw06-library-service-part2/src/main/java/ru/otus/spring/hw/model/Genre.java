@@ -23,4 +23,8 @@ public class Genre {
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    public boolean hasId() {
+        return id > 0;
+    }
 }
