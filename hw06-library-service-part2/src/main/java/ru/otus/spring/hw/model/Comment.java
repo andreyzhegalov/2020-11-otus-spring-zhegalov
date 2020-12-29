@@ -58,4 +58,9 @@ public class Comment {
         return getClass().hashCode();
     }
 
+    @Override
+    public String toString() {
+        return "Comment [ id=" + id + ", text=" + text + "]";
+    }
+
 }

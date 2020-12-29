@@ -6,10 +6,12 @@ import org.springframework.shell.standard.ShellOption;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.repositories.AuthorRepository;
+import ru.otus.spring.hw.repositories.CommentRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.service.BookService;
 import ru.otus.spring.hw.service.IOAuthorService;
 import ru.otus.spring.hw.service.IOBookService;
+import ru.otus.spring.hw.service.IOCommentService;
 import ru.otus.spring.hw.service.IOGenreService;
 
 @RequiredArgsConstructor
@@ -18,9 +20,11 @@ public class ApplicationCommands {
     private final BookService bookService;
     private final GenreRepository genreRepository;
     private final AuthorRepository authorRepository;
+    private final CommentRepository commentRepository;
     private final IOBookService ioBookService;
     private final IOGenreService ioGenreService;
     private final IOAuthorService ioAuthorService;
+    private final IOCommentService ioCommentService;
 
     @ShellMethod(value = "Print all books", key = { "pb", "print-books" })
     public void printAllBooks() {
@@ -56,5 +60,11 @@ public class ApplicationCommands {
     public void printAllAuthors() {
         final var authors = authorRepository.findAll();
         ioAuthorService.print(authors);
+    }
+
+    @ShellMethod(value = "Print all comments", key = { "pc", "print-comments" })
+    public void printAllComments() {
+        final var comments = commentRepository.findAll();
+        ioCommentService.print(comments);
     }
 }

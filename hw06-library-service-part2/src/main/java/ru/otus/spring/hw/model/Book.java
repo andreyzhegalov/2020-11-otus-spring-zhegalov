@@ -21,14 +21,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
-@Getter
 @Entity
 @Table(name = "books")
-@NoArgsConstructor
-@EqualsAndHashCode
 @NamedEntityGraph(name = "book-author-genre-comments-entity-graph", attributeNodes = { @NamedAttributeNode("author"),
         @NamedAttributeNode("genre"), @NamedAttributeNode("comments") })
+@NoArgsConstructor
+@Getter
+@ToString
+@EqualsAndHashCode
 public class Book {
     @Setter
     @Id
@@ -41,12 +43,14 @@ public class Book {
     private String title;
 
     @Setter
-    @ManyToOne(targetEntity = Author.class, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(targetEntity = Author.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,
+            CascadeType.PERSIST })
     @JoinColumn(name = "author_id")
     private Author author;
 
     @Setter
-    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,
+            CascadeType.PERSIST })
     @JoinColumn(name = "genre_id")
     private Genre genre;
 

@@ -16,10 +16,12 @@ import org.springframework.shell.Shell;
 
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.repositories.AuthorRepository;
+import ru.otus.spring.hw.repositories.CommentRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.service.BookService;
 import ru.otus.spring.hw.service.IOAuthorService;
 import ru.otus.spring.hw.service.IOBookService;
+import ru.otus.spring.hw.service.IOCommentService;
 import ru.otus.spring.hw.service.IOGenreService;
 
 @SpringBootTest
@@ -35,6 +37,9 @@ class ApplicationCommandsTest {
     private AuthorRepository authorRepository;
 
     @MockBean
+    private CommentRepository commentRepository;
+
+    @MockBean
     private BookService bookService;
 
     @MockBean
@@ -45,6 +50,9 @@ class ApplicationCommandsTest {
 
     @MockBean
     private IOAuthorService ioAuthorService;
+
+    @MockBean
+    private IOCommentService ioCommentService;
 
     @Captor
     private ArgumentCaptor<BookDto> bookDtoCaptor;
@@ -92,5 +100,12 @@ class ApplicationCommandsTest {
         then(ioBookService).should().getBook();
         then(bookService).should().save(bookDtoCaptor.capture());
         assertThat(bookDtoCaptor.getValue()).extracting("id").isEqualTo(id);
+    }
+
+    @Test
+    void shouldPrintAllComments() {
+        shell.evaluate(() -> "pc");
+        then(commentRepository).should().findAll();
+        then(ioCommentService).should().print(any());
     }
 }
