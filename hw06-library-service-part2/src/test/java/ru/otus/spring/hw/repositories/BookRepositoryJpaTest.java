@@ -127,6 +127,17 @@ public class BookRepositoryJpaTest {
     }
 
     @Test
+    void removeBookShouldDeleteComments(){
+        final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
+        assertThat(initBook.getComments()).isNotEmpty();
+        em.detach(initBook);
+
+        bookRepository.remove(initBook.getId());
+        em.flush();
+        assertThat(statistic.getEntityDeleteCount()).isEqualTo(2);
+    }
+
+    @Test
     void deletingAExistingBookShouldDeleteBook() {
         final var mayBeBook = bookRepository.findById(EXISTED_BOOK_ID);
         assertThat(mayBeBook).isPresent().get().isInstanceOf(Book.class);

@@ -12,4 +12,8 @@ public class RepositoryException extends RuntimeException {
         super(msg);
     }
 
+    public RepositoryException(Throwable other){
+        super(other);
+    }
+
 }

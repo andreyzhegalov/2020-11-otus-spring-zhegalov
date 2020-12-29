@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -42,11 +43,10 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public void remove(long id) {
-        final var query = em.createQuery("delete from Book b where b.id=:id");
-        query.setParameter("id", id);
-        final var updatedCount = query.executeUpdate();
-        if (updatedCount != 1) {
-            throw new RepositoryException(String.format("Author with id %d was not deleted", id));
+        try {
+            em.remove(em.getReference(Book.class, id));
+        } catch (EntityNotFoundException e) {
+            throw new RepositoryException(e);
         }
     }
 }
