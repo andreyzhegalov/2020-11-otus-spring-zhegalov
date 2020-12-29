@@ -73,7 +73,7 @@ public class BookRepositoryJpaTest {
 
     @Test
     void shouldUpdateBookIfIdExist() {
-        final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("genre not exist"));
+        final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
         final var updatedAuthor = new Author(initBook.getAuthor().getId(), initBook.getAuthor().getName() + "_modify");
         final var updatedGenre = new Genre(initBook.getGenre().getId(), initBook.getGenre().getName() + "_modify");
         final var updatedBook = new Book(initBook.getId(), initBook.getTitle() + "_modify", updatedAuthor,
@@ -107,8 +107,23 @@ public class BookRepositoryJpaTest {
         assertThat(mayBeBook.get().getComments()).isNotNull().hasSize(2);
         assertThat(bookRepository.findAll().size()).isEqualTo(BOOK_COUNT + 1);
 
-        assertThat(statistic.getEntityUpdateCount()).isEqualTo(0);  // Not worked. How to control update queries?
+        assertThat(statistic.getEntityUpdateCount()).isZero(); // Not worked. How to control update queries?
         assertThat(statistic.getEntityInsertCount()).isEqualTo(5);
+    }
+
+    @Test
+    void addCommentShouldInsertNewItemToDb() {
+        final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
+        final var initCommentCount = initBook.getComments().size();
+        initBook.addComment(new Comment(0L, "new comment"));
+
+        bookRepository.save(initBook);
+        em.flush();
+
+        assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent().get().extracting("comments")
+                .matches(c -> c != null);
+        assertThat(bookRepository.findById(EXISTED_BOOK_ID).get().getComments().size()).isEqualTo(initCommentCount + 1);
+        assertThat(statistic.getEntityInsertCount()).isEqualTo(1);
     }
 
     @Test
