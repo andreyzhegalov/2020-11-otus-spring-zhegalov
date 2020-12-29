@@ -2,6 +2,7 @@ package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Import;
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.BookRepository;
@@ -129,6 +131,32 @@ public class BookServiceTest {
         then(bookRepository).should().remove(deletedBookId);
         then(authorRepository).shouldHaveNoInteractions();
         then(genreRepository).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldThrowExceptionIfBookNotExist() {
+        final var bookId = 1L;
+        final var comment = new Comment("new text");
+        given(bookRepository.findById(eq(bookId))).willReturn(Optional.empty());
+
+        assertThatCode(() -> bookService.addComment(bookId, comment)).isInstanceOf(ServiceException.class);
+
+        then(bookRepository).should().findById(eq(bookId));
+    }
+
+    @Test
+    void shouldSaveAddedCommentForExistedBook() {
+        final var bookId = 1L;
+        final var comment = new Comment("new text");
+        final var book = new Book();
+        final var initCommentCount = 0;
+        given(bookRepository.findById(eq(bookId))).willReturn(Optional.of(book));
+
+        bookService.addComment(bookId, comment);
+
+        then(bookRepository).should().findById(eq(bookId));
+        then(bookRepository).should().save(bookCaptor.capture());
+        assertThat(bookCaptor.getValue()).isNotNull().extracting("comments.size").isEqualTo(initCommentCount + 1);
     }
 
 }

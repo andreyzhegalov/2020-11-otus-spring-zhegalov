@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.BookRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
@@ -39,6 +40,16 @@ public class BookServiceImpl implements BookService {
         final var genre = genreRepository.findById(bookDto.getGenreId())
                 .orElseThrow(() -> new ServiceException("Genre with id " + bookDto.getGenreId() + " not exist"));
         bookRepository.save(new Book(bookDto.getId(), bookDto.getTitle(), author, genre));
+    }
+
+    @Transactional
+    @Override
+    public void addComment(long bookId, Comment comment) {
+        final var book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new ServiceException("Book with id " + bookId + " not found"));
+
+        book.addComment(comment);
+        bookRepository.save(book);
     }
 
 }

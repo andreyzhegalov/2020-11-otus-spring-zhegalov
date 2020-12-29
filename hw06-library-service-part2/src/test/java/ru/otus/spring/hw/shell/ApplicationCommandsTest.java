@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.shell.Shell;
 
 import ru.otus.spring.hw.dto.BookDto;
+import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.CommentRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
@@ -107,5 +108,14 @@ class ApplicationCommandsTest {
         shell.evaluate(() -> "pc");
         then(commentRepository).should().findAll();
         then(ioCommentService).should().print(any());
+    }
+
+    @Test
+    void shouldAddNewCommentForBook() {
+        final var bookId = 1L;
+        given(ioCommentService.getComment()).willReturn(new Comment("comment"));
+        shell.evaluate(() -> "ac " + bookId);
+        then(ioCommentService).should().getComment();
+        then(bookService).should().addComment(eq(bookId), any(Comment.class));
     }
 }

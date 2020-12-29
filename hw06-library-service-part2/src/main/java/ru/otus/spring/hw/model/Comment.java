@@ -30,6 +30,11 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private Book book;
 
+    public Comment(String text) {
+        this.id = 0L;
+        this.text = text;
+    }
+
     public Comment(long id, String text) {
         this.id = id;
         this.text = text;

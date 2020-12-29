@@ -55,7 +55,7 @@ public class Book {
     private Genre genre;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     public Book(long id, String title, Author author, Genre genre) {
         this.id = id;

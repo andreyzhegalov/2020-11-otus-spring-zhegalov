@@ -1,9 +1,11 @@
 package ru.otus.spring.hw.service;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -37,6 +39,16 @@ public class IOCommentServiceTest {
         ioCommentService.print(List.of(comment1, comment2));
         then(ioService).should(atLeastOnce()).print(anyString());
         then(ioService).should(never()).read();
+    }
+
+    @Test
+    void shouldReadCommentFromIOService() {
+        given(ioService.read()).willReturn("comment text");
+
+        assertThat(ioCommentService.getComment()).isInstanceOf(Comment.class);
+
+        then(ioService).should(atLeastOnce()).print(anyString());
+        then(ioService).should(atLeastOnce()).read();
     }
 
 }

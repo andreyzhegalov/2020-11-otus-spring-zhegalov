@@ -67,4 +67,10 @@ public class ApplicationCommands {
         final var comments = commentRepository.findAll();
         ioCommentService.print(comments);
     }
+
+    @ShellMethod(value = "Add comment to the book", key = { "ac", "add-comment" })
+    public void addComment(@ShellOption long id) {
+        final var comment = ioCommentService.getComment();
+        bookService.addComment(id, comment);
+    }
 }

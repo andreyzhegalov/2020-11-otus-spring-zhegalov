@@ -4,6 +4,7 @@ import java.util.List;
 
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.Comment;
 
 public interface BookService {
 
@@ -12,4 +13,6 @@ public interface BookService {
     void deleteBook(long id);
 
     List<Book> findAll();
+
+    void addComment(long bookId, Comment comment);
 }
