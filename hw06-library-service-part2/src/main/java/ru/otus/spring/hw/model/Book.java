@@ -20,7 +20,6 @@ import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -32,23 +31,21 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class Book {
-    @Setter
+    private final static long NOT_EXISTED_ID = 0L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = true)
     private long id;
 
-    @Setter
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Setter
     @ManyToOne(targetEntity = Author.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,
             CascadeType.PERSIST })
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @Setter
     @ManyToOne(targetEntity = Genre.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,
             CascadeType.PERSIST })
     @JoinColumn(name = "genre_id")
@@ -57,12 +54,18 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    public Book(String title, Author author, Genre genre) {
+        this.id = NOT_EXISTED_ID;
+        this.title = title;
+        this.author = author;
+        this.genre = genre;
+    }
+
     public Book(long id, String title, Author author, Genre genre) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.genre = genre;
-        this.comments = new ArrayList<>();
     }
 
     public boolean addComment(Comment comment) {
@@ -71,6 +74,6 @@ public class Book {
     }
 
     public boolean hasId() {
-        return id > 0L;
+        return id > NOT_EXISTED_ID;
     }
 }

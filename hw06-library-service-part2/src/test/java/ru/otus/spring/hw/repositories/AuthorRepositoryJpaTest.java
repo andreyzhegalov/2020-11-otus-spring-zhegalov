@@ -28,7 +28,7 @@ public class AuthorRepositoryJpaTest {
     @Test
     void shouldReturnAuthorList() {
         var authors = authorRepository.findAll();
-        assertThat(authors).isNotNull().hasSize(AUTHOR_COUNT).allMatch(s -> !s.getName().equals(""));
+        assertThat(authors).isNotNull().hasSize(AUTHOR_COUNT).allMatch(s -> s != null && !s.getName().equals(""));
     }
 
     @Test
@@ -43,32 +43,34 @@ public class AuthorRepositoryJpaTest {
     }
 
     @Test
-    void shouldUpdateAuthorIfIdExist() {
-        final var initAuthor = authorRepository.findById(EXISTED_AUTHOR_ID).orElseGet(() -> fail("author not exist"));
-        final var updatedAuthor = new Author(initAuthor.getId(), initAuthor.getName() + "_modify");
-
-        assertThatCode(() -> authorRepository.save(updatedAuthor)).doesNotThrowAnyException();
-
-        assertThat(authorRepository.findById(EXISTED_AUTHOR_ID)).isPresent().get().isEqualTo(updatedAuthor);
-        assertThat(authorRepository.findAll()).hasSize(AUTHOR_COUNT);
-    }
-
-    @Test
     void shouldInsertIfAuthorIdNotExisted() {
-        final var insertedAuthor = new Author(0L, "name");
+        final var insertedAuthor = new Author("name");
         assertThat(insertedAuthor.hasId()).isFalse();
 
         final var author = authorRepository.save(insertedAuthor);
+        em.flush();
 
         assertThat(author.hasId()).isTrue();
         assertThat(authorRepository.findAll()).hasSize(AUTHOR_COUNT + 1);
     }
 
     @Test
+    void shouldUpdateAuthorIfIdExist() {
+        final var author = authorRepository.findById(EXISTED_AUTHOR_ID).orElseGet(() -> fail("author not exist"));
+        author.setName(author.getName() + "_modify");
+
+        assertThatCode(() -> authorRepository.save(author)).doesNotThrowAnyException();
+        em.flush();
+        em.clear();
+
+        assertThat(authorRepository.findById(EXISTED_AUTHOR_ID)).isPresent().get().isEqualTo(author);
+        assertThat(authorRepository.findAll()).hasSize(AUTHOR_COUNT);
+    }
+
+    @Test
     void deletingAExistingAuthorShouldDeleteAuthor() {
-        final var mayBeAuthor = authorRepository.findById(EXISTED_AUTHOR_ID);
-        assertThat(mayBeAuthor).isPresent().get().isInstanceOf(Author.class);
-        em.detach(mayBeAuthor.get());
+        authorRepository.findById(EXISTED_AUTHOR_ID).orElseGet(() -> fail("author not exist"));
+        em.clear();
 
         authorRepository.remove(EXISTED_AUTHOR_ID);
 

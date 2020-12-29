@@ -28,7 +28,7 @@ public class GenreRepositoryJpaTest {
     @Test
     void shouldReturnGenreList() {
         var genres = genreRepository.findAll();
-        assertThat(genres).isNotNull().hasSize(GENRE_COUNT).allMatch(s -> !s.getName().equals(""));
+        assertThat(genres).isNotNull().hasSize(GENRE_COUNT).allMatch(s -> s != null && !s.getName().equals(""));
     }
 
     @Test
@@ -43,32 +43,35 @@ public class GenreRepositoryJpaTest {
     }
 
     @Test
-    void shouldUpdateGenreIfIdExist() {
-        final var initGenre = genreRepository.findById(EXISTED_GENRE_ID).orElseGet(() -> fail("genre not exist"));
-        final var updatedGenre = new Genre(initGenre.getId(), initGenre.getName() + "_modify");
-
-        genreRepository.save(updatedGenre);
-
-        assertThat(genreRepository.findById(EXISTED_GENRE_ID)).isPresent().get().isEqualTo(updatedGenre);
-        assertThat(genreRepository.findAll()).hasSize(GENRE_COUNT);
-    }
-
-    @Test
     void shouldInsertIfGenreIdNotExisted() {
-        final var updatedGenre = new Genre(0L, "name");
+        final var updatedGenre = new Genre("name");
         assertThat(updatedGenre.hasId()).isFalse();
 
         final var genre = genreRepository.save(updatedGenre);
+        em.flush();
+        em.flush();
 
         assertThat(genre.hasId()).isTrue();
         assertThat(genreRepository.findAll()).hasSize(GENRE_COUNT + 1);
     }
 
     @Test
+    void shouldUpdateGenreIfIdExist() {
+        final var genre = genreRepository.findById(EXISTED_GENRE_ID).orElseGet(() -> fail("item not exist"));
+        genre.setName(genre.getName() + "_modify");
+
+        assertThatCode(() -> genreRepository.save(genre)).doesNotThrowAnyException();
+        em.flush();
+        em.clear();
+
+        assertThat(genreRepository.findById(EXISTED_GENRE_ID)).isPresent().get().isEqualTo(genre);
+        assertThat(genreRepository.findAll()).hasSize(GENRE_COUNT);
+    }
+
+    @Test
     void deletingAExistingWorkbookShouldDeleteGenre() {
-        final var mayBeGenre = genreRepository.findById(EXISTED_GENRE_ID);
-        assertThat(mayBeGenre).isPresent();
-        em.detach(mayBeGenre.get());
+        genreRepository.findById(EXISTED_GENRE_ID).orElseGet(() -> fail("item not exist"));
+        em.clear();
 
         genreRepository.remove(EXISTED_GENRE_ID);
 

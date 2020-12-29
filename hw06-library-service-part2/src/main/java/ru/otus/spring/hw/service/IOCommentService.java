@@ -22,5 +22,4 @@ public class IOCommentService {
         final var text = ioService.read();
         return new Comment(text);
     }
-
 }

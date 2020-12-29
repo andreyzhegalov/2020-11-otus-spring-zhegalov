@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
+    private final static long NOT_EXISTED_ID = 0L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = true, unique = true)
@@ -31,7 +33,7 @@ public class Comment {
     private Book book;
 
     public Comment(String text) {
-        this.id = 0L;
+        this.id = NOT_EXISTED_ID;
         this.text = text;
     }
 
@@ -41,7 +43,7 @@ public class Comment {
     }
 
     public boolean hasId() {
-        return id > 0;
+        return id > NOT_EXISTED_ID;
     }
 
     @Override

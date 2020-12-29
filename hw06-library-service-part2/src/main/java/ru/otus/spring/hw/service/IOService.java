@@ -4,5 +4,4 @@ public interface IOService {
     void print(String text);
 
     String read();
-
 }

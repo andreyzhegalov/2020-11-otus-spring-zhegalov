@@ -21,6 +21,7 @@ public class ApplicationCommands {
     private final GenreRepository genreRepository;
     private final AuthorRepository authorRepository;
     private final CommentRepository commentRepository;
+
     private final IOBookService ioBookService;
     private final IOGenreService ioGenreService;
     private final IOAuthorService ioAuthorService;

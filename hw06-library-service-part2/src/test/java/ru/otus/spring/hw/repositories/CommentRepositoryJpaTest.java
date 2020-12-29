@@ -31,7 +31,7 @@ public class CommentRepositoryJpaTest {
     @Test
     void shouldReturnCommentList() {
         var comments = commentRepository.findAll();
-        assertThat(comments).isNotNull().hasSize(COMMENT_COUNT).allMatch(s -> !s.getText().equals(""));
+        assertThat(comments).isNotNull().hasSize(COMMENT_COUNT).allMatch(s -> s != null && !s.getText().equals(""));
     }
 
     @Test
@@ -46,33 +46,35 @@ public class CommentRepositoryJpaTest {
     }
 
     @Test
-    void shouldUpdateCommentIfIdExist() {
-        final var initComment = commentRepository.findById(EXISTED_COMMENT_ID)
-                .orElseGet(() -> fail("comment not exist"));
-        final var updatedComment = new Comment(initComment.getId(), initComment.getText() + "_modify");
-
-        commentRepository.save(updatedComment);
-
-        assertThat(commentRepository.findById(EXISTED_COMMENT_ID)).isPresent().get().isEqualTo(updatedComment);
-        assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT);
-    }
-
-    @Test
     void shouldInsertIfCommentIdNotExisted() {
-        final var updatedComment = new Comment(0L, "name");
+        final var updatedComment = new Comment("name");
         assertThat(updatedComment.hasId()).isFalse();
 
         final var comment = commentRepository.save(updatedComment);
+        em.flush();
+        em.clear();
 
         assertThat(comment.hasId()).isTrue();
         assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT + 1);
     }
 
     @Test
+    void shouldUpdateCommentIfIdExist() {
+        final var comment = commentRepository.findById(EXISTED_COMMENT_ID).orElseGet(() -> fail("comment not exist"));
+        comment.setText(comment.getText() + "_modify");
+
+        assertThatCode(() -> commentRepository.save(comment)).doesNotThrowAnyException();
+        em.flush();
+        em.clear();
+
+        assertThat(commentRepository.findById(EXISTED_COMMENT_ID)).isPresent().get().isEqualTo(comment);
+        assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT);
+    }
+
+    @Test
     void deletingAExistingWorkbookShouldDeleteComment() {
-        final var mayBeComment = commentRepository.findById(EXISTED_COMMENT_ID);
-        assertThat(mayBeComment).isPresent();
-        em.detach(mayBeComment.get());
+        commentRepository.findById(EXISTED_COMMENT_ID).orElseGet(() -> fail("comment not exist"));
+        em.clear();
 
         commentRepository.remove(EXISTED_COMMENT_ID);
 

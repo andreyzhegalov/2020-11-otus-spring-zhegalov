@@ -13,20 +13,28 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "authors")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@Table(name = "authors")
 public class Author {
+    private final static long NOT_EXISTED_ID = 0L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = true)
     private long id;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    public Author(String name) {
+        this.id = NOT_EXISTED_ID;
+        this.name = name;
+    }
+
     public boolean hasId() {
-        return id > 0L;
+        return id > NOT_EXISTED_ID;
     }
 }

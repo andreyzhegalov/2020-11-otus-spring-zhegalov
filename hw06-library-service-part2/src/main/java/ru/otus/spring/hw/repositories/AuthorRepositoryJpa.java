@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -40,11 +41,10 @@ public class AuthorRepositoryJpa implements AuthorRepository {
 
     @Override
     public void remove(long id) {
-        final var query = em.createQuery("delete from Author a where a.id = :id");
-        query.setParameter("id", id);
-        final int result = query.executeUpdate();
-        if (result != 1) {
-            throw new RepositoryException(String.format("Author with id %d was not deleted", id));
+        try {
+            em.remove(em.getReference(Author.class, id));
+        } catch (EntityNotFoundException e) {
+            throw new RepositoryException(e);
         }
     }
 }

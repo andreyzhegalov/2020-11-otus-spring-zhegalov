@@ -5,5 +5,4 @@ public interface ScannerInputStream {
     boolean hasNext();
 
     String nextLine();
-
 }

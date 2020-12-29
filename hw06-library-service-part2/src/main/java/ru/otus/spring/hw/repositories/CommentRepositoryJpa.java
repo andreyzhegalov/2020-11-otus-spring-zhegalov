@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -38,11 +39,10 @@ public class CommentRepositoryJpa implements CommentRepository {
 
     @Override
     public void remove(long id) {
-        final var query = em.createQuery("delete from Comment c where c.id=:id");
-        query.setParameter("id", id);
-        final var result = query.executeUpdate();
-        if (result == 0) {
-            throw new RepositoryException(String.format("Comment with id %d was not deleted", id));
+        try {
+            em.remove(em.getReference(Comment.class, id));
+        } catch (EntityNotFoundException e) {
+            throw new RepositoryException(e);
         }
     }
 
