@@ -50,6 +50,7 @@ public class BookRepositoryJpaTest {
     @Test
     void shouldReturnBookList() {
         var books = bookRepository.findAll();
+
         assertThat(books).isNotNull().hasSize(BOOK_COUNT).allMatch(b -> b != null)
                 .allMatch(b -> !b.getTitle().equals(""))
                 .allMatch(b -> b.getGenre() != null && b.getGenre().getName() != "")
@@ -61,11 +62,12 @@ public class BookRepositoryJpaTest {
     @Test
     void shouldReturnBookByIdWhenBookExisted() {
         final var book = bookRepository.findById(EXISTED_BOOK_ID);
+
         assertThat(book).isPresent().get().extracting("id").isEqualTo(EXISTED_BOOK_ID);
         assertThat(book.get().getAuthor()).isNotNull().extracting("name").isNotEqualTo("");
         assertThat(book.get().getGenre()).isNotNull().extracting("name").isNotEqualTo("");
         assertThat(book.get().getComments()).isNotNull().isNotEmpty();
-        assertThat(statistic.getPrepareStatementCount()).isEqualTo(2);
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
     }
 
     @Test

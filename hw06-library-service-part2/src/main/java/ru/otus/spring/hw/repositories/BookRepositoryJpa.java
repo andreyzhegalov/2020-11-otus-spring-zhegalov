@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -27,7 +28,14 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public Optional<Book> findById(long id) {
-        return Optional.ofNullable(em.find(Book.class, id));
+        final EntityGraph<?> entityGraph = em.getEntityGraph("book-author-genre-comments-entity-graph");
+        final var query = em.createQuery("select b from Book b left join fetch b.comments where b.id=:id", Book.class)
+                .setParameter("id", id).setHint("javax.persistence.fetchgraph", entityGraph);
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
