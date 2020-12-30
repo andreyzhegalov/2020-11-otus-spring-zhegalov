@@ -74,4 +74,16 @@ public class ApplicationCommands {
         final var comment = ioCommentService.getComment();
         bookService.addComment(id, comment);
     }
+
+    @ShellMethod(value = "Add author to book", key = { "aa", "add-author" })
+    public void addAuthor(@ShellOption long bookId) {
+        final var authorDto = ioAuthorService.getAuthor();
+        bookService.addAuthor(bookId, authorDto);
+    }
+
+    @ShellMethod(value = "Remove author from book", key = { "da", "delete-author" })
+    public void removeAuthor(@ShellOption long bookId) {
+        final var authorDto = ioAuthorService.getAuthor();
+        bookService.removeAuthor(bookId, authorDto);
+    }
 }

@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -14,7 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.shell.Shell;
 
+import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
+import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.CommentRepository;
@@ -114,8 +118,38 @@ class ApplicationCommandsTest {
     void shouldAddNewCommentForBook() {
         final var bookId = 1L;
         given(ioCommentService.getComment()).willReturn(new Comment("comment"));
-        shell.evaluate(() -> "ac " + bookId);
+        shell.evaluate(() -> "add-comment " + bookId);
         then(ioCommentService).should().getComment();
         then(bookService).should().addComment(eq(bookId), any(Comment.class));
+    }
+
+    @Test
+    void shouldAddExistedAuthorToBook() {
+        final var bookId = 1L;
+        final var addedAuthorId = 2L;
+        final var addedAuthor = new Author(addedAuthorId, "");
+        final var addedAuthorDto = new AuthorDto(addedAuthor);
+        given(ioAuthorService.getAuthor()).willReturn(addedAuthorDto);
+        given(authorRepository.findById(eq(addedAuthorId))).willReturn(Optional.of(addedAuthor));
+
+        shell.evaluate(() -> "add-author " + bookId);
+
+        then(ioAuthorService).should().getAuthor();
+        then(bookService).should().addAuthor(eq(bookId), eq(addedAuthorDto));
+    }
+
+    @Test
+    void shouldRemoveExistedAuthorFromBook() {
+        final var bookId = 1L;
+        final var addedAuthorId = 2L;
+        final var addedAuthor = new Author(addedAuthorId, "");
+        final var addedAuthorDto = new AuthorDto(addedAuthor);
+        given(ioAuthorService.getAuthor()).willReturn(addedAuthorDto);
+        given(authorRepository.findById(eq(addedAuthorId))).willReturn(Optional.of(addedAuthor));
+
+        shell.evaluate(() -> "delete-author " + bookId);
+
+        then(ioAuthorService).should().getAuthor();
+        then(bookService).should().removeAuthor(eq(bookId), eq(addedAuthorDto));
     }
 }

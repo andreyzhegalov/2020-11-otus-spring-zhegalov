@@ -29,5 +29,4 @@ public class IOBookService {
         final var genreId = Long.valueOf(ioService.read());
         return new BookDto(bookTitle, authorId, genreId);
     }
-
 }

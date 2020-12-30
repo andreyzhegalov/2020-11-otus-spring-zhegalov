@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
@@ -160,7 +161,39 @@ public class BookServiceTest {
     }
 
     @Test
-    void shouldAddAuthorToAuthorsList(){
+    void shouldAddAuthorToAuthorsList() {
+        final var bookId = 1L;
+        final var authorId = 2L;
+        final var authorDto = new AuthorDto(authorId);
+        final var author = new Author(authorDto.getId(), "name");
+        final var book = new Book();
+        book.addAuthor(author);
+        given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
+        given(authorRepository.findById(authorId)).willReturn(Optional.of(author));
+
+        bookService.addAuthor(bookId, authorDto);
+
+        then(bookRepository).should().findById(bookId);
+        then(authorRepository).should().findById(eq(authorId));
+        then(bookRepository).should().save(book);
+    }
+
+    @Test
+    void shouldRemoveAuthorFromAuthorList() {
+        final var bookId = 1L;
+        final var authorId = 2L;
+        final var authorDto = new AuthorDto(authorId);
+        final var author = new Author(authorDto.getId(), "name");
+        final var book = new Book();
+        book.removeAuthor(author);
+        given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
+        given(authorRepository.findById(authorId)).willReturn(Optional.of(author));
+
+        bookService.removeAuthor(bookId, authorDto);
+
+        then(bookRepository).should().findById(bookId);
+        then(authorRepository).should().findById(eq(authorId));
+        then(bookRepository).should().save(book);
     }
 
 }

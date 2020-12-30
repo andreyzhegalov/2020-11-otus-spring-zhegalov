@@ -38,4 +38,5 @@ public class IOAuthorServiceTest {
         then(ioService).should(atLeastOnce()).print(anyString());
         then(ioService).should(never()).read();
     }
+
 }

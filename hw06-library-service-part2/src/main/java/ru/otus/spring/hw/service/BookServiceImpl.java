@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Comment;
@@ -52,4 +53,25 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(book);
     }
 
+    @Transactional
+    @Override
+    public void addAuthor(long bookId, AuthorDto authorDto) {
+        final var book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new ServiceException("Book with id " + bookId + " not found"));
+        final var author = authorRepository.findById(authorDto.getId())
+                .orElseThrow(() -> new ServiceException("Author with id " + authorDto.getId() + " not exist"));
+        book.addAuthor(author);
+        bookRepository.save(book);
+    }
+
+    @Transactional
+    @Override
+    public void removeAuthor(long bookId, AuthorDto authorDto) {
+        final var book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new ServiceException("Book with id " + bookId + " not found"));
+        final var author = authorRepository.findById(authorDto.getId())
+                .orElseThrow(() -> new ServiceException("Author with id " + authorDto.getId() + " not exist"));
+        book.removeAuthor(author);
+        bookRepository.save(book);
+    }
 }

@@ -2,6 +2,7 @@ package ru.otus.spring.hw.service;
 
 import java.util.List;
 
+import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Comment;
@@ -15,4 +16,8 @@ public interface BookService {
     List<Book> findAll();
 
     void addComment(long bookId, Comment comment);
+
+    void addAuthor(long bookId, AuthorDto authorDto);
+
+    void removeAuthor(long bookId, AuthorDto authorDto);
 }
