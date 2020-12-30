@@ -1,7 +1,9 @@
 package ru.otus.spring.hw.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,25 +13,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @Table(name = "books")
-@NamedEntityGraph(name = "book-author-genre-comments-entity-graph", attributeNodes = { @NamedAttributeNode("author"),
+@NamedEntityGraph(name = "book-authors-genre-comments-entity-graph", attributeNodes = { @NamedAttributeNode("authors"),
         @NamedAttributeNode("genre"), @NamedAttributeNode("comments") })
 @NoArgsConstructor
 @Getter
 @ToString
-@EqualsAndHashCode
 public class Book {
     private final static long NOT_EXISTED_ID = 0L;
 
@@ -41,10 +43,10 @@ public class Book {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @ManyToOne(targetEntity = Author.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,
-            CascadeType.PERSIST })
-    @JoinColumn(name = "author_id")
-    private Author author;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "book_author", joinColumns = { @JoinColumn(name = "fk_book") }, inverseJoinColumns = {
+            @JoinColumn(name = "fk_author") })
+    private Set<Author> authors = new HashSet<>();
 
     @ManyToOne(targetEntity = Genre.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,
             CascadeType.PERSIST })
@@ -57,23 +59,58 @@ public class Book {
     public Book(String title, Author author, Genre genre) {
         this.id = NOT_EXISTED_ID;
         this.title = title;
-        this.author = author;
+        addAuthor(author);
         this.genre = genre;
     }
 
     public Book(long id, String title, Author author, Genre genre) {
         this.id = id;
         this.title = title;
-        this.author = author;
+        this.authors.add(author);
         this.genre = genre;
     }
 
-    public boolean addComment(Comment comment) {
+    public void addComment(Comment comment) {
         comment.setBook(this);
-        return comments.add(comment);
+        comments.add(comment);
+    }
+
+    public void removeComment(Comment comment) {
+        comment.setBook(null);
+        comments.remove(comment);
+    }
+
+    public void addAuthor(Author author) {
+        authors.add(author);
+        author.getBooks().add(this);
+    }
+
+    public void removeAuthor(Author author) {
+        authors.remove(author);
+        author.getBooks().remove(this);
     }
 
     public boolean hasId() {
         return id > NOT_EXISTED_ID;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Book other = (Book) obj;
+        if (id != other.id) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

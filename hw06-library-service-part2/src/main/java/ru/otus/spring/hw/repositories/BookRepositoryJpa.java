@@ -21,14 +21,14 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public List<Book> findAll() {
-        final EntityGraph<?> entityGraph = em.getEntityGraph("book-author-genre-comments-entity-graph");
+        final EntityGraph<?> entityGraph = em.getEntityGraph("book-authors-genre-comments-entity-graph");
         return em.createQuery("select b from Book b left join fetch b.comments", Book.class)
                 .setHint("javax.persistence.fetchgraph", entityGraph).getResultList();
     }
 
     @Override
     public Optional<Book> findById(long id) {
-        final EntityGraph<?> entityGraph = em.getEntityGraph("book-author-genre-comments-entity-graph");
+        final EntityGraph<?> entityGraph = em.getEntityGraph("book-authors-genre-comments-entity-graph");
         final var query = em.createQuery("select b from Book b left join fetch b.comments where b.id=:id", Book.class)
                 .setParameter("id", id).setHint("javax.persistence.fetchgraph", entityGraph);
         try {

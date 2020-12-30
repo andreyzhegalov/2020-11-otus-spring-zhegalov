@@ -57,13 +57,13 @@ public class AuthorRepositoryJpaTest {
     @Test
     void shouldUpdateAuthorIfIdExist() {
         final var author = authorRepository.findById(EXISTED_AUTHOR_ID).orElseGet(() -> fail("author not exist"));
-        author.setName(author.getName() + "_modify");
+        final var updatedAuthor = new Author(author.getId(), author.getName() + "_modify");
 
-        assertThatCode(() -> authorRepository.save(author)).doesNotThrowAnyException();
+        assertThatCode(() -> authorRepository.save(updatedAuthor)).doesNotThrowAnyException();
         em.flush();
         em.clear();
 
-        assertThat(authorRepository.findById(EXISTED_AUTHOR_ID)).isPresent().get().isEqualTo(author);
+        assertThat(authorRepository.findById(EXISTED_AUTHOR_ID)).isPresent().get().isEqualTo(updatedAuthor);
         assertThat(authorRepository.findAll()).hasSize(AUTHOR_COUNT);
     }
 

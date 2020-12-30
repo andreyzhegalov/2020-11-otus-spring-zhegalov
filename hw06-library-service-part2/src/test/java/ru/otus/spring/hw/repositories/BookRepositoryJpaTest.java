@@ -54,7 +54,7 @@ public class BookRepositoryJpaTest {
         assertThat(books).isNotNull().hasSize(BOOK_COUNT).allMatch(b -> b != null)
                 .allMatch(b -> !b.getTitle().equals(""))
                 .allMatch(b -> b.getGenre() != null && b.getGenre().getName() != "")
-                .allMatch(b -> b.getAuthor() != null && b.getAuthor().getName() != "")
+                .allMatch(b -> b.getAuthors() != null && b.getAuthors().size() > 0)
                 .allMatch(b -> b.getComments() != null && b.getComments().size() > 0);
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
     }
@@ -64,7 +64,7 @@ public class BookRepositoryJpaTest {
         final var book = bookRepository.findById(EXISTED_BOOK_ID);
 
         assertThat(book).isPresent().get().extracting("id").isEqualTo(EXISTED_BOOK_ID);
-        assertThat(book.get().getAuthor()).isNotNull().extracting("name").isNotEqualTo("");
+        assertThat(book.get().getAuthors()).isNotNull().allMatch(a -> a != null && a.getName() != "");
         assertThat(book.get().getGenre()).isNotNull().extracting("name").isNotEqualTo("");
         assertThat(book.get().getComments()).isNotNull().isNotEmpty();
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
@@ -78,19 +78,24 @@ public class BookRepositoryJpaTest {
     @Test
     void shouldUpdateBookIfIdExist() {
         final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
-        final var updatedAuthor = new Author(initBook.getAuthor().getId(), initBook.getAuthor().getName() + "_modify");
+        final var initAuthor = initBook.getAuthors().iterator().next();
+        final var updatedAuthor = new Author(initAuthor.getId(), initAuthor.getName() + "_modify");
         final var updatedGenre = new Genre(initBook.getGenre().getId(), initBook.getGenre().getName() + "_modify");
         final var updatedBook = new Book(initBook.getId(), initBook.getTitle() + "_modify", updatedAuthor,
                 updatedGenre);
-
         bookRepository.save(updatedBook);
         em.flush();
         em.clear();
 
-        assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent().get().usingRecursiveComparison()
-                .isEqualTo(updatedBook);
-        assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT);
+        assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
+        final var updatedBookFromDb = bookRepository.findById(EXISTED_BOOK_ID).get();
+        assertThat(updatedBookFromDb.getId()).isEqualTo(updatedBook.getId());
+        assertThat(updatedBookFromDb.getGenre()).isEqualTo(updatedBook.getGenre());
+        assertThat(updatedBookFromDb.getTitle()).isEqualTo(updatedBook.getTitle());
+        assertThat(updatedBookFromDb.getAuthors()).hasSameElementsAs(updatedBook.getAuthors());
+        assertThat(updatedBookFromDb.getComments()).hasSameElementsAs(updatedBook.getComments());
 
+        assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT);
         assertThat(statistic.getEntityUpdateCount()).isEqualTo(3);
     }
 
@@ -145,6 +150,50 @@ public class BookRepositoryJpaTest {
         em.clear();
 
         assertThat(statistic.getEntityDeleteCount()).isEqualTo(2);
+    }
+
+    @Test
+    void addExistedAuthorShouldInsertAuthorToBookAuthorsList() {
+        final var new_author_id = 1L;
+        final var existedAuthor = em.find(Author.class, new_author_id);
+        assertThat(existedAuthor).isNotNull();
+        final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
+        assertThat(initBook.getAuthors()).allMatch(a -> a.getId() != new_author_id);
+        final var initAuthorCount = initBook.getAuthors().size();
+
+        initBook.addAuthor(existedAuthor);
+        em.flush();
+        em.clear();
+
+        assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
+        final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).get();
+        assertThat(bookFromDb.getAuthors()).hasSize(initAuthorCount + 1);
+
+        assertThat(statistic.getEntityUpdateCount()).isZero();
+        assertThat(statistic.getEntityInsertCount()).isZero();
+        assertThat(statistic.getEntityDeleteCount()).isZero();
+    }
+
+    @Test
+    void shouldRemoveAuthorFromBookAuthors() {
+        final var new_author_id = 2L;
+        final var existedAuthor = em.find(Author.class, new_author_id);
+        assertThat(existedAuthor).isNotNull();
+        final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
+        assertThat(initBook.getAuthors()).anyMatch(a -> a.getId() == new_author_id);
+        final var initAuthorCount = initBook.getAuthors().size();
+
+        initBook.removeAuthor(existedAuthor);
+        em.flush();
+        em.clear();
+
+        assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
+        final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).get();
+        assertThat(bookFromDb.getAuthors()).hasSize(initAuthorCount - 1);
+
+        assertThat(statistic.getEntityUpdateCount()).isZero();
+        assertThat(statistic.getEntityInsertCount()).isZero();
+        assertThat(statistic.getEntityDeleteCount()).isZero();
     }
 
     @Test

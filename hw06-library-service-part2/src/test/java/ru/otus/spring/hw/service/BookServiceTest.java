@@ -98,7 +98,7 @@ public class BookServiceTest {
 
         final var updatedBook = bookCaptor.getValue();
         assertThat(updatedBook.getId()).isEqualTo(bookId);
-        assertThat(updatedBook.getAuthor()).isInstanceOf(Author.class);
+        assertThat(updatedBook.getAuthors()).isNotNull().isNotEmpty();
         assertThat(updatedBook.getGenre()).isInstanceOf(Genre.class);
     }
 
@@ -118,7 +118,7 @@ public class BookServiceTest {
 
         final var savedBook = bookCaptor.getValue();
         assertThat(savedBook.hasId()).isFalse();
-        assertThat(savedBook.getAuthor()).isInstanceOf(Author.class);
+        assertThat(savedBook.getAuthors()).isNotNull().isNotEmpty();
         assertThat(savedBook.getGenre()).isInstanceOf(Genre.class);
     }
 
@@ -157,6 +157,10 @@ public class BookServiceTest {
         then(bookRepository).should().findById(eq(bookId));
         then(bookRepository).should().save(bookCaptor.capture());
         assertThat(bookCaptor.getValue()).isNotNull().extracting("comments.size").isEqualTo(initCommentCount + 1);
+    }
+
+    @Test
+    void shouldAddAuthorToAuthorsList(){
     }
 
 }
