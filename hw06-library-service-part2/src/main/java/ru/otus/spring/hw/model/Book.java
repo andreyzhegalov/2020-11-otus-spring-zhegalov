@@ -46,7 +46,7 @@ public class Book {
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "book_author", joinColumns = { @JoinColumn(name = "fk_book") }, inverseJoinColumns = {
             @JoinColumn(name = "fk_author") })
-    private Set<Author> authors = new HashSet<>();
+    private final Set<Author> authors = new HashSet<>();
 
     @ManyToOne(targetEntity = Genre.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,
             CascadeType.PERSIST })
@@ -54,7 +54,7 @@ public class Book {
     private Genre genre;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+    private final List<Comment> comments = new ArrayList<>();
 
     public Book(String title, Author author, Genre genre) {
         this.id = NOT_EXISTED_ID;
@@ -103,10 +103,7 @@ public class Book {
         if (getClass() != obj.getClass())
             return false;
         Book other = (Book) obj;
-        if (id != other.id) {
-            return false;
-        }
-        return true;
+        return id == other.id;
     }
 
     @Override

@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -17,7 +16,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class Genre {
     private final static long NOT_EXISTED_ID = 0L;
 
@@ -36,5 +34,22 @@ public class Genre {
 
     public boolean hasId() {
         return id > NOT_EXISTED_ID;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Genre other = (Genre) obj;
+        return id == other.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

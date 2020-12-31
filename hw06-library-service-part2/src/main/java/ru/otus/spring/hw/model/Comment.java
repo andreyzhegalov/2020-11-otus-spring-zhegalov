@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +16,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "comments")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Comment {
     private final static long NOT_EXISTED_ID = 0L;
 
@@ -55,9 +53,7 @@ public class Comment {
         if (getClass() != obj.getClass())
             return false;
         Comment other = (Comment) obj;
-        if (id != other.id)
-            return false;
-        return true;
+        return id == other.id;
     }
 
     @Override

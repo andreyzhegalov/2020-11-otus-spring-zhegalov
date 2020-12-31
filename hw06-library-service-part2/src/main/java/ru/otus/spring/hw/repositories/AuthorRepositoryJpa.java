@@ -10,13 +10,15 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.model.Author;
 
 @Repository
+@RequiredArgsConstructor
 public class AuthorRepositoryJpa implements AuthorRepository {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     @Transactional(readOnly = true)
     @Override

@@ -79,7 +79,7 @@ public class AuthorRepositoryJpaTest {
     }
 
     @Test
-    void deletingANonExistingAuthorSouldThrowAnException() {
+    void deletingANonExistingAuthorShouldThrowAnException() {
         assertThatCode(() -> authorRepository.remove(NOT_EXISTED_AUTHOR_ID)).isInstanceOf(RepositoryException.class);
         assertThat(authorRepository.findAll()).hasSize(AUTHOR_COUNT);
     }

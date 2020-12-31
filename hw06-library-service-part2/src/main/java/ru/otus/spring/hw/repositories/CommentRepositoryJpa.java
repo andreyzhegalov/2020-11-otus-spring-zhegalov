@@ -9,13 +9,15 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
 
+import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.model.Comment;
 
+@RequiredArgsConstructor
 @Repository
 public class CommentRepositoryJpa implements CommentRepository {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     @Override
     public List<Comment> findAll() {

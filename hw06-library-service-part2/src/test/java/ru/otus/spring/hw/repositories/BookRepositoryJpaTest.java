@@ -19,6 +19,8 @@ import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
 
+import java.util.Objects;
+
 @Import(BookRepositoryJpa.class)
 @DataJpaTest
 public class BookRepositoryJpaTest {
@@ -51,9 +53,9 @@ public class BookRepositoryJpaTest {
     void shouldReturnBookList() {
         var books = bookRepository.findAll();
 
-        assertThat(books).isNotNull().hasSize(BOOK_COUNT).allMatch(b -> b != null)
+        assertThat(books).isNotNull().hasSize(BOOK_COUNT).allMatch(Objects::nonNull)
                 .allMatch(b -> !b.getTitle().equals(""))
-                .allMatch(b -> b.getGenre() != null && b.getGenre().getName() != "")
+                .allMatch(b -> b.getGenre() != null && !b.getGenre().getName().equals(""))
                 .allMatch(b -> b.getAuthors() != null && b.getAuthors().size() > 0)
                 .allMatch(b -> b.getComments() != null && b.getComments().size() > 0);
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
@@ -64,7 +66,7 @@ public class BookRepositoryJpaTest {
         final var book = bookRepository.findById(EXISTED_BOOK_ID);
 
         assertThat(book).isPresent().get().extracting("id").isEqualTo(EXISTED_BOOK_ID);
-        assertThat(book.get().getAuthors()).isNotNull().allMatch(a -> a != null && a.getName() != "");
+        assertThat(book.get().getAuthors()).isNotNull().allMatch(a -> a != null && !a.getName().equals(""));
         assertThat(book.get().getGenre()).isNotNull().extracting("name").isNotEqualTo("");
         assertThat(book.get().getComments()).isNotNull().isNotEmpty();
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
@@ -88,7 +90,7 @@ public class BookRepositoryJpaTest {
         em.clear();
 
         assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
-        final var updatedBookFromDb = bookRepository.findById(EXISTED_BOOK_ID).get();
+        final var updatedBookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(()->fail("item not exist"));
         assertThat(updatedBookFromDb.getId()).isEqualTo(updatedBook.getId());
         assertThat(updatedBookFromDb.getGenre()).isEqualTo(updatedBook.getGenre());
         assertThat(updatedBookFromDb.getTitle()).isEqualTo(updatedBook.getTitle());
@@ -132,8 +134,8 @@ public class BookRepositoryJpaTest {
         em.clear();
 
         assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent().get().extracting("comments")
-                .matches(c -> c != null);
-        assertThat(bookRepository.findById(EXISTED_BOOK_ID).get().getComments()).hasSize(initCommentCount + 1);
+                .matches(Objects::nonNull);
+        assertThat(bookRepository.findById(EXISTED_BOOK_ID).orElseGet(()->fail("item not exist")).getComments()).hasSize(initCommentCount + 1);
 
         assertThat(statistic.getEntityUpdateCount()).isZero();
         assertThat(statistic.getEntityInsertCount()).isEqualTo(1);
@@ -166,13 +168,14 @@ public class BookRepositoryJpaTest {
         em.clear();
 
         assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
-        final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).get();
+        final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(()->fail("item not exist"));
         assertThat(bookFromDb.getAuthors()).hasSize(initAuthorCount + 1);
 
         assertThat(statistic.getEntityUpdateCount()).isZero();
         assertThat(statistic.getEntityInsertCount()).isZero();
         assertThat(statistic.getEntityDeleteCount()).isZero();
     }
+
 
     @Test
     void shouldRemoveAuthorFromBookAuthors() {
@@ -188,7 +191,7 @@ public class BookRepositoryJpaTest {
         em.clear();
 
         assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
-        final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).get();
+        final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(()->fail("item not exist"));
         assertThat(bookFromDb.getAuthors()).hasSize(initAuthorCount - 1);
 
         assertThat(statistic.getEntityUpdateCount()).isZero();

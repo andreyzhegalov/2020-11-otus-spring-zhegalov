@@ -4,16 +4,7 @@ public class RepositoryException extends RuntimeException {
 
     private static final long serialVersionUID = 8727055428394260086L;
 
-    public RepositoryException() {
-
-    }
-
-    public RepositoryException(String msg) {
-        super(msg);
-    }
-
-    public RepositoryException(Throwable other){
+    public RepositoryException(Throwable other) {
         super(other);
     }
-
 }

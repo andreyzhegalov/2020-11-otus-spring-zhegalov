@@ -24,9 +24,9 @@ public class IOBookService {
         ioService.print(GET_TITLE_MESSAGE);
         final var bookTitle = ioService.read();
         ioService.print(GET_AUTHOR_ID);
-        final var authorId = Long.valueOf(ioService.read());
+        final var authorId = Long.parseLong(ioService.read());
         ioService.print(GET_GENRE_ID);
-        final var genreId = Long.valueOf(ioService.read());
+        final var genreId = Long.parseLong(ioService.read());
         return new BookDto(bookTitle, authorId, genreId);
     }
 }

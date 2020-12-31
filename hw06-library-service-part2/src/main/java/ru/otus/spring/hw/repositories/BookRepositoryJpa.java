@@ -11,13 +11,15 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
 
+import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.model.Book;
 
+@RequiredArgsConstructor
 @Repository
 public class BookRepositoryJpa implements BookRepository {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     @Override
     public List<Book> findAll() {

@@ -8,8 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
+import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Comment;
+import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.BookRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
@@ -36,19 +38,15 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void save(BookDto bookDto) {
-        final var author = authorRepository.findById(bookDto.getAuthorId())
-                .orElseThrow(() -> new ServiceException("Author with id " + bookDto.getAuthorId() + " not exist"));
-        final var genre = genreRepository.findById(bookDto.getGenreId())
-                .orElseThrow(() -> new ServiceException("Genre with id " + bookDto.getGenreId() + " not exist"));
+        final var author = getAuthorById(bookDto.getAuthorId());
+        final var genre = getGenreById(bookDto.getGenreId());
         bookRepository.save(new Book(bookDto.getId(), bookDto.getTitle(), author, genre));
     }
 
     @Transactional
     @Override
     public void addComment(long bookId, Comment comment) {
-        final var book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new ServiceException("Book with id " + bookId + " not found"));
-
+        final var book = getBookById(bookId);
         book.addComment(comment);
         bookRepository.save(book);
     }
@@ -56,10 +54,8 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void addAuthor(long bookId, AuthorDto authorDto) {
-        final var book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new ServiceException("Book with id " + bookId + " not found"));
-        final var author = authorRepository.findById(authorDto.getId())
-                .orElseThrow(() -> new ServiceException("Author with id " + authorDto.getId() + " not exist"));
+        final var book = getBookById(bookId);
+        final var author = getAuthorById(authorDto.getId());
         book.addAuthor(author);
         bookRepository.save(book);
     }
@@ -67,11 +63,24 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void removeAuthor(long bookId, AuthorDto authorDto) {
-        final var book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new ServiceException("Book with id " + bookId + " not found"));
-        final var author = authorRepository.findById(authorDto.getId())
-                .orElseThrow(() -> new ServiceException("Author with id " + authorDto.getId() + " not exist"));
+        final var book = getBookById(bookId);
+        final var author = getAuthorById(authorDto.getId());
         book.removeAuthor(author);
         bookRepository.save(book);
+    }
+
+    private Author getAuthorById(long authorId) {
+        return authorRepository.findById(authorId)
+                .orElseThrow(() -> new ServiceException("Author with id " + authorId + " not exist"));
+    }
+
+    private Genre getGenreById(long genreId) {
+        return genreRepository.findById(genreId)
+                .orElseThrow(() -> new ServiceException("Genre with id " + genreId + " not exist"));
+    }
+
+    private Book getBookById(long bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> new ServiceException("Book with id " + bookId + " not found"));
     }
 }

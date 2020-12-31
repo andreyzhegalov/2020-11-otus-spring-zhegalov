@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +19,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "authors")
 @NoArgsConstructor
-@AllArgsConstructor
 public class Author {
     private final static long NOT_EXISTED_ID = 0L;
 
@@ -33,7 +31,7 @@ public class Author {
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
-    private Set<Book> books = new HashSet<>();
+    private final Set<Book> books = new HashSet<>();
 
     public Author(String name) {
         this.id = NOT_EXISTED_ID;
@@ -58,10 +56,7 @@ public class Author {
         if (getClass() != obj.getClass())
             return false;
         Author other = (Author) obj;
-        if (id != other.id) {
-            return false;
-        }
-        return true;
+        return id == other.id;
     }
 
     @Override

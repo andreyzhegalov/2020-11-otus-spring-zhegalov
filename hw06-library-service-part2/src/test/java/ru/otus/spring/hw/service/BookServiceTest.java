@@ -179,6 +179,26 @@ public class BookServiceTest {
     }
 
     @Test
+    void addAuthorToNotExistedBookShouldThrowException() {
+        final var notExistedBookId = 10L;
+        given(bookRepository.findById(notExistedBookId)).willReturn(Optional.empty());
+
+        assertThatCode(() -> bookService.addAuthor(notExistedBookId, new AuthorDto(1L)))
+                .isInstanceOf(ServiceException.class);
+    }
+
+    @Test
+    void addNotExistedAuthorShouldThrowException() {
+        final var bookId = 1L;
+        final var authorId = 2L;
+        given(bookRepository.findById(bookId)).willReturn(Optional.of(new Book()));
+        given(authorRepository.findById(authorId)).willReturn(Optional.empty());
+
+        assertThatCode(() -> bookService.addAuthor(bookId, new AuthorDto(authorId)))
+                .isInstanceOf(ServiceException.class);
+    }
+
+    @Test
     void shouldRemoveAuthorFromAuthorList() {
         final var bookId = 1L;
         final var authorId = 2L;
