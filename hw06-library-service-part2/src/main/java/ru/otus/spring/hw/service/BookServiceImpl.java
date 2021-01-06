@@ -10,7 +10,6 @@ import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
-import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.BookRepository;
@@ -41,15 +40,6 @@ public class BookServiceImpl implements BookService {
         final var author = getAuthorById(bookDto.getAuthorId());
         final var genre = getGenreById(bookDto.getGenreId());
         bookRepository.save(new Book(bookDto.getId(), bookDto.getTitle(), author, genre));
-    }
-
-    @Transactional
-    @Override
-    public void addComment(long bookId, Comment comment) {
-        // TODO replace this
-        // final var book = getBookById(bookId);
-        // book.addComment(comment);
-        // bookRepository.save(book);
     }
 
     @Transactional

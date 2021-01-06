@@ -6,9 +6,9 @@ import org.springframework.shell.standard.ShellOption;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.repositories.AuthorRepository;
-import ru.otus.spring.hw.repositories.CommentRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.service.BookService;
+import ru.otus.spring.hw.service.CommentService;
 import ru.otus.spring.hw.service.IOAuthorService;
 import ru.otus.spring.hw.service.IOBookService;
 import ru.otus.spring.hw.service.IOCommentService;
@@ -18,9 +18,9 @@ import ru.otus.spring.hw.service.IOGenreService;
 @ShellComponent
 public class ApplicationCommands {
     private final BookService bookService;
+    private final CommentService commentService;
     private final GenreRepository genreRepository;
     private final AuthorRepository authorRepository;
-    private final CommentRepository commentRepository;
 
     private final IOBookService ioBookService;
     private final IOGenreService ioGenreService;
@@ -65,14 +65,14 @@ public class ApplicationCommands {
 
     @ShellMethod(value = "Print all comments", key = { "pc", "print-comments" })
     public void printAllComments() {
-        final var comments = commentRepository.findAll();
+        final var comments = commentService.findAll();
         ioCommentService.print(comments);
     }
 
     @ShellMethod(value = "Add comment to the book", key = { "ac", "add-comment" })
-    public void addComment(@ShellOption long id) {
+    public void addComment() {
         final var comment = ioCommentService.getComment();
-        bookService.addComment(id, comment);
+        commentService.addComment(comment);
     }
 
     @ShellMethod(value = "Add author to book", key = { "aa", "add-author" })

@@ -34,7 +34,7 @@ public class CommentRepositoryJpa implements CommentRepository {
 
     @Override
     public Comment save(Comment comment) {
-        if(!comment.getBook().hasId()){
+        if (!comment.getBook().hasId()) {
             throw new RepositoryException("comment cannot be added to non-existent book");
         }
         if (!comment.hasId()) {

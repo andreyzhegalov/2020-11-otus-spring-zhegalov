@@ -151,4 +151,17 @@ public class CommentRepositoryJpaTest {
         assertThat(statistic.getEntityDeleteCount()).isZero();
     }
 
+    @Test
+    void commentsShouldBeRemovedAfterDeletingABook() {
+        final var comment = commentRepository.findById(EXISTED_COMMENT_ID).orElseGet(() -> fail("comment not exist"));
+        final var book = comment.getBook();
+
+        em.remove(book);
+        em.flush();
+        em.clear();
+        assertThat(em.find(Book.class, book.getId())).isNull();
+
+        assertThat(commentRepository.findById(EXISTED_COMMENT_ID)).isEmpty();
+    }
+
 }

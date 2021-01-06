@@ -20,7 +20,6 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "books")
@@ -28,7 +27,6 @@ import lombok.ToString;
         @NamedAttributeNode("genre") })
 @NoArgsConstructor
 @Getter
-@ToString
 public class Book {
     private final static long NOT_EXISTED_ID = 0L;
 
@@ -93,5 +91,10 @@ public class Book {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Book [genre=" + genre + ", id=" + id + ", title=" + title + "]";
     }
 }

@@ -18,12 +18,12 @@ import org.springframework.shell.Shell;
 
 import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
+import ru.otus.spring.hw.dto.CommentDto;
 import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.repositories.AuthorRepository;
-import ru.otus.spring.hw.repositories.CommentRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.service.BookService;
+import ru.otus.spring.hw.service.CommentService;
 import ru.otus.spring.hw.service.IOAuthorService;
 import ru.otus.spring.hw.service.IOBookService;
 import ru.otus.spring.hw.service.IOCommentService;
@@ -42,7 +42,7 @@ class ApplicationCommandsTest {
     private AuthorRepository authorRepository;
 
     @MockBean
-    private CommentRepository commentRepository;
+    private CommentService commentService;
 
     @MockBean
     private BookService bookService;
@@ -110,17 +110,17 @@ class ApplicationCommandsTest {
     @Test
     void shouldPrintAllComments() {
         shell.evaluate(() -> "pc");
-        then(commentRepository).should().findAll();
+        then(commentService).should().findAll();
         then(ioCommentService).should().print(any());
     }
 
     @Test
     void shouldAddNewCommentForBook() {
         final var bookId = 1L;
-        given(ioCommentService.getComment()).willReturn(new Comment("comment"));
-        shell.evaluate(() -> "add-comment " + bookId);
+        given(ioCommentService.getComment()).willReturn(new CommentDto("comment", bookId));
+        shell.evaluate(() -> "add-comment");
         then(ioCommentService).should().getComment();
-        then(bookService).should().addComment(eq(bookId), any(Comment.class));
+        then(commentService).should().addComment(any(CommentDto.class));
     }
 
     @Test

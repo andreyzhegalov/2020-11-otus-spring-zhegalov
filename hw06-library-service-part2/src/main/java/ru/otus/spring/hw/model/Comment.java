@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -20,7 +21,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "comments")
-@NamedEntityGraph(name = "comment-book-entity-graph", attributeNodes = @NamedAttributeNode("book"))
+@NamedEntityGraph(name = "comment-book-entity-graph", attributeNodes = @NamedAttributeNode(value = "book", subgraph = "genre-subgraph"), subgraphs = {
+        @NamedSubgraph(name = "genre-subgraph", attributeNodes = { @NamedAttributeNode("genre") }) })
 @Data
 @NoArgsConstructor
 public class Comment {
@@ -37,12 +39,6 @@ public class Comment {
     @ManyToOne(targetEntity = Book.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "book_id")
     private Book book;
-
-    // TODO delete this
-    public Comment(String text) {
-        this.id = NOT_EXISTED_ID;
-        this.text = text;
-    }
 
     public Comment(String text, Book book) {
         Objects.requireNonNull(book);
@@ -86,7 +82,6 @@ public class Comment {
 
     @Override
     public String toString() {
-        return "Comment [ id=" + id + ", text=" + text + "]";
+        return "Comment [book=" + book + ", id=" + id + ", text=" + text + "]";
     }
-
 }
