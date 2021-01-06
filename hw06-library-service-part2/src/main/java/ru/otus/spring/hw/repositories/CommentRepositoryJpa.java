@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
@@ -55,10 +54,10 @@ public class CommentRepositoryJpa implements CommentRepository {
 
     @Override
     public void remove(long id) {
-        try {
-            em.remove(em.getReference(Comment.class, id));
-        } catch (EntityNotFoundException e) {
-            throw new RepositoryException(e);
+        final var deletedRows = em.createQuery("delete from Comment c where c.id=:id").setParameter("id", id)
+                .executeUpdate();
+        if (deletedRows != 1) {
+            throw new RepositoryException("Comment with id = " + id + " not exist");
         }
     }
 

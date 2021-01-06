@@ -74,6 +74,8 @@ public class GenreRepositoryJpaTest {
         em.clear();
 
         genreRepository.remove(EXISTED_GENRE_ID);
+        em.flush();
+        em.clear();
 
         assertThat(genreRepository.findById(EXISTED_GENRE_ID)).isNotPresent();
         assertThat(genreRepository.findAll()).hasSize(GENRE_COUNT - 1);

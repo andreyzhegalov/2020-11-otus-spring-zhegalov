@@ -161,6 +161,17 @@ public class BookRepositoryJpaTest {
     }
 
     @Test
+    void shouldDeleteExistedBook() {
+        bookRepository.remove(EXISTED_BOOK_ID);
+        em.flush();
+        em.clear();
+
+        assertThat(statistic.getEntityUpdateCount()).isZero();
+        assertThat(statistic.getEntityInsertCount()).isZero();
+        assertThat(statistic.getEntityDeleteCount()).isZero();
+    }
+
+    @Test
     void deletingANonExistingBookShouldThrowAnException() {
         assertThatCode(() -> bookRepository.remove(NOT_EXISTED_BOOK_ID)).isInstanceOf(RepositoryException.class);
         assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT);

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -42,10 +41,9 @@ public class GenreRepositoryJpa implements GenreRepository {
 
     @Override
     public void remove(long id) {
-        try {
-            em.remove(em.getReference(Genre.class, id));
-        } catch (EntityNotFoundException e) {
-            throw new RepositoryException(e);
+        final var deletedRows = em.createQuery("delete from Genre g where g.id=:id").setParameter("id", id).executeUpdate();
+        if( deletedRows != 1){
+            throw new RepositoryException("Genre with id = " + id + " not exist");
         }
     }
 

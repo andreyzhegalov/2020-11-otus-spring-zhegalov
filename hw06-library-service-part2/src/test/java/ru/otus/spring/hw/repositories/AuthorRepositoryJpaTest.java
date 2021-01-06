@@ -73,6 +73,8 @@ public class AuthorRepositoryJpaTest {
         em.clear();
 
         authorRepository.remove(EXISTED_AUTHOR_ID);
+        em.flush();
+        em.clear();
 
         assertThat(authorRepository.findById(EXISTED_AUTHOR_ID)).isNotPresent();
         assertThat(authorRepository.findAll()).hasSize(AUTHOR_COUNT - 1);

@@ -134,13 +134,11 @@ public class CommentRepositoryJpaTest {
         em.clear();
 
         commentRepository.remove(EXISTED_COMMENT_ID);
+        em.clear();
+        em.flush();
 
         assertThat(commentRepository.findById(EXISTED_COMMENT_ID)).isNotPresent();
         assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT - 1);
-
-        assertThat(statistic.getEntityInsertCount()).isZero();
-        assertThat(statistic.getEntityUpdateCount()).isZero();
-        assertThat(statistic.getEntityDeleteCount()).isEqualTo(1);
     }
 
     @Test

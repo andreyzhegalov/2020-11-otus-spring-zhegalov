@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
@@ -52,10 +51,9 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public void remove(long id) {
-        try {
-            em.remove(em.getReference(Book.class, id));
-        } catch (EntityNotFoundException e) {
-            throw new RepositoryException(e);
+        final var rows = em.createQuery("delete from Book b where b.id=:id").setParameter("id", id).executeUpdate();
+        if (rows != 1) {
+            throw new RepositoryException("Book with id=" + id + " not exist");
         }
     }
 
