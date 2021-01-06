@@ -1,8 +1,6 @@
 package ru.otus.spring.hw.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -18,7 +16,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -27,8 +24,8 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "books")
-@NamedEntityGraph(name = "book-authors-genre-comments-entity-graph", attributeNodes = { @NamedAttributeNode("authors"),
-        @NamedAttributeNode("genre"), @NamedAttributeNode("comments") })
+@NamedEntityGraph(name = "book-authors-genre-entity-graph", attributeNodes = { @NamedAttributeNode("authors"),
+        @NamedAttributeNode("genre") })
 @NoArgsConstructor
 @Getter
 @ToString
@@ -53,9 +50,6 @@ public class Book {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private final List<Comment> comments = new ArrayList<>();
-
     public Book(String title, Author author, Genre genre) {
         this.id = NOT_EXISTED_ID;
         this.title = title;
@@ -68,16 +62,6 @@ public class Book {
         this.title = title;
         this.authors.add(author);
         this.genre = genre;
-    }
-
-    public void addComment(Comment comment) {
-        comment.setBook(this);
-        comments.add(comment);
-    }
-
-    public void removeComment(Comment comment) {
-        comment.setBook(null);
-        comments.remove(comment);
     }
 
     public void addAuthor(Author author) {

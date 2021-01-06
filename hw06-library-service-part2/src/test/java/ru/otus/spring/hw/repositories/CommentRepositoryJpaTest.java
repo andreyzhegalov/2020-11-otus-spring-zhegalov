@@ -4,13 +4,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
+import ru.otus.spring.hw.model.Author;
+import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Comment;
+import ru.otus.spring.hw.model.Genre;
 
 @Import(CommentRepositoryJpa.class)
 @DataJpaTest
@@ -28,34 +35,78 @@ public class CommentRepositoryJpaTest {
     @Autowired
     private TestEntityManager em;
 
+    private Statistics statistic;
+
+    @BeforeEach
+    void setUp() {
+        final SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
+                .unwrap(SessionFactory.class);
+        statistic = sessionFactory.getStatistics();
+        statistic.setStatisticsEnabled(true);
+    }
+
+    @AfterEach
+    void tearDown() {
+        statistic.clear();
+    }
+
     @Test
     void shouldReturnCommentList() {
         var comments = commentRepository.findAll();
-        assertThat(comments).isNotNull().hasSize(COMMENT_COUNT).allMatch(s -> s != null && !s.getText().equals(""));
+        assertThat(comments).isNotNull().hasSize(COMMENT_COUNT).allMatch(c -> c != null && !c.getText().equals(""))
+                .allMatch(c -> c.getBook() != null && c.getBook().hasId())
+                .allMatch(c -> c.getBook().getGenre() != null);
+
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
     }
 
     @Test
     void shouldReturnCommentByIdWhenCommentExisted() {
-        assertThat(commentRepository.findById(EXISTED_COMMENT_ID)).isPresent().get().extracting("id")
-                .isEqualTo(EXISTED_COMMENT_ID);
+        final var comment = commentRepository.findById(EXISTED_COMMENT_ID);
+
+        assertThat(comment).isPresent();
+        assertThat(comment.get().getId()).isEqualTo(EXISTED_COMMENT_ID);
+        assertThat(comment.get().getText()).isNotNull();
+        assertThat(comment.get().getBook()).extracting("id").isNotNull();
+
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
     }
 
     @Test
     void shouldNotReturnCommentByIdForNotExistingComment() {
         assertThat(commentRepository.findById(NOT_EXISTED_COMMENT_ID)).isNotPresent();
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
+    }
+
+    @Test
+    void shouldThrowExceptionIfTheBookNotExist() {
+        final var updatedComment = new Comment("name", new Book());
+        assertThat(updatedComment.hasId()).isFalse();
+
+        assertThatCode(() -> commentRepository.save(updatedComment)).isInstanceOf(RepositoryException.class);
+
+        assertThat(statistic.getPrepareStatementCount()).isZero();
+        assertThat(statistic.getEntityInsertCount()).isZero();
+        assertThat(statistic.getEntityUpdateCount()).isZero();
+        assertThat(statistic.getEntityDeleteCount()).isZero();
     }
 
     @Test
     void shouldInsertIfCommentIdNotExisted() {
-        final var updatedComment = new Comment("name");
-        assertThat(updatedComment.hasId()).isFalse();
+        final var newComment = new Comment("name",
+                new Book(1L, "title", new Author(1L, "name"), new Genre(1L, "genre")));
+        assertThat(newComment.hasId()).isFalse();
 
-        final var comment = commentRepository.save(updatedComment);
+        final var comment = commentRepository.save(newComment);
         em.flush();
         em.clear();
 
         assertThat(comment.hasId()).isTrue();
         assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT + 1);
+
+        assertThat(statistic.getEntityInsertCount()).isEqualTo(1);
+        assertThat(statistic.getEntityUpdateCount()).isZero();
+        assertThat(statistic.getEntityDeleteCount()).isZero();
     }
 
     @Test
@@ -69,10 +120,14 @@ public class CommentRepositoryJpaTest {
 
         assertThat(commentRepository.findById(EXISTED_COMMENT_ID)).isPresent().get().isEqualTo(comment);
         assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT);
+
+        assertThat(statistic.getEntityInsertCount()).isZero();
+        assertThat(statistic.getEntityUpdateCount()).isEqualTo(1);
+        assertThat(statistic.getEntityDeleteCount()).isZero();
     }
 
     @Test
-    void deletingAExistingWorkbookShouldDeleteComment() {
+    void deletingAExistingCommentShouldDeleteComment() {
         commentRepository.findById(EXISTED_COMMENT_ID).orElseGet(() -> fail("comment not exist"));
         em.clear();
 
@@ -80,12 +135,20 @@ public class CommentRepositoryJpaTest {
 
         assertThat(commentRepository.findById(EXISTED_COMMENT_ID)).isNotPresent();
         assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT - 1);
+
+        assertThat(statistic.getEntityInsertCount()).isZero();
+        assertThat(statistic.getEntityUpdateCount()).isZero();
+        assertThat(statistic.getEntityDeleteCount()).isEqualTo(1);
     }
 
     @Test
-    void deletingANonExistingWorkbookShouldThrowAnException() {
+    void deletingANonExistingCommentShouldThrowAnException() {
         assertThatCode(() -> commentRepository.remove(NOT_EXISTED_COMMENT_ID)).isInstanceOf(RepositoryException.class);
         assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT);
+
+        assertThat(statistic.getEntityInsertCount()).isZero();
+        assertThat(statistic.getEntityUpdateCount()).isZero();
+        assertThat(statistic.getEntityDeleteCount()).isZero();
     }
 
 }

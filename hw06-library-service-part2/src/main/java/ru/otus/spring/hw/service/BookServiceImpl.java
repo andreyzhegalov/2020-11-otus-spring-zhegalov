@@ -46,9 +46,10 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void addComment(long bookId, Comment comment) {
-        final var book = getBookById(bookId);
-        book.addComment(comment);
-        bookRepository.save(book);
+        // TODO replace this
+        // final var book = getBookById(bookId);
+        // book.addComment(comment);
+        // bookRepository.save(book);
     }
 
     @Transactional

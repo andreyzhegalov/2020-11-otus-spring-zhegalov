@@ -3,6 +3,7 @@ package ru.otus.spring.hw.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
@@ -21,7 +22,9 @@ public class CommentRepositoryJpa implements CommentRepository {
 
     @Override
     public List<Comment> findAll() {
-        return em.createQuery("select c from Comment c", Comment.class).getResultList();
+        final EntityGraph<?> entityGraph = em.getEntityGraph("comment-book-entity-graph");
+        return em.createQuery("select c from Comment c", Comment.class)
+                .setHint("javax.persistence.fetchgraph", entityGraph).getResultList();
     }
 
     @Override
@@ -30,12 +33,15 @@ public class CommentRepositoryJpa implements CommentRepository {
     }
 
     @Override
-    public Comment save(Comment genre) {
-        if (!genre.hasId()) {
-            em.persist(genre);
-            return genre;
+    public Comment save(Comment comment) {
+        if(!comment.getBook().hasId()){
+            throw new RepositoryException("comment cannot be added to non-existent book");
+        }
+        if (!comment.hasId()) {
+            em.persist(comment);
+            return comment;
         } else {
-            return em.merge(genre);
+            return em.merge(comment);
         }
     }
 

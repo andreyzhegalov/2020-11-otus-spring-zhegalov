@@ -7,4 +7,8 @@ public class RepositoryException extends RuntimeException {
     public RepositoryException(Throwable other) {
         super(other);
     }
+
+    public RepositoryException(String message) {
+        super(message);
+    }
 }

@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Objects;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.AfterEach;
@@ -16,10 +18,7 @@ import org.springframework.context.annotation.Import;
 
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
-import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
-
-import java.util.Objects;
 
 @Import(BookRepositoryJpa.class)
 @DataJpaTest
@@ -56,8 +55,8 @@ public class BookRepositoryJpaTest {
         assertThat(books).isNotNull().hasSize(BOOK_COUNT).allMatch(Objects::nonNull)
                 .allMatch(b -> !b.getTitle().equals(""))
                 .allMatch(b -> b.getGenre() != null && !b.getGenre().getName().equals(""))
-                .allMatch(b -> b.getAuthors() != null && b.getAuthors().size() > 0)
-                .allMatch(b -> b.getComments() != null && b.getComments().size() > 0);
+                .allMatch(b -> b.getAuthors() != null && b.getAuthors().size() > 0);
+        // .allMatch(b -> b.getComments() != null && b.getComments().size() > 0);
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
     }
 
@@ -68,7 +67,7 @@ public class BookRepositoryJpaTest {
         assertThat(book).isPresent().get().extracting("id").isEqualTo(EXISTED_BOOK_ID);
         assertThat(book.get().getAuthors()).isNotNull().allMatch(a -> a != null && !a.getName().equals(""));
         assertThat(book.get().getGenre()).isNotNull().extracting("name").isNotEqualTo("");
-        assertThat(book.get().getComments()).isNotNull().isNotEmpty();
+        // assertThat(book.get().getComments()).isNotNull().isNotEmpty();
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
     }
 
@@ -90,12 +89,12 @@ public class BookRepositoryJpaTest {
         em.clear();
 
         assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
-        final var updatedBookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(()->fail("item not exist"));
+        final var updatedBookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
         assertThat(updatedBookFromDb.getId()).isEqualTo(updatedBook.getId());
         assertThat(updatedBookFromDb.getGenre()).isEqualTo(updatedBook.getGenre());
         assertThat(updatedBookFromDb.getTitle()).isEqualTo(updatedBook.getTitle());
         assertThat(updatedBookFromDb.getAuthors()).hasSameElementsAs(updatedBook.getAuthors());
-        assertThat(updatedBookFromDb.getComments()).hasSameElementsAs(updatedBook.getComments());
+        // assertThat(updatedBookFromDb.getComments()).hasSameElementsAs(updatedBook.getComments());
 
         assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT);
         assertThat(statistic.getEntityUpdateCount()).isEqualTo(3);
@@ -106,9 +105,9 @@ public class BookRepositoryJpaTest {
         final var notExistedAuthor = new Author("new author");
         final var notExistedGenre = new Genre("new genre");
         final var notExistedBook = new Book("new title", notExistedAuthor, notExistedGenre);
-        notExistedBook.addComment(new Comment("new comment 1"));
-        notExistedBook.addComment(new Comment("new comment 2"));
-
+        // notExistedBook.addComment(new Comment("new comment 1"));
+        // notExistedBook.addComment(new Comment("new comment 2"));
+        //
         final var insertedBook = bookRepository.save(notExistedBook);
         final var insertedBookId = insertedBook.getId();
         em.flush();
@@ -122,37 +121,41 @@ public class BookRepositoryJpaTest {
         assertThat(statistic.getEntityInsertCount()).isEqualTo(5);
     }
 
-    @Test
-    void addCommentShouldInsertNewItemToDb() {
-        final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
-        final var initCommentCount = initBook.getComments().size();
-        initBook.addComment(new Comment("new comment"));
-        em.clear();
-
-        bookRepository.save(initBook);
-        em.flush();
-        em.clear();
-
-        assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent().get().extracting("comments")
-                .matches(Objects::nonNull);
-        assertThat(bookRepository.findById(EXISTED_BOOK_ID).orElseGet(()->fail("item not exist")).getComments()).hasSize(initCommentCount + 1);
-
-        assertThat(statistic.getEntityUpdateCount()).isZero();
-        assertThat(statistic.getEntityInsertCount()).isEqualTo(1);
-    }
-
-    @Test
-    void removeBookShouldDeleteComments() {
-        final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
-        assertThat(initBook.getComments()).isNotEmpty();
-        em.clear();
-
-        bookRepository.remove(initBook.getId());
-        em.flush();
-        em.clear();
-
-        assertThat(statistic.getEntityDeleteCount()).isEqualTo(2);
-    }
+    // @Test
+    // void addCommentShouldInsertNewItemToDb() {
+    // final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() ->
+    // fail("item not exist"));
+    // final var initCommentCount = initBook.getComments().size();
+    // initBook.addComment(new Comment("new comment"));
+    // em.clear();
+    //
+    // bookRepository.save(initBook);
+    // em.flush();
+    // em.clear();
+    //
+    // assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent().get().extracting("comments")
+    // .matches(Objects::nonNull);
+    // assertThat(bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() ->
+    // fail("item not exist")).getComments())
+    // .hasSize(initCommentCount + 1);
+    //
+    // assertThat(statistic.getEntityUpdateCount()).isZero();
+    // assertThat(statistic.getEntityInsertCount()).isEqualTo(1);
+    // }
+    //
+    // @Test
+    // void removeBookShouldDeleteComments() {
+    // final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() ->
+    // fail("item not exist"));
+    // assertThat(initBook.getComments()).isNotEmpty();
+    // em.clear();
+    //
+    // bookRepository.remove(initBook.getId());
+    // em.flush();
+    // em.clear();
+    //
+    // assertThat(statistic.getEntityDeleteCount()).isEqualTo(2);
+    // }
 
     @Test
     void addExistedAuthorShouldInsertAuthorToBookAuthorsList() {
@@ -168,14 +171,13 @@ public class BookRepositoryJpaTest {
         em.clear();
 
         assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
-        final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(()->fail("item not exist"));
+        final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
         assertThat(bookFromDb.getAuthors()).hasSize(initAuthorCount + 1);
 
         assertThat(statistic.getEntityUpdateCount()).isZero();
         assertThat(statistic.getEntityInsertCount()).isZero();
         assertThat(statistic.getEntityDeleteCount()).isZero();
     }
-
 
     @Test
     void shouldRemoveAuthorFromBookAuthors() {
@@ -191,7 +193,7 @@ public class BookRepositoryJpaTest {
         em.clear();
 
         assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
-        final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(()->fail("item not exist"));
+        final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
         assertThat(bookFromDb.getAuthors()).hasSize(initAuthorCount - 1);
 
         assertThat(statistic.getEntityUpdateCount()).isZero();
