@@ -31,4 +31,9 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findAll();
     }
 
+    @Override
+    public void deleteByBookId(long bookId) {
+        commentRepository.deleteByBookId(bookId);
+    }
+
 }

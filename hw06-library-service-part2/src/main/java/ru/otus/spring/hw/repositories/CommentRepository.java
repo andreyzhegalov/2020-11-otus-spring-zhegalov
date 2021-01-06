@@ -14,4 +14,6 @@ public interface CommentRepository {
     Comment save(Comment genre);
 
     void remove(long id);
+
+    void deleteByBookId(long bookId);
 }

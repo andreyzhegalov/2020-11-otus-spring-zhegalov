@@ -152,16 +152,16 @@ public class CommentRepositoryJpaTest {
     }
 
     @Test
-    void commentsShouldBeRemovedAfterDeletingABook() {
-        final var comment = commentRepository.findById(EXISTED_COMMENT_ID).orElseGet(() -> fail("comment not exist"));
-        final var book = comment.getBook();
+    void shouldDeleteAllCommentsByBookId() {
+        final var existedBookId = 1L;
+        final var commentsCount = commentRepository.findAll().size();
+        em.clear();
 
-        em.remove(book);
+        commentRepository.deleteByBookId(existedBookId);
         em.flush();
         em.clear();
-        assertThat(em.find(Book.class, book.getId())).isNull();
 
-        assertThat(commentRepository.findById(EXISTED_COMMENT_ID)).isEmpty();
+        assertThat(commentRepository.findAll()).hasSizeLessThan(commentsCount);
     }
 
 }

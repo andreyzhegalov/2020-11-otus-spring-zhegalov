@@ -31,8 +31,8 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     public Optional<Book> findById(long id) {
         final EntityGraph<?> entityGraph = em.getEntityGraph("book-authors-genre-entity-graph");
-        final var query = em.createQuery("select b from Book b where b.id=:id", Book.class)
-                .setParameter("id", id).setHint("javax.persistence.fetchgraph", entityGraph);
+        final var query = em.createQuery("select b from Book b where b.id=:id", Book.class).setParameter("id", id)
+                .setHint("javax.persistence.fetchgraph", entityGraph);
         try {
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {
@@ -58,4 +58,5 @@ public class BookRepositoryJpa implements BookRepository {
             throw new RepositoryException(e);
         }
     }
+
 }

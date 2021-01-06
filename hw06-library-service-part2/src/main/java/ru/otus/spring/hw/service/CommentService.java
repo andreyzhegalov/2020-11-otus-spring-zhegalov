@@ -11,4 +11,5 @@ public interface CommentService {
 
     List<Comment> findAll();
 
+    void deleteByBookId(long bookId);
 }

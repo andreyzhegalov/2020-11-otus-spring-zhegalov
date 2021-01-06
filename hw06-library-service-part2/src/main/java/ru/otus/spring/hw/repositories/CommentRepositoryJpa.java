@@ -54,4 +54,9 @@ public class CommentRepositoryJpa implements CommentRepository {
         }
     }
 
+    @Override
+    public void deleteByBookId(long bookId) {
+        em.createQuery("delete from Comment c where c.book.id=:bookId").setParameter("bookId", bookId)
+                .executeUpdate();
+    }
 }
