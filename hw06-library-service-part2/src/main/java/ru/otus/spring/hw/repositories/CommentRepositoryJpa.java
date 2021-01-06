@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -29,7 +30,14 @@ public class CommentRepositoryJpa implements CommentRepository {
 
     @Override
     public Optional<Comment> findById(long id) {
-        return Optional.ofNullable(em.find(Comment.class, id));
+        final EntityGraph<?> entityGraph = em.getEntityGraph("comment-book-entity-graph");
+        final var query = em.createQuery("select c from Comment c where c.id=:id", Comment.class).setParameter("id", id)
+                .setHint("javax.persistence.fetchgraph", entityGraph);
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -56,7 +64,6 @@ public class CommentRepositoryJpa implements CommentRepository {
 
     @Override
     public void deleteByBookId(long bookId) {
-        em.createQuery("delete from Comment c where c.book.id=:bookId").setParameter("bookId", bookId)
-                .executeUpdate();
+        em.createQuery("delete from Comment c where c.book.id=:bookId").setParameter("bookId", bookId).executeUpdate();
     }
 }

@@ -21,8 +21,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "comments")
-@NamedEntityGraph(name = "comment-book-entity-graph", attributeNodes = @NamedAttributeNode(value = "book", subgraph = "genre-subgraph"), subgraphs = {
-        @NamedSubgraph(name = "genre-subgraph", attributeNodes = { @NamedAttributeNode("genre") }) })
+@NamedEntityGraph(name = "comment-book-entity-graph", attributeNodes = @NamedAttributeNode(value = "book", subgraph = "book-subgraph"), subgraphs = {
+        @NamedSubgraph(name = "book-subgraph", attributeNodes = { @NamedAttributeNode("authors"),
+                @NamedAttributeNode("genre") }) })
 @Data
 @NoArgsConstructor
 public class Comment {
@@ -45,12 +46,6 @@ public class Comment {
         this.id = NOT_EXISTED_ID;
         this.text = text;
         this.book = book;
-    }
-
-    // TODO delete this
-    public Comment(long id, String text) {
-        this.id = id;
-        this.text = text;
     }
 
     public Comment(long id, String text, Book book) {

@@ -67,7 +67,9 @@ public class CommentRepositoryJpaTest {
         assertThat(comment).isPresent();
         assertThat(comment.get().getId()).isEqualTo(EXISTED_COMMENT_ID);
         assertThat(comment.get().getText()).isNotNull();
-        assertThat(comment.get().getBook()).extracting("id").isNotNull();
+        assertThat(comment.get().getBook().getId()).isNotNull();
+        assertThat(comment.get().getBook().getGenre()).isNotNull();
+        assertThat(comment.get().getBook().getAuthors()).isNotEmpty();
 
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
     }
