@@ -16,8 +16,8 @@ import ru.otus.spring.hw.model.Author;
 @Import(AuthorRepositoryJpa.class)
 public class AuthorRepositoryJpaTest {
     private final static long EXISTED_AUTHOR_ID = 1L;
-    private final static long NOT_EXISTED_AUTHOR_ID = 3L;
-    private final static int AUTHOR_COUNT = 2;
+    private final static long NOT_EXISTED_AUTHOR_ID = 4L;
+    private final static int AUTHOR_COUNT = 3;
 
     @Autowired
     private AuthorRepositoryJpa authorRepository;

@@ -4,7 +4,6 @@ import java.util.List;
 
 import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
-import ru.otus.spring.hw.model.Book;
 
 public interface BookService {
 
@@ -12,7 +11,7 @@ public interface BookService {
 
     void deleteBook(long id);
 
-    List<Book> findAll();
+    List<BookDto> findAll();
 
     void addAuthor(long bookId, AuthorDto authorDto);
 

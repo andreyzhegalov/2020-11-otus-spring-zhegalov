@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -22,21 +21,14 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public List<Book> findAll() {
-        final EntityGraph<?> entityGraph = em.getEntityGraph("book-authors-genre-entity-graph");
+        final EntityGraph<?> entityGraph = em.getEntityGraph("book-genre-entity-graph");
         return em.createQuery("select b from Book b", Book.class).setHint("javax.persistence.fetchgraph", entityGraph)
                 .getResultList();
     }
 
     @Override
     public Optional<Book> findById(long id) {
-        final EntityGraph<?> entityGraph = em.getEntityGraph("book-authors-genre-entity-graph");
-        final var query = em.createQuery("select b from Book b where b.id=:id", Book.class).setParameter("id", id)
-                .setHint("javax.persistence.fetchgraph", entityGraph);
-        try {
-            return Optional.of(query.getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(em.find(Book.class, id));
     }
 
     @Override

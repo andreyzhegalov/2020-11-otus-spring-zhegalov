@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dto.BookDto;
-import ru.otus.spring.hw.model.Book;
 
 @RequiredArgsConstructor
 @Service
@@ -16,7 +15,7 @@ public class IOBookService {
     private static final String GET_GENRE_ID = "Введите идентификатор жанра:";
     private final IOService ioService;
 
-    public void print(List<Book> books) {
+    public void print(List<BookDto> books) {
         books.forEach(b -> ioService.print(b.toString()));
     }
 
@@ -27,6 +26,8 @@ public class IOBookService {
         final var authorId = Long.parseLong(ioService.read());
         ioService.print(GET_GENRE_ID);
         final var genreId = Long.parseLong(ioService.read());
-        return new BookDto(bookTitle, authorId, genreId);
+        final var bookDto = new BookDto(bookTitle, genreId);
+        bookDto.getAuthorIds().add(authorId);
+        return bookDto;
     }
 }

@@ -100,7 +100,7 @@ class ApplicationCommandsTest {
     @Test
     void shouldUpdateBook() {
         final long id = 3L;
-        given(ioBookService.getBook()).willReturn(new BookDto("title", 1L, 1L));
+        given(ioBookService.getBook()).willReturn(new BookDto("title", 1L));
         shell.evaluate(() -> "ub " + id);
         then(ioBookService).should().getBook();
         then(bookService).should().save(bookDtoCaptor.capture());

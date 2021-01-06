@@ -56,17 +56,20 @@ public class BookRepositoryJpaTest {
                 .allMatch(b -> !b.getTitle().equals(""))
                 .allMatch(b -> b.getGenre() != null && !b.getGenre().getName().equals(""))
                 .allMatch(b -> b.getAuthors() != null && b.getAuthors().size() > 0);
-        assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(2); // + authors subselect
     }
 
     @Test
     void shouldReturnBookByIdWhenBookExisted() {
         final var book = bookRepository.findById(EXISTED_BOOK_ID);
+        final var authorsCount = 2;
 
         assertThat(book).isPresent().get().extracting("id").isEqualTo(EXISTED_BOOK_ID);
-        assertThat(book.get().getAuthors()).isNotNull().allMatch(a -> a != null && !a.getName().equals(""));
+        assertThat(book.get().getAuthors()).isNotNull().hasSize(authorsCount)
+                .allMatch(a -> a != null && !a.getName().equals(""));
         assertThat(book.get().getGenre()).isNotNull().extracting("name").isNotEqualTo("");
-        assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
+
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(2); // + authors subselect
     }
 
     @Test
@@ -118,11 +121,11 @@ public class BookRepositoryJpaTest {
 
     @Test
     void addExistedAuthorShouldInsertAuthorToBookAuthorsList() {
-        final var new_author_id = 1L;
-        final var existedAuthor = em.find(Author.class, new_author_id);
+        final var newAuthorId = 3L;
+        final var existedAuthor = em.find(Author.class, newAuthorId);
         assertThat(existedAuthor).isNotNull();
         final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
-        assertThat(initBook.getAuthors()).allMatch(a -> a.getId() != new_author_id);
+        assertThat(initBook.getAuthors()).allMatch(a -> a.getId() != newAuthorId);
         final var initAuthorCount = initBook.getAuthors().size();
 
         initBook.addAuthor(existedAuthor);

@@ -18,13 +18,15 @@ import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "books")
-@NamedEntityGraph(name = "book-authors-genre-entity-graph", attributeNodes = { @NamedAttributeNode("authors"),
-        @NamedAttributeNode("genre") })
+@NamedEntityGraph(name = "book-genre-entity-graph", attributeNodes = { @NamedAttributeNode("genre") })
 @NoArgsConstructor
 @Getter
 public class Book {
@@ -38,6 +40,7 @@ public class Book {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @Fetch(FetchMode.SUBSELECT)
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "book_author", joinColumns = { @JoinColumn(name = "fk_book") }, inverseJoinColumns = {
             @JoinColumn(name = "fk_author") })
@@ -47,6 +50,12 @@ public class Book {
             CascadeType.PERSIST })
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
+    public Book(long id, String title, Genre genre) {
+        this.id = id;
+        this.title = title;
+        this.genre = genre;
+    }
 
     public Book(String title, Author author, Genre genre) {
         this.id = NOT_EXISTED_ID;

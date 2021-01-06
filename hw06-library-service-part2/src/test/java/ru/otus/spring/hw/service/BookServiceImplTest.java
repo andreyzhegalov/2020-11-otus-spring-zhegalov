@@ -27,7 +27,7 @@ import ru.otus.spring.hw.repositories.BookRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
 
 @SpringBootTest
-public class BookServiceTest {
+public class BookServiceImplTest {
 
     @Import(BookServiceImpl.class)
     @Configuration
@@ -64,10 +64,14 @@ public class BookServiceTest {
     @Test
     void shouldThrowExceptionIfAuthorNotExistForUpdatedBook() {
         final var authorId = 2L;
-        final var bookDto = new BookDto(1L, "title", authorId, 3L);
+        final var genreId = 3L;
+        final var bookDto = new BookDto(1L, "title", genreId);
+        bookDto.getAuthorIds().add(authorId);
+        given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));
         given(authorRepository.findById(authorId)).willReturn(Optional.empty());
 
         assertThatCode(() -> bookService.save(bookDto)).isInstanceOf(ServiceException.class);
+
         then(authorRepository).should().findById(authorId);
     }
 
@@ -75,7 +79,7 @@ public class BookServiceTest {
     void shouldThrowExceptionIfGenreNotExistForUpdatedBook() {
         final var authorId = 2L;
         final var genreId = 3L;
-        final var bookDto = new BookDto(1L, "title", authorId, genreId);
+        final var bookDto = new BookDto(1L, "title", genreId);
         given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author(authorId, "name")));
         given(genreRepository.findById(genreId)).willReturn(Optional.empty());
 
@@ -89,7 +93,8 @@ public class BookServiceTest {
         final var bookId = 1L;
         final var authorId = 2L;
         final var genreId = 3L;
-        final var bookDto = new BookDto(bookId, "title", authorId, genreId);
+        final var bookDto = new BookDto(bookId, "title", genreId);
+        bookDto.getAuthorIds().add(authorId);
         given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author(authorId, "name")));
         given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));
 
@@ -109,7 +114,8 @@ public class BookServiceTest {
     void shouldSaveNewBook() {
         final var authorId = 2L;
         final var genreId = 3L;
-        final var newBookDto = new BookDto("title", authorId, genreId);
+        final var newBookDto = new BookDto("title", genreId);
+        newBookDto.getAuthorIds().add(authorId);
         given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author(authorId, "name")));
         given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));
 

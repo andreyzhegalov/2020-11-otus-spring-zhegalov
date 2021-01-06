@@ -15,9 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.model.Book;
-import ru.otus.spring.hw.model.Genre;
+import ru.otus.spring.hw.dto.BookDto;
 
 @SpringBootTest
 public class IOBookServiceTest {
@@ -34,10 +32,10 @@ public class IOBookServiceTest {
 
     @Test
     void printBooksShouldPrintViaIOService() {
-        final var book1 = new Book(1L, "title", new Author(1L, "name"), new Genre(1L, "genre"));
-        final var book2 = new Book(2L, "title", new Author(2L, "name"), new Genre(2L, "genre"));
+        final var bookDto1 = new BookDto(1L, "title", 1L);
+        final var bookDto2 = new BookDto(1L, "title", 1L);
 
-        ioBookService.print(List.of(book1, book2));
+        ioBookService.print(List.of(bookDto1, bookDto2));
         then(ioService).should(atLeastOnce()).print(anyString());
         then(ioService).should(never()).read();
     }
