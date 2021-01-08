@@ -17,8 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import ru.otus.spring.hw.dto.CommentDto;
-import ru.otus.spring.hw.model.Book;
-import ru.otus.spring.hw.model.Comment;
 
 @SpringBootTest
 public class IOCommentServiceTest {
@@ -35,8 +33,9 @@ public class IOCommentServiceTest {
 
     @Test
     void printCommentShouldPrintViaIOService() {
-        final var comment1 = new Comment(1L, "comment", new Book());
-        final var comment2 = new Comment(2L, "comment", new Book());
+        final var bookId = 1L;
+        final var comment1 = new CommentDto("comment", bookId);
+        final var comment2 = new CommentDto("comment", bookId);
 
         ioCommentService.print(List.of(comment1, comment2));
         then(ioService).should(atLeastOnce()).print(anyString());

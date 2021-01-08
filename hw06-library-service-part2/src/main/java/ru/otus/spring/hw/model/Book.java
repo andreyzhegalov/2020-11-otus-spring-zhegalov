@@ -51,23 +51,15 @@ public class Book {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
+    public Book(String title, Genre genre) {
+        this.id = NOT_EXISTED_ID;
+        this.title = title;
+        this.genre = genre;
+    }
+
     public Book(long id, String title, Genre genre) {
         this.id = id;
         this.title = title;
-        this.genre = genre;
-    }
-
-    public Book(String title, Author author, Genre genre) {
-        this.id = NOT_EXISTED_ID;
-        this.title = title;
-        addAuthor(author);
-        this.genre = genre;
-    }
-
-    public Book(long id, String title, Author author, Genre genre) {
-        this.id = id;
-        this.title = title;
-        this.authors.add(author);
         this.genre = genre;
     }
 

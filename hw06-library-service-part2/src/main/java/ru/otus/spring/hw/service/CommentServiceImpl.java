@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +28,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> findAll() {
-        return commentRepository.findAll();
+    public List<CommentDto> findAll() {
+        return commentRepository.findAll().stream().map(c -> new CommentDto(c)).collect(Collectors.toList());
     }
 
     @Override

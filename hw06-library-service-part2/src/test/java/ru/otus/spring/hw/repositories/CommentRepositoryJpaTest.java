@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
@@ -95,8 +94,7 @@ public class CommentRepositoryJpaTest {
 
     @Test
     void shouldInsertIfCommentIdNotExisted() {
-        final var newComment = new Comment("name",
-                new Book(1L, "title", new Author(1L, "name"), new Genre(1L, "genre")));
+        final var newComment = new Comment("name", new Book(1L, "title", new Genre(1L, "genre")));
         assertThat(newComment.hasId()).isFalse();
 
         final var comment = commentRepository.save(newComment);
