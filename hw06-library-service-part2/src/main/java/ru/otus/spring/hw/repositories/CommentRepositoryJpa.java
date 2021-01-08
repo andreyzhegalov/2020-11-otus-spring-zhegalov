@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -29,14 +28,7 @@ public class CommentRepositoryJpa implements CommentRepository {
 
     @Override
     public Optional<Comment> findById(long id) {
-        final EntityGraph<?> entityGraph = em.getEntityGraph("comment-book-entity-graph");
-        final var query = em.createQuery("select c from Comment c where c.id=:id", Comment.class).setParameter("id", id)
-                .setHint("javax.persistence.fetchgraph", entityGraph);
-        try {
-            return Optional.of(query.getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(em.find(Comment.class, id));
     }
 
     @Override

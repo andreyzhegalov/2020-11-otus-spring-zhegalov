@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedSubgraph;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -21,9 +20,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "comments")
-@NamedEntityGraph(name = "comment-book-entity-graph", attributeNodes = @NamedAttributeNode(value = "book", subgraph = "book-subgraph"), subgraphs = {
-        @NamedSubgraph(name = "book-subgraph", attributeNodes = { @NamedAttributeNode("authors"),
-                @NamedAttributeNode("genre") }) })
+@NamedEntityGraph(name = "comment-book-entity-graph", attributeNodes = { @NamedAttributeNode(value = "book") })
 @Data
 @NoArgsConstructor
 public class Comment {

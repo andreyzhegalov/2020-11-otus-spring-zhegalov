@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
 import ru.otus.spring.hw.model.Comment;
 
 @Getter
@@ -14,7 +15,7 @@ public class CommentDto {
     private final String text;
     private final long bookId;
 
-    public CommentDto(Comment comment) {
+    public CommentDto(@NotNull Comment comment) {
         this.text = comment.getText();
         this.bookId = comment.getBook().getId();
     }

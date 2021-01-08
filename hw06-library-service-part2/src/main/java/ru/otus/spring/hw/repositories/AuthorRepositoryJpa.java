@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     }
 
     @Override
-    public Author save(Author author) {
+    public Author save(@NotNull Author author) {
         if (!author.hasId()) {
             em.persist(author);
             return author;

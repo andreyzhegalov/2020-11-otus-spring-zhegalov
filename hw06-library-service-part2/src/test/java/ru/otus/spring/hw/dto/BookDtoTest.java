@@ -22,6 +22,6 @@ class BookDtoTest {
         assertThat(bookDto.getGenreId()).isEqualTo(book.getGenre().getId());
         assertThat(bookDto.getTitle()).isEqualTo(book.getTitle());
         assertThat(bookDto.getAuthorIds()).containsExactlyInAnyOrderElementsOf(
-                book.getAuthors().stream().map(a -> a.getId()).collect(Collectors.toList()));
+                book.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
     }
 }

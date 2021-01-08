@@ -2,6 +2,7 @@ package ru.otus.spring.hw.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import ru.otus.spring.hw.model.Author;
 
 @Getter
@@ -9,7 +10,7 @@ import ru.otus.spring.hw.model.Author;
 public class AuthorDto {
     private final long id;
 
-    public AuthorDto(Author author) {
+    public AuthorDto(@NotNull Author author) {
         this.id = author.getId();
     }
 }

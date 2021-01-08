@@ -7,6 +7,7 @@ import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
-    public Book save(Book book) {
+    public Book save(@NotNull Book book) {
         if (!book.hasId()) {
             em.persist(book);
             return book;

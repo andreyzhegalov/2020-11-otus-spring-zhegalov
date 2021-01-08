@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
 import ru.otus.spring.hw.model.Book;
 
 @EqualsAndHashCode
@@ -34,7 +35,7 @@ public class BookDto {
         this.genreId = genreId;
     }
 
-    public BookDto(Book book) {
+    public BookDto(@NotNull Book book) {
         this.id = book.getId();
         this.title = book.getTitle();
         book.getAuthors().forEach(a -> {

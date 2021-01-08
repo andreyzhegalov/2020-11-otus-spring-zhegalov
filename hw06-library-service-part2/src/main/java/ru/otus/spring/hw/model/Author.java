@@ -1,15 +1,10 @@
 package ru.otus.spring.hw.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -29,9 +24,6 @@ public class Author {
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
-
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
-    private final Set<Book> books = new HashSet<>();
 
     public Author(String name) {
         this.id = NOT_EXISTED_ID;

@@ -70,7 +70,7 @@ public class CommentRepositoryJpaTest {
         assertThat(comment.get().getBook().getGenre()).isNotNull();
         assertThat(comment.get().getBook().getAuthors()).isNotEmpty();
 
-        assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(2);
     }
 
     @Test

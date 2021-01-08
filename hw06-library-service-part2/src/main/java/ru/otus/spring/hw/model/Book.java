@@ -65,12 +65,10 @@ public class Book {
 
     public void addAuthor(Author author) {
         authors.add(author);
-        author.getBooks().add(this);
     }
 
     public void removeAuthor(Author author) {
         authors.remove(author);
-        author.getBooks().remove(this);
     }
 
     public boolean hasId() {
@@ -98,5 +96,4 @@ public class Book {
     public String toString() {
         return "Book [authors=" + authors + ", genre=" + genre + ", id=" + id + ", title=" + title + "]";
     }
-
 }
