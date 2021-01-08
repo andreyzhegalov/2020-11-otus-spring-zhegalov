@@ -59,8 +59,9 @@ public class GenreRepositoryJpaTest {
     void shouldUpdateGenreIfIdExist() {
         final var genre = genreRepository.findById(EXISTED_GENRE_ID).orElseGet(() -> fail("item not exist"));
         genre.setName(genre.getName() + "_modify");
+        em.clear();
 
-        assertThatCode(() -> genreRepository.save(genre)).doesNotThrowAnyException();
+        genreRepository.save(genre);
         em.flush();
         em.clear();
 

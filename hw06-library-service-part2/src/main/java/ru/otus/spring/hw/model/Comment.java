@@ -15,23 +15,25 @@ import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "comments")
 @NamedEntityGraph(name = "comment-book-entity-graph", attributeNodes = { @NamedAttributeNode(value = "book") })
-@Data
+@Getter
 @NoArgsConstructor
 public class Comment {
     private final static long NOT_EXISTED_ID = 0L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = true, unique = true)
+    @Column(name = "id", unique = true)
     private long id;
 
-    @Column(name = "text", nullable = true, unique = true)
+    @Column(name = "text", unique = true)
+    @Setter
     private String text;
 
     @ManyToOne(targetEntity = Book.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })

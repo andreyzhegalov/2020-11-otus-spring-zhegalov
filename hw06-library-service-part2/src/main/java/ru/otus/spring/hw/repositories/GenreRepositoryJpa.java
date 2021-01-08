@@ -46,5 +46,4 @@ public class GenreRepositoryJpa implements GenreRepository {
             throw new RepositoryException("Genre with id = " + id + " not exist");
         }
     }
-
 }

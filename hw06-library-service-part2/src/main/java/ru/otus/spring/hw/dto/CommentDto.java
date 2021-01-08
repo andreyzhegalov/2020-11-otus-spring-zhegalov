@@ -1,15 +1,14 @@
 package ru.otus.spring.hw.dto;
 
-import lombok.EqualsAndHashCode;
+import org.jetbrains.annotations.NotNull;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.jetbrains.annotations.NotNull;
 import ru.otus.spring.hw.model.Comment;
 
 @Getter
 @RequiredArgsConstructor
-@EqualsAndHashCode
 @ToString
 public class CommentDto {
     private final String text;

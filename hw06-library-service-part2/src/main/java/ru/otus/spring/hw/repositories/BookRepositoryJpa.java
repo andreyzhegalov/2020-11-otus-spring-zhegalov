@@ -3,7 +3,6 @@ package ru.otus.spring.hw.repositories;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -22,7 +21,7 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public List<Book> findAll() {
-        final EntityGraph<?> entityGraph = em.getEntityGraph("book-genre-entity-graph");
+        final var entityGraph = em.getEntityGraph("book-genre-entity-graph");
         return em.createQuery("select b from Book b", Book.class).setHint("javax.persistence.fetchgraph", entityGraph)
                 .getResultList();
     }

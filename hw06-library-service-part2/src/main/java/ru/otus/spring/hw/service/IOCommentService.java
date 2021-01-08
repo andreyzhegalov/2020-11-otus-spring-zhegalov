@@ -10,8 +10,8 @@ import ru.otus.spring.hw.dto.CommentDto;
 @RequiredArgsConstructor
 @Service
 public class IOCommentService {
-    private static final String GET_COMMENT_MESSAGE = "Введите комментарий:";
     private static final String GET_BOOK_ID = "Введите идентификатор книги";
+    private static final String GET_COMMENT_MESSAGE = "Введите комментарий:";
     private final IOService ioService;
 
     public void print(List<CommentDto> comments) {

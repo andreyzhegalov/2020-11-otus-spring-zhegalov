@@ -8,12 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "genres")
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Genre {
@@ -21,10 +22,11 @@ public class Genre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = true)
+    @Column(name = "id", unique = true)
     private long id;
 
     @Column(name = "name", nullable = false, unique = true)
+    @Setter
     private String name;
 
     public Genre(String name) {

@@ -61,8 +61,9 @@ public class BookRepositoryJpaTest {
 
     @Test
     void shouldReturnBookByIdWhenBookExisted() {
-        final var book = bookRepository.findById(EXISTED_BOOK_ID);
         final var authorsCount = 2;
+
+        final var book = bookRepository.findById(EXISTED_BOOK_ID);
 
         assertThat(book).isPresent().get().extracting("id").isEqualTo(EXISTED_BOOK_ID);
         assertThat(book.get().getAuthors()).isNotNull().hasSize(authorsCount)
@@ -82,6 +83,7 @@ public class BookRepositoryJpaTest {
         final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
         final var updatedGenre = new Genre(initBook.getGenre().getId(), initBook.getGenre().getName() + "_modify");
         final var updatedBook = new Book(initBook.getId(), initBook.getTitle() + "_modify", updatedGenre);
+
         bookRepository.save(updatedBook);
         em.flush();
         em.clear();
@@ -165,6 +167,7 @@ public class BookRepositoryJpaTest {
         em.flush();
         em.clear();
 
+        assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT-1);
         assertThat(statistic.getEntityUpdateCount()).isZero();
         assertThat(statistic.getEntityInsertCount()).isZero();
         assertThat(statistic.getEntityDeleteCount()).isZero();
@@ -174,6 +177,9 @@ public class BookRepositoryJpaTest {
     void deletingANonExistingBookShouldThrowAnException() {
         assertThatCode(() -> bookRepository.remove(NOT_EXISTED_BOOK_ID)).isInstanceOf(RepositoryException.class);
         assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT);
+        assertThat(statistic.getEntityUpdateCount()).isZero();
+        assertThat(statistic.getEntityInsertCount()).isZero();
+        assertThat(statistic.getEntityDeleteCount()).isZero();
     }
 
 }

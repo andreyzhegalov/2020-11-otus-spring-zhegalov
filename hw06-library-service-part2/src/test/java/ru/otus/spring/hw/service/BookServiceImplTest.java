@@ -59,6 +59,7 @@ public class BookServiceImplTest {
         then(bookRepository).should().findAll();
         then(authorRepository).shouldHaveNoInteractions();
         then(genreRepository).shouldHaveNoInteractions();
+        then(commentService).shouldHaveNoInteractions();
     }
 
     @Test
@@ -180,11 +181,11 @@ public class BookServiceImplTest {
     @Test
     void addNotExistedAuthorShouldThrowException() {
         final var bookId = 1L;
-        final var authorId = 2L;
+        final var notExistedAuthorId = 2L;
         given(bookRepository.findById(bookId)).willReturn(Optional.of(new Book()));
-        given(authorRepository.findById(authorId)).willReturn(Optional.empty());
+        given(authorRepository.findById(notExistedAuthorId)).willReturn(Optional.empty());
 
-        assertThatCode(() -> bookService.addAuthor(bookId, new AuthorDto(authorId)))
+        assertThatCode(() -> bookService.addAuthor(bookId, new AuthorDto(notExistedAuthorId)))
                 .isInstanceOf(ServiceException.class);
     }
 

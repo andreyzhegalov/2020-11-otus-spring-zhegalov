@@ -49,6 +49,7 @@ public class AuthorRepositoryJpaTest {
 
         final var author = authorRepository.save(insertedAuthor);
         em.flush();
+        em.clear();
 
         assertThat(author.hasId()).isTrue();
         assertThat(authorRepository.findAll()).hasSize(AUTHOR_COUNT + 1);
@@ -59,7 +60,7 @@ public class AuthorRepositoryJpaTest {
         final var author = authorRepository.findById(EXISTED_AUTHOR_ID).orElseGet(() -> fail("author not exist"));
         final var updatedAuthor = new Author(author.getId(), author.getName() + "_modify");
 
-        assertThatCode(() -> authorRepository.save(updatedAuthor)).doesNotThrowAnyException();
+        authorRepository.save(updatedAuthor);
         em.flush();
         em.clear();
 

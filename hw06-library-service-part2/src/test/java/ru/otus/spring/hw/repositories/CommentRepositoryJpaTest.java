@@ -70,7 +70,7 @@ public class CommentRepositoryJpaTest {
         assertThat(comment.get().getBook().getGenre()).isNotNull();
         assertThat(comment.get().getBook().getAuthors()).isNotEmpty();
 
-        assertThat(statistic.getPrepareStatementCount()).isEqualTo(2);
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(2); // + 1 sub query for author in the book
     }
 
     @Test
@@ -113,8 +113,9 @@ public class CommentRepositoryJpaTest {
     void shouldUpdateCommentIfIdExist() {
         final var comment = commentRepository.findById(EXISTED_COMMENT_ID).orElseGet(() -> fail("comment not exist"));
         comment.setText(comment.getText() + "_modify");
+        em.clear();
 
-        assertThatCode(() -> commentRepository.save(comment)).doesNotThrowAnyException();
+        commentRepository.save(comment);
         em.flush();
         em.clear();
 
@@ -142,6 +143,7 @@ public class CommentRepositoryJpaTest {
     @Test
     void deletingANonExistingCommentShouldThrowAnException() {
         assertThatCode(() -> commentRepository.remove(NOT_EXISTED_COMMENT_ID)).isInstanceOf(RepositoryException.class);
+
         assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT);
 
         assertThat(statistic.getEntityInsertCount()).isZero();

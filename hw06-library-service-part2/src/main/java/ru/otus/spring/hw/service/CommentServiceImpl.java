@@ -29,12 +29,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentDto> findAll() {
-        return commentRepository.findAll().stream().map(c -> new CommentDto(c)).collect(Collectors.toList());
+        return commentRepository.findAll().stream().map(CommentDto::new).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public void deleteByBookId(long bookId) {
         commentRepository.deleteByBookId(bookId);
     }
-
 }

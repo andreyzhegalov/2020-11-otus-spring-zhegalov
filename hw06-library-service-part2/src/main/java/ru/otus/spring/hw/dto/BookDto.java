@@ -3,14 +3,13 @@ package ru.otus.spring.hw.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.EqualsAndHashCode;
+import org.jetbrains.annotations.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.jetbrains.annotations.NotNull;
 import ru.otus.spring.hw.model.Book;
 
-@EqualsAndHashCode
 @ToString
 public class BookDto {
     @Setter
@@ -24,7 +23,6 @@ public class BookDto {
     private final long genreId;
 
     public BookDto(String title, long genreId) {
-        this.id = 0;
         this.title = title;
         this.genreId = genreId;
     }
@@ -38,9 +36,7 @@ public class BookDto {
     public BookDto(@NotNull Book book) {
         this.id = book.getId();
         this.title = book.getTitle();
-        book.getAuthors().forEach(a -> {
-            authorIds.add(a.getId());
-        });
+        book.getAuthors().forEach(a -> authorIds.add(a.getId()));
         this.genreId = book.getGenre().getId();
     }
 }

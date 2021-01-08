@@ -1,5 +1,6 @@
 package ru.otus.spring.hw.service;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
@@ -53,6 +54,18 @@ public class CommentServiceImplTest {
 
         then(bookRepository).should().findById(bookId);
         then(commentRepository).should().save(isA(Comment.class));
+    }
+
+    @Test
+    void shouldNotSaveNewCommentIfBookNotExist() {
+        final var notExistedBookId = 1L;
+        final var commentDto = new CommentDto("new text", notExistedBookId);
+        given(bookRepository.findById(notExistedBookId)).willReturn(Optional.empty());
+
+        assertThatCode(() -> commentService.addComment(commentDto)).isInstanceOf(ServiceException.class);
+
+        then(bookRepository).should().findById(notExistedBookId);
+        then(commentRepository).shouldHaveNoInteractions();
     }
 
     @Test

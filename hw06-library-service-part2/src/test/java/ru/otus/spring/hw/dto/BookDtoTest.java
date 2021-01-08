@@ -17,7 +17,9 @@ class BookDtoTest {
         final var book = new Book(1L, "title", new Genre());
         book.addAuthor(new Author(2L, "name2"));
         book.addAuthor(new Author(3L, "name3"));
+
         final var bookDto = new BookDto(book);
+
         assertThat(bookDto.getId()).isEqualTo(book.getId());
         assertThat(bookDto.getGenreId()).isEqualTo(book.getGenre().getId());
         assertThat(bookDto.getTitle()).isEqualTo(book.getTitle());
