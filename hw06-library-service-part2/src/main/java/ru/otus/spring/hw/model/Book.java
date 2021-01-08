@@ -21,13 +21,17 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "books")
 @NamedEntityGraph(name = "book-genre-entity-graph", attributeNodes = { @NamedAttributeNode("genre") })
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 @Getter
 public class Book {
     private final static long NOT_EXISTED_ID = 0L;
@@ -73,27 +77,5 @@ public class Book {
 
     public boolean hasId() {
         return id > NOT_EXISTED_ID;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Book other = (Book) obj;
-        return id == other.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Book [authors=" + authors + ", genre=" + genre + ", id=" + id + ", title=" + title + "]";
     }
 }

@@ -111,15 +111,18 @@ public class CommentRepositoryJpaTest {
 
     @Test
     void shouldUpdateCommentIfIdExist() {
-        final var comment = commentRepository.findById(EXISTED_COMMENT_ID).orElseGet(() -> fail("comment not exist"));
-        comment.setText(comment.getText() + "_modify");
+        final var initComment = commentRepository.findById(EXISTED_COMMENT_ID)
+                .orElseGet(() -> fail("comment not exist"));
+        initComment.setText(initComment.getText() + "_modify");
         em.clear();
 
-        commentRepository.save(comment);
+        commentRepository.save(initComment);
         em.flush();
         em.clear();
 
-        assertThat(commentRepository.findById(EXISTED_COMMENT_ID)).isPresent().get().isEqualTo(comment);
+        final var mayBeComment = commentRepository.findById(EXISTED_COMMENT_ID);
+        assertThat(mayBeComment).isPresent();
+        assertThat(mayBeComment.get().getText()).isEqualTo(initComment.getText());
         assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT);
 
         assertThat(statistic.getEntityInsertCount()).isZero();

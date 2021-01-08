@@ -15,15 +15,19 @@ import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "comments")
 @NamedEntityGraph(name = "comment-book-entity-graph", attributeNodes = { @NamedAttributeNode(value = "book") })
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class Comment {
     private final static long NOT_EXISTED_ID = 0L;
 
@@ -55,27 +59,5 @@ public class Comment {
 
     public boolean hasId() {
         return id > NOT_EXISTED_ID;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Comment other = (Comment) obj;
-        return id == other.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Comment [book=" + book + ", id=" + id + ", text=" + text + "]";
     }
 }

@@ -7,13 +7,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Table(name = "authors")
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class Author {
     private final static long NOT_EXISTED_ID = 0L;
 
@@ -38,27 +42,4 @@ public class Author {
     public boolean hasId() {
         return id > NOT_EXISTED_ID;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Author other = (Author) obj;
-        return id == other.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Author [id=" + id + ", name=" + name + "]";
-    }
-
 }
