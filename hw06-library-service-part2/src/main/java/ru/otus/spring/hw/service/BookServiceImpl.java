@@ -22,12 +22,10 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
-    private final CommentService commentService;
 
     @Transactional
     @Override
     public void deleteBook(long id) {
-        commentService.deleteByBookId(id);
         bookRepository.remove(id);
     }
 

@@ -4,6 +4,12 @@
 create table comments (
     id bigint not null auto_increment,
     text varchar(255),
-    book_id bigint references books(id) ON DELETE SET NULL,
-    primary key (id)
-);
+    book_id bigint not null,
+
+    primary key (id),
+
+    constraint books_book_id_fk
+       foreign key (book_id)
+       references books (id)
+       on delete cascade
+)

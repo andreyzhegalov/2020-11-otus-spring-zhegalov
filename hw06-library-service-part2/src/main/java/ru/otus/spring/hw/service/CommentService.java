@@ -9,6 +9,4 @@ public interface CommentService {
     void addComment(CommentDto commentDto);
 
     List<CommentDto> findAll();
-
-    void deleteByBookId(long bookId);
 }

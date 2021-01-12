@@ -31,10 +31,4 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentDto> findAll() {
         return commentRepository.findAll().stream().map(CommentDto::new).collect(Collectors.toList());
     }
-
-    @Override
-    @Transactional
-    public void deleteByBookId(long bookId) {
-        commentRepository.deleteByBookId(bookId);
-    }
 }

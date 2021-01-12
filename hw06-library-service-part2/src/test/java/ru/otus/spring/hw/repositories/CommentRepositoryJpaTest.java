@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.stream.Collectors;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.AfterEach;
@@ -70,7 +72,8 @@ public class CommentRepositoryJpaTest {
         assertThat(comment.get().getBook().getGenre()).isNotNull();
         assertThat(comment.get().getBook().getAuthors()).isNotEmpty();
 
-        assertThat(statistic.getPrepareStatementCount()).isEqualTo(3); // + select book  + 1 sub query for author in the book
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(3); // + select book + 1 sub query for author in the
+                                                                       // book
     }
 
     @Test
@@ -154,16 +157,19 @@ public class CommentRepositoryJpaTest {
     }
 
     @Test
-    void shouldDeleteAllCommentsByBookId() {
+    void shouldDeleteCommentAfterBookWasDeleted() {
         final var existedBookId = 1L;
-        final var commentsCount = commentRepository.findAll().size();
-        em.clear();
+        final var book = em.find(Book.class, existedBookId);
+        assertThat(book).isNotNull();
 
-        commentRepository.deleteByBookId(existedBookId);
+        assertThat(commentRepository.findAll().stream().filter(c -> c.getBook().getId() == existedBookId)
+                .collect(Collectors.toList())).isNotEmpty();
+
+        em.remove(book);
         em.flush();
         em.clear();
 
-        assertThat(commentRepository.findAll()).hasSizeLessThan(commentsCount);
+        assertThat(commentRepository.findAll().stream().filter(c -> c.getBook().getId() == existedBookId)
+                .collect(Collectors.toList())).isEmpty();
     }
-
 }

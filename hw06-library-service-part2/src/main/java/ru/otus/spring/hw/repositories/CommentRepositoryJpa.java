@@ -52,9 +52,4 @@ public class CommentRepositoryJpa implements CommentRepository {
             throw new RepositoryException("Comment with id = " + id + " not exist");
         }
     }
-
-    @Override
-    public void deleteByBookId(long bookId) {
-        em.createQuery("delete from Comment c where c.book.id=:bookId").setParameter("bookId", bookId).executeUpdate();
-    }
 }

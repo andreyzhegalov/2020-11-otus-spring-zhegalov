@@ -167,7 +167,7 @@ public class BookRepositoryJpaTest {
         em.flush();
         em.clear();
 
-        assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT-1);
+        assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT - 1);
         assertThat(statistic.getEntityUpdateCount()).isZero();
         assertThat(statistic.getEntityInsertCount()).isZero();
         assertThat(statistic.getEntityDeleteCount()).isZero();

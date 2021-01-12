@@ -144,14 +144,6 @@ public class BookServiceImplTest {
     }
 
     @Test
-    void commentsShouldBeRemovedAfterDeletingABook() {
-        final var deletedBookId = 1L;
-        bookService.deleteBook(deletedBookId);
-
-        then(commentService).should().deleteByBookId(eq(deletedBookId));
-    }
-
-    @Test
     void shouldAddAuthorToAuthorsList() {
         final var bookId = 1L;
         final var authorId = 2L;
