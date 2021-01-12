@@ -2,9 +2,9 @@
 --author: andrey
 
 create table book_author(
-    fk_book bigint references books(id),
-    fk_author bigint references authors(id) on delete cascade,
-    primary key (fk_book, fk_author)
+    book_id bigint not null references books(id),
+    author_id bigint not null references authors(id) on delete cascade,
+    primary key (book_id, author_id)
 );
 
 alter table books

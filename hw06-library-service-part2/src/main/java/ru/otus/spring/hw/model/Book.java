@@ -46,8 +46,8 @@ public class Book {
 
     @Fetch(FetchMode.SUBSELECT)
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "book_author", joinColumns = { @JoinColumn(name = "fk_book") }, inverseJoinColumns = {
-            @JoinColumn(name = "fk_author") })
+    @JoinTable(name = "book_author", joinColumns = { @JoinColumn(name = "book_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "author_id") })
     private final Set<Author> authors = new HashSet<>();
 
     @ManyToOne(targetEntity = Genre.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,

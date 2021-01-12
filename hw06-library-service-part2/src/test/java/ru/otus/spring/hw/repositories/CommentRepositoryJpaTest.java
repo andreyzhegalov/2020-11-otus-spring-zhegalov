@@ -70,7 +70,7 @@ public class CommentRepositoryJpaTest {
         assertThat(comment.get().getBook().getGenre()).isNotNull();
         assertThat(comment.get().getBook().getAuthors()).isNotEmpty();
 
-        assertThat(statistic.getPrepareStatementCount()).isEqualTo(2); // + 1 sub query for author in the book
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(3); // + select book  + 1 sub query for author in the book
     }
 
     @Test
@@ -114,7 +114,6 @@ public class CommentRepositoryJpaTest {
         final var initComment = commentRepository.findById(EXISTED_COMMENT_ID)
                 .orElseGet(() -> fail("comment not exist"));
         initComment.setText(initComment.getText() + "_modify");
-        em.clear();
 
         commentRepository.save(initComment);
         em.flush();

@@ -40,7 +40,7 @@ public class Comment {
     @Setter
     private String text;
 
-    @ManyToOne(targetEntity = Book.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
+    @ManyToOne(targetEntity = Book.class, fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "book_id")
     private Book book;
 

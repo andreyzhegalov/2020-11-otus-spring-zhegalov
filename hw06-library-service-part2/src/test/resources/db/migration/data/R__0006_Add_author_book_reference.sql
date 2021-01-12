@@ -1,4 +1,4 @@
-insert into book_author (fk_book, fk_author)
+insert into book_author (book_id, author_id)
 values(1,1),
       (1,2),
       (2,1);
