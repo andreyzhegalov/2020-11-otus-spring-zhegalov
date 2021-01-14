@@ -16,6 +16,7 @@
 3. *hw03-student-testing-application-part3* - Приложение для тестирования студентов на Spring Boot.
 4. *hw04-student-testing-application-part4* - Приложение для тестирования студентов на Spring Shell.
 5. *hw05-library-service-part1* - Приложение хранящее информацию о книгах в библиотеке на базе Spring JDBC.
+6. *hw06-library-service-part2* - Приложение хранящее информацию о книгах в библиотеке на базе JPA+Hibernate.
 
 
 ##### License
