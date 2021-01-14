@@ -35,6 +35,7 @@
         <module>hw04-student-testing-application-part4</module>
         <module>hw05-library-service-part1</module>
         <module>hw06-library-service-part2</module>
+        <module>hw07-library-service-part3</module>
     </modules>
 
     <build>
