@@ -13,7 +13,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import ru.otus.spring.hw.model.Author;
 
 @DataJpaTest
-public class AuthorRepositoryJpaTest {
+public class AuthorRepositoryTest {
     private final static long EXISTED_AUTHOR_ID = 1L;
     private final static long NOT_EXISTED_AUTHOR_ID = 4L;
     private final static int AUTHOR_COUNT = 3;

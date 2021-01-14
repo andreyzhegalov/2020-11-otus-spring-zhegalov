@@ -14,15 +14,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
 
-@Import(CommentRepositoryJpa.class)
 @DataJpaTest
-public class CommentRepositoryJpaTest {
+public class CommentRepositoryTest {
 
     private static final int COMMENT_COUNT = 2;
 
@@ -87,9 +86,10 @@ public class CommentRepositoryJpaTest {
         final var updatedComment = new Comment("name", new Book());
         assertThat(updatedComment.hasId()).isFalse();
 
-        assertThatCode(() -> commentRepository.save(updatedComment)).isInstanceOf(RepositoryException.class);
+        assertThatCode(() -> commentRepository.save(updatedComment))
+                .isInstanceOf(DataIntegrityViolationException.class);
 
-        assertThat(statistic.getPrepareStatementCount()).isZero();
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
         assertThat(statistic.getEntityInsertCount()).isZero();
         assertThat(statistic.getEntityUpdateCount()).isZero();
         assertThat(statistic.getEntityDeleteCount()).isZero();
@@ -137,7 +137,7 @@ public class CommentRepositoryJpaTest {
         commentRepository.findById(EXISTED_COMMENT_ID).orElseGet(() -> fail("comment not exist"));
         em.clear();
 
-        commentRepository.remove(EXISTED_COMMENT_ID);
+        commentRepository.deleteById(EXISTED_COMMENT_ID);
         em.clear();
         em.flush();
 
@@ -147,7 +147,9 @@ public class CommentRepositoryJpaTest {
 
     @Test
     void deletingANonExistingCommentShouldThrowAnException() {
-        assertThatCode(() -> commentRepository.remove(NOT_EXISTED_COMMENT_ID)).isInstanceOf(RepositoryException.class);
+        commentRepository.deleteById(NOT_EXISTED_COMMENT_ID);
+        em.flush();
+        em.clear();
 
         assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT);
 

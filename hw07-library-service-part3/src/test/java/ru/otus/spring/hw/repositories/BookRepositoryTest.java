@@ -22,7 +22,7 @@ import ru.otus.spring.hw.model.Genre;
 
 @Import(BookRepositoryJpa.class)
 @DataJpaTest
-public class BookRepositoryJpaTest {
+public class BookRepositoryTest {
     private final static int BOOK_COUNT = 2;
     private final static long EXISTED_BOOK_ID = 1L;
     private final static long NOT_EXISTED_BOOK_ID = 3L;

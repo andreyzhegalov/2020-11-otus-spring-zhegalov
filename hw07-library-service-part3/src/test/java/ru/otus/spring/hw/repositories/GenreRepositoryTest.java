@@ -13,7 +13,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import ru.otus.spring.hw.model.Genre;
 
 @DataJpaTest
-public class GenreRepositoryJpaTest {
+public class GenreRepositoryTest {
     private final static long EXISTED_GENRE_ID = 1L;
     private final static long NOT_EXISTED_GENRE_ID = 3L;
     private final static int GENRE_COUNT = 2;

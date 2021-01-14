@@ -11,8 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 
 import lombok.EqualsAndHashCode;
@@ -23,7 +21,6 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "comments")
-@NamedEntityGraph(name = "comment-book-entity-graph", attributeNodes = { @NamedAttributeNode(value = "book") })
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode
