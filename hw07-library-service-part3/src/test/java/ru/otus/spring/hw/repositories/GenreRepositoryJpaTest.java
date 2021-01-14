@@ -8,19 +8,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import ru.otus.spring.hw.model.Genre;
 
 @DataJpaTest
-@Import(GenreRepositoryJpa.class)
 public class GenreRepositoryJpaTest {
     private final static long EXISTED_GENRE_ID = 1L;
     private final static long NOT_EXISTED_GENRE_ID = 3L;
     private final static int GENRE_COUNT = 2;
 
     @Autowired
-    private GenreRepositoryJpa genreRepository;
+    private GenreRepository genreRepository;
 
     @Autowired
     private TestEntityManager em;
@@ -70,11 +69,12 @@ public class GenreRepositoryJpaTest {
     }
 
     @Test
-    void deletingAExistingWorkbookShouldDeleteGenre() {
+    void deletingAExistingGenreShouldDeleteGenre() {
+
         genreRepository.findById(EXISTED_GENRE_ID).orElseGet(() -> fail("item not exist"));
         em.clear();
 
-        genreRepository.remove(EXISTED_GENRE_ID);
+        genreRepository.deleteById(EXISTED_GENRE_ID);
         em.flush();
         em.clear();
 
@@ -83,8 +83,8 @@ public class GenreRepositoryJpaTest {
     }
 
     @Test
-    void deletingANonExistingWorkbookShouldThrowAnException() {
-        assertThatCode(() -> genreRepository.remove(NOT_EXISTED_GENRE_ID)).isInstanceOf(RepositoryException.class);
-        assertThat(genreRepository.findAll()).hasSize(GENRE_COUNT);
+    void deletingANonExistingGenreShouldThrowAnException() {
+        assertThatCode(() -> genreRepository.deleteById(NOT_EXISTED_GENRE_ID))
+                .isInstanceOf(EmptyResultDataAccessException.class);
     }
 }

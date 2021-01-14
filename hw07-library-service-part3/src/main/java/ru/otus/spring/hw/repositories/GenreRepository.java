@@ -1,17 +1,9 @@
 package ru.otus.spring.hw.repositories;
 
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import ru.otus.spring.hw.model.Genre;
 
-public interface GenreRepository {
+public interface GenreRepository extends JpaRepository<Genre, Long> {
 
-    List<Genre> findAll();
-
-    Optional<Genre> findById(long id);
-
-    Genre save(Genre genre);
-
-    void remove(long id);
 }
