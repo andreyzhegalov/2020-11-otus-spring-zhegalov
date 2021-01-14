@@ -8,19 +8,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import ru.otus.spring.hw.model.Author;
 
 @DataJpaTest
-@Import(AuthorRepositoryJpa.class)
 public class AuthorRepositoryJpaTest {
     private final static long EXISTED_AUTHOR_ID = 1L;
     private final static long NOT_EXISTED_AUTHOR_ID = 4L;
     private final static int AUTHOR_COUNT = 3;
 
     @Autowired
-    private AuthorRepositoryJpa authorRepository;
+    private AuthorRepository authorRepository;
 
     @Autowired
     private TestEntityManager em;
@@ -73,7 +72,7 @@ public class AuthorRepositoryJpaTest {
         authorRepository.findById(EXISTED_AUTHOR_ID).orElseGet(() -> fail("author not exist"));
         em.clear();
 
-        authorRepository.remove(EXISTED_AUTHOR_ID);
+        authorRepository.deleteById(EXISTED_AUTHOR_ID);
         em.flush();
         em.clear();
 
@@ -83,7 +82,8 @@ public class AuthorRepositoryJpaTest {
 
     @Test
     void deletingANonExistingAuthorShouldThrowAnException() {
-        assertThatCode(() -> authorRepository.remove(NOT_EXISTED_AUTHOR_ID)).isInstanceOf(RepositoryException.class);
+        assertThatCode(() -> authorRepository.deleteById(NOT_EXISTED_AUTHOR_ID))
+                .isInstanceOf(EmptyResultDataAccessException.class);
         assertThat(authorRepository.findAll()).hasSize(AUTHOR_COUNT);
     }
 }
