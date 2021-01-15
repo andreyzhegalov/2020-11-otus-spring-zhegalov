@@ -47,22 +47,12 @@ public class BookRepositoryTest {
     }
 
     @Test
-    void shouldReturnBookListInTwoRequest() {
-        var books = bookRepository.findAll();
-
-        assertThat(books).isNotNull().hasSize(BOOK_COUNT).allMatch(Objects::nonNull)
-                .allMatch(b -> !b.getTitle().equals(""))
-                .allMatch(b -> b.getGenre() != null && !b.getGenre().getName().equals(""))
-                .allMatch(b -> b.getAuthors() != null && b.getAuthors().size() > 0);
-        assertThat(statistic.getPrepareStatementCount()).isEqualTo(2); // + authors sub query
-    }
-
-    @Test
     void shouldReturnBookDtoListInTwoRequest() {
         var books = bookRepository.findAllBy(BookDto.class);
 
         assertThat(books).isNotNull().hasSize(BOOK_COUNT).allMatch(Objects::nonNull)
-                .allMatch(bd -> bd.getClass() == BookDto.class);
+                .allMatch(bd -> bd.getClass() == BookDto.class).allMatch(b -> !b.getTitle().equals(""))
+                .allMatch(bd -> bd.getAuthorIds().size() > 0);
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(2); // + authors sub query
     }
 
