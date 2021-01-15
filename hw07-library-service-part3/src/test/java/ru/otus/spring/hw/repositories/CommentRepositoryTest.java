@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import ru.otus.spring.hw.dto.CommentDto;
 import ru.otus.spring.hw.model.Book;
 
 @DataJpaTest
@@ -47,11 +48,9 @@ public class CommentRepositoryTest {
     }
 
     @Test
-    void shouldReturnCommentListInOneRequest() {
-        var comments = commentRepository.findAll();
-        assertThat(comments).isNotNull().hasSize(COMMENT_COUNT).allMatch(c -> c != null && !c.getText().equals(""))
-                .allMatch(c -> c.getBook() != null && c.getBook().hasId())
-                .allMatch(c -> c.getBook().getGenre() != null);
+    void shouldReturnCommentDtoForAllComments() {
+        var commentsDto = commentRepository.findAllBy(CommentDto.class);
+        assertThat(commentsDto).isNotNull().hasSize(COMMENT_COUNT).allMatch(cd -> cd.getClass() == CommentDto.class);
 
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
     }

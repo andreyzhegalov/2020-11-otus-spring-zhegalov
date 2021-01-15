@@ -15,7 +15,7 @@ import ru.otus.spring.hw.model.Comment;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @EntityGraph(attributePaths = { "book" })
-    List<Comment> findAll();
+    <T> List<T> findAllBy(Class<T> type);
 
     @Modifying
     @Query("delete from Comment c where c.id=:id")
