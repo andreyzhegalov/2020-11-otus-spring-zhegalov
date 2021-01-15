@@ -13,6 +13,7 @@ public interface BookRepository extends Repository<Book, Long> {
     @EntityGraph(attributePaths = { "genre" })
     <T> List<T> findAllBy(Class<T> type);
 
+    @EntityGraph(attributePaths = { "genre" })
     Optional<Book> findById(Long id);
 
     void deleteById(Long id);

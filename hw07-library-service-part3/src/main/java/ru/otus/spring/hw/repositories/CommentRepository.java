@@ -1,23 +1,22 @@
 package ru.otus.spring.hw.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.Repository;
 
 import ru.otus.spring.hw.model.Comment;
 
-@Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface CommentRepository extends Repository<Comment, Long> {
 
     @EntityGraph(attributePaths = { "book" })
     <T> List<T> findAllBy(Class<T> type);
 
-    @Modifying
-    @Query("delete from Comment c where c.id=:id")
-    void deleteById(@Param("id") Long id);
+    @EntityGraph(attributePaths = { "book" })
+    Optional<Comment> findById(Long id);
+
+    void save(Comment comment);
+
+    void deleteById(Long id);
 }

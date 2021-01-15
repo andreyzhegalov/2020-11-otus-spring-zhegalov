@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import ru.otus.spring.hw.dto.CommentDto;
 import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.Comment;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -66,7 +67,7 @@ public class CommentRepositoryTest {
         assertThat(comment.get().getBook().getGenre()).isNotNull();
         assertThat(comment.get().getBook().getAuthors()).isNotEmpty();
 
-        assertThat(statistic.getPrepareStatementCount()).isEqualTo(3); // + select book + 1 sub query for author in the
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(2); // + select book + 1 sub query for author in the
                                                                        // book
     }
 
@@ -76,14 +77,14 @@ public class CommentRepositoryTest {
         final var book = em.find(Book.class, existedBookId);
         assertThat(book).isNotNull();
 
-        assertThat(commentRepository.findAll().stream().filter(c -> c.getBook().getId() == existedBookId)
+        assertThat(commentRepository.findAllBy(Comment.class).stream().filter(c -> c.getBook().getId() == existedBookId)
                 .collect(Collectors.toList())).isNotEmpty();
 
         em.remove(book);
         em.flush();
         em.clear();
 
-        assertThat(commentRepository.findAll().stream().filter(c -> c.getBook().getId() == existedBookId)
+        assertThat(commentRepository.findAllBy(Comment.class).stream().filter(c -> c.getBook().getId() == existedBookId)
                 .collect(Collectors.toList())).isEmpty();
     }
 }
