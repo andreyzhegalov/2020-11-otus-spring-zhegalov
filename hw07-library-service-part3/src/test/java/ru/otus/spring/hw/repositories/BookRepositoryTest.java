@@ -14,13 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
 
-@Import(BookRepositoryJpa.class)
 @DataJpaTest
 public class BookRepositoryTest {
     private final static int BOOK_COUNT = 2;
@@ -28,7 +27,7 @@ public class BookRepositoryTest {
     private final static long NOT_EXISTED_BOOK_ID = 3L;
 
     @Autowired
-    private BookRepositoryJpa bookRepository;
+    private BookRepository bookRepository;
 
     @Autowired
     private TestEntityManager em;
@@ -163,19 +162,19 @@ public class BookRepositoryTest {
 
     @Test
     void shouldDeleteExistedBook() {
-        bookRepository.remove(EXISTED_BOOK_ID);
+        bookRepository.deleteById(EXISTED_BOOK_ID);
         em.flush();
         em.clear();
 
         assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT - 1);
         assertThat(statistic.getEntityUpdateCount()).isZero();
         assertThat(statistic.getEntityInsertCount()).isZero();
-        assertThat(statistic.getEntityDeleteCount()).isZero();
     }
 
     @Test
     void deletingANonExistingBookShouldThrowAnException() {
-        assertThatCode(() -> bookRepository.remove(NOT_EXISTED_BOOK_ID)).isInstanceOf(RepositoryException.class);
+        assertThatCode(() -> bookRepository.deleteById(NOT_EXISTED_BOOK_ID))
+                .isInstanceOf(EmptyResultDataAccessException.class);
         assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT);
         assertThat(statistic.getEntityUpdateCount()).isZero();
         assertThat(statistic.getEntityInsertCount()).isZero();

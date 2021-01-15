@@ -138,7 +138,7 @@ public class BookServiceImplTest {
 
         bookService.deleteBook(deletedBookId);
 
-        then(bookRepository).should().remove(deletedBookId);
+        then(bookRepository).should().deleteById(deletedBookId);
         then(authorRepository).shouldHaveNoInteractions();
         then(genreRepository).shouldHaveNoInteractions();
     }

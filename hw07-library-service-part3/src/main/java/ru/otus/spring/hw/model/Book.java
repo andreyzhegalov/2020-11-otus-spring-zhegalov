@@ -14,8 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
@@ -28,7 +26,6 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "books")
-@NamedEntityGraph(name = "book-genre-entity-graph", attributeNodes = { @NamedAttributeNode("genre") })
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
@@ -50,8 +47,8 @@ public class Book {
             @JoinColumn(name = "author_id") })
     private final Set<Author> authors = new HashSet<>();
 
-    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,
-            CascadeType.PERSIST })
+    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST,
+            CascadeType.MERGE })
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
