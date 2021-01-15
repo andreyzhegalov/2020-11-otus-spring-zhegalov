@@ -1,7 +1,6 @@
 package ru.otus.spring.hw.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Objects;
@@ -12,19 +11,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.model.Book;
-import ru.otus.spring.hw.model.Genre;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class BookRepositoryTest {
     private final static int BOOK_COUNT = 2;
     private final static long EXISTED_BOOK_ID = 1L;
-    private final static long NOT_EXISTED_BOOK_ID = 3L;
 
     @Autowired
     private BookRepository bookRepository;
@@ -48,7 +46,7 @@ public class BookRepositoryTest {
     }
 
     @Test
-    void shouldReturnBookList() {
+    void shouldReturnBookListInTwoRequest() {
         var books = bookRepository.findAll();
 
         assertThat(books).isNotNull().hasSize(BOOK_COUNT).allMatch(Objects::nonNull)
@@ -59,7 +57,7 @@ public class BookRepositoryTest {
     }
 
     @Test
-    void shouldReturnBookByIdWhenBookExisted() {
+    void shouldReturnBookByIdInTwoRequest() {
         final var authorsCount = 2;
 
         final var book = bookRepository.findById(EXISTED_BOOK_ID);
@@ -70,50 +68,6 @@ public class BookRepositoryTest {
         assertThat(book.get().getGenre()).isNotNull().extracting("name").isNotEqualTo("");
 
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(2); // + authors sub query
-    }
-
-    @Test
-    void shouldNotReturnBookByIdForNotExistingBook() {
-        assertThat(bookRepository.findById(NOT_EXISTED_BOOK_ID)).isNotPresent();
-    }
-
-    @Test
-    void shouldUpdateBookIfIdExist() {
-        final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
-        final var updatedGenre = new Genre(initBook.getGenre().getId(), initBook.getGenre().getName() + "_modify");
-        final var updatedBook = new Book(initBook.getId(), initBook.getTitle() + "_modify", updatedGenre);
-
-        bookRepository.save(updatedBook);
-        em.flush();
-        em.clear();
-
-        assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
-        final var updatedBookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
-        assertThat(updatedBookFromDb.getId()).isEqualTo(updatedBook.getId());
-        assertThat(updatedBookFromDb.getGenre()).isEqualTo(updatedBook.getGenre());
-        assertThat(updatedBookFromDb.getTitle()).isEqualTo(updatedBook.getTitle());
-        assertThat(updatedBookFromDb.getAuthors()).hasSameElementsAs(updatedBook.getAuthors());
-
-        assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT);
-        assertThat(statistic.getEntityUpdateCount()).isEqualTo(2);
-    }
-
-    @Test
-    void shouldInsertIfBookIdNotExisted() {
-        final var notExistedGenre = new Genre("new genre");
-        final var notExistedBook = new Book("new title", notExistedGenre);
-
-        final var insertedBook = bookRepository.save(notExistedBook);
-        final var insertedBookId = insertedBook.getId();
-        em.flush();
-        em.clear();
-
-        assertThat(bookRepository.findById(insertedBookId)).isPresent().get().usingRecursiveComparison()
-                .isEqualTo(notExistedBook);
-        assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT + 1);
-
-        assertThat(statistic.getEntityUpdateCount()).isZero();
-        assertThat(statistic.getEntityInsertCount()).isEqualTo(2);
     }
 
     @Test
@@ -159,26 +113,4 @@ public class BookRepositoryTest {
         assertThat(statistic.getEntityInsertCount()).isZero();
         assertThat(statistic.getEntityDeleteCount()).isZero();
     }
-
-    @Test
-    void shouldDeleteExistedBook() {
-        bookRepository.deleteById(EXISTED_BOOK_ID);
-        em.flush();
-        em.clear();
-
-        assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT - 1);
-        assertThat(statistic.getEntityUpdateCount()).isZero();
-        assertThat(statistic.getEntityInsertCount()).isZero();
-    }
-
-    @Test
-    void deletingANonExistingBookShouldThrowAnException() {
-        assertThatCode(() -> bookRepository.deleteById(NOT_EXISTED_BOOK_ID))
-                .isInstanceOf(EmptyResultDataAccessException.class);
-        assertThat(bookRepository.findAll()).hasSize(BOOK_COUNT);
-        assertThat(statistic.getEntityUpdateCount()).isZero();
-        assertThat(statistic.getEntityInsertCount()).isZero();
-        assertThat(statistic.getEntityDeleteCount()).isZero();
-    }
-
 }

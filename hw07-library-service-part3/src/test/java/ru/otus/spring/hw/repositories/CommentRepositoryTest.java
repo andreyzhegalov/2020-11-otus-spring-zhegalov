@@ -1,8 +1,6 @@
 package ru.otus.spring.hw.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.stream.Collectors;
 
@@ -12,22 +10,20 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import ru.otus.spring.hw.model.Book;
-import ru.otus.spring.hw.model.Comment;
-import ru.otus.spring.hw.model.Genre;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class CommentRepositoryTest {
 
     private static final int COMMENT_COUNT = 2;
 
     private static final long EXISTED_COMMENT_ID = 1L;
-
-    private static final long NOT_EXISTED_COMMENT_ID = 5L;
 
     @Autowired
     private CommentRepository commentRepository;
@@ -51,7 +47,7 @@ public class CommentRepositoryTest {
     }
 
     @Test
-    void shouldReturnCommentList() {
+    void shouldReturnCommentListInOneRequest() {
         var comments = commentRepository.findAll();
         assertThat(comments).isNotNull().hasSize(COMMENT_COUNT).allMatch(c -> c != null && !c.getText().equals(""))
                 .allMatch(c -> c.getBook() != null && c.getBook().hasId())
@@ -73,89 +69,6 @@ public class CommentRepositoryTest {
 
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(3); // + select book + 1 sub query for author in the
                                                                        // book
-    }
-
-    @Test
-    void shouldNotReturnCommentByIdForNotExistingComment() {
-        assertThat(commentRepository.findById(NOT_EXISTED_COMMENT_ID)).isNotPresent();
-        assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
-    }
-
-    @Test
-    void shouldThrowExceptionIfTheBookNotExist() {
-        final var updatedComment = new Comment("name", new Book());
-        assertThat(updatedComment.hasId()).isFalse();
-
-        assertThatCode(() -> commentRepository.save(updatedComment))
-                .isInstanceOf(DataIntegrityViolationException.class);
-
-        assertThat(statistic.getPrepareStatementCount()).isEqualTo(1);
-        assertThat(statistic.getEntityInsertCount()).isZero();
-        assertThat(statistic.getEntityUpdateCount()).isZero();
-        assertThat(statistic.getEntityDeleteCount()).isZero();
-    }
-
-    @Test
-    void shouldInsertIfCommentIdNotExisted() {
-        final var newComment = new Comment("name", new Book(1L, "title", new Genre(1L, "genre")));
-        assertThat(newComment.hasId()).isFalse();
-
-        final var comment = commentRepository.save(newComment);
-        em.flush();
-        em.clear();
-
-        assertThat(comment.hasId()).isTrue();
-        assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT + 1);
-
-        assertThat(statistic.getEntityInsertCount()).isEqualTo(1);
-        assertThat(statistic.getEntityUpdateCount()).isZero();
-        assertThat(statistic.getEntityDeleteCount()).isZero();
-    }
-
-    @Test
-    void shouldUpdateCommentIfIdExist() {
-        final var initComment = commentRepository.findById(EXISTED_COMMENT_ID)
-                .orElseGet(() -> fail("comment not exist"));
-        initComment.setText(initComment.getText() + "_modify");
-
-        commentRepository.save(initComment);
-        em.flush();
-        em.clear();
-
-        final var mayBeComment = commentRepository.findById(EXISTED_COMMENT_ID);
-        assertThat(mayBeComment).isPresent();
-        assertThat(mayBeComment.get().getText()).isEqualTo(initComment.getText());
-        assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT);
-
-        assertThat(statistic.getEntityInsertCount()).isZero();
-        assertThat(statistic.getEntityUpdateCount()).isEqualTo(1);
-        assertThat(statistic.getEntityDeleteCount()).isZero();
-    }
-
-    @Test
-    void deletingAExistingCommentShouldDeleteComment() {
-        commentRepository.findById(EXISTED_COMMENT_ID).orElseGet(() -> fail("comment not exist"));
-        em.clear();
-
-        commentRepository.deleteById(EXISTED_COMMENT_ID);
-        em.clear();
-        em.flush();
-
-        assertThat(commentRepository.findById(EXISTED_COMMENT_ID)).isNotPresent();
-        assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT - 1);
-    }
-
-    @Test
-    void deletingANonExistingCommentShouldThrowAnException() {
-        commentRepository.deleteById(NOT_EXISTED_COMMENT_ID);
-        em.flush();
-        em.clear();
-
-        assertThat(commentRepository.findAll()).hasSize(COMMENT_COUNT);
-
-        assertThat(statistic.getEntityInsertCount()).isZero();
-        assertThat(statistic.getEntityUpdateCount()).isZero();
-        assertThat(statistic.getEntityDeleteCount()).isZero();
     }
 
     @Test
