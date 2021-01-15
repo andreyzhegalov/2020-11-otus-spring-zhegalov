@@ -1,7 +1,6 @@
 package ru.otus.spring.hw.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +31,7 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     @Override
     public List<BookDto> findAll() {
-        return bookRepository.findAll().stream().map(BookDto::new).collect(Collectors.toList());
+        return bookRepository.findAllBy(BookDto.class);
     }
 
     @Transactional

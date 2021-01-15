@@ -12,5 +12,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @EntityGraph(attributePaths = { "genre" })
     List<Book> findAll();
 
-
+    @EntityGraph(attributePaths = { "genre" })
+    <T> List<T> findAllBy(Class<T> type);
 }

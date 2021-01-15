@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 
 @DataJpaTest
@@ -53,6 +54,15 @@ public class BookRepositoryTest {
                 .allMatch(b -> !b.getTitle().equals(""))
                 .allMatch(b -> b.getGenre() != null && !b.getGenre().getName().equals(""))
                 .allMatch(b -> b.getAuthors() != null && b.getAuthors().size() > 0);
+        assertThat(statistic.getPrepareStatementCount()).isEqualTo(2); // + authors sub query
+    }
+
+    @Test
+    void shouldReturnBookDtoListInTwoRequest() {
+        var books = bookRepository.findAllBy(BookDto.class);
+
+        assertThat(books).isNotNull().hasSize(BOOK_COUNT).allMatch(Objects::nonNull)
+                .allMatch(bd -> bd.getClass() == BookDto.class);
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(2); // + authors sub query
     }
 
