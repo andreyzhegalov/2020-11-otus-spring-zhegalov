@@ -11,15 +11,12 @@ import lombok.ToString;
 import ru.otus.spring.hw.model.Book;
 
 @ToString
+@Getter
 public class BookDto {
     @Setter
-    @Getter
     private long id;
-    @Getter
     private final String title;
-    @Getter
     private final List<Long> authorIds = new ArrayList<>();
-    @Getter
     private final long genreId;
 
     public BookDto(String title, long genreId) {

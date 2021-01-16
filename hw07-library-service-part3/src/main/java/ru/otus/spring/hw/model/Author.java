@@ -17,10 +17,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Author {
+    private final static long NOT_EXISTED_ID = 0L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
-    private long id;
+    private long id = NOT_EXISTED_ID;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
