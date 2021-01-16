@@ -67,7 +67,7 @@ public class BookServiceImplTest {
     void shouldThrowExceptionIfAuthorNotExistForUpdatedBook() {
         final var authorId = 2L;
         final var genreId = 3L;
-        final var bookDto = new BookDto(1L, "title", genreId);
+        final var bookDto = new BookDto("title", genreId);
         bookDto.getAuthorIds().add(authorId);
         given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));
         given(authorRepository.findById(authorId)).willReturn(Optional.empty());
@@ -81,7 +81,7 @@ public class BookServiceImplTest {
     void shouldThrowExceptionIfGenreNotExistForUpdatedBook() {
         final var authorId = 2L;
         final var genreId = 3L;
-        final var bookDto = new BookDto(1L, "title", genreId);
+        final var bookDto = new BookDto("title", genreId);
         given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author(authorId, "name")));
         given(genreRepository.findById(genreId)).willReturn(Optional.empty());
 
@@ -95,7 +95,8 @@ public class BookServiceImplTest {
         final var bookId = 1L;
         final var authorId = 2L;
         final var genreId = 3L;
-        final var bookDto = new BookDto(bookId, "title", genreId);
+        final var bookDto = new BookDto("title", genreId);
+        bookDto.setId(bookId);
         bookDto.getAuthorIds().add(authorId);
         given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author(authorId, "name")));
         given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));

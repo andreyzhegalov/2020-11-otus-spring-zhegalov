@@ -24,12 +24,6 @@ public class BookDto {
         this.genreId = genreId;
     }
 
-    public BookDto(long id, String title, long genreId) {
-        this.id = id;
-        this.title = title;
-        this.genreId = genreId;
-    }
-
     public BookDto(@NotNull Book book) {
         this.id = book.getId();
         this.title = book.getTitle();

@@ -32,8 +32,8 @@ public class IOBookServiceTest {
 
     @Test
     void printBooksShouldPrintViaIOService() {
-        final var bookDto1 = new BookDto(1L, "title", 1L);
-        final var bookDto2 = new BookDto(1L, "title", 1L);
+        final var bookDto1 = new BookDto("title", 1L);
+        final var bookDto2 = new BookDto("title", 1L);
 
         ioBookService.print(List.of(bookDto1, bookDto2));
         then(ioService).should(atLeastOnce()).print(anyString());
