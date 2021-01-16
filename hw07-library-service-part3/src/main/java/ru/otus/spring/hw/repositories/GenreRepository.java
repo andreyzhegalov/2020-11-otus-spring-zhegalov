@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,7 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
 
     @Transactional(readOnly = true)
     List<Genre> findAll();
+
+    @Transactional(readOnly = true)
+    Optional<Genre> findById(Long id);
 }

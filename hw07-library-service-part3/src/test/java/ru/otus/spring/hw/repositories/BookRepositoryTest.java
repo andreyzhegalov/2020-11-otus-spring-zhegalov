@@ -48,9 +48,9 @@ public class BookRepositoryTest {
 
     @Test
     void shouldReturnBookDtoListInTwoRequest() {
-        var books = bookRepository.findAllBy(BookDto.class);
+        var booksDto = bookRepository.findAllBy(BookDto.class);
 
-        assertThat(books).isNotNull().hasSize(BOOK_COUNT).allMatch(Objects::nonNull)
+        assertThat(booksDto).isNotNull().hasSize(BOOK_COUNT).allMatch(Objects::nonNull)
                 .allMatch(bd -> bd.getClass() == BookDto.class).allMatch(b -> !b.getTitle().equals(""))
                 .allMatch(bd -> bd.getAuthorIds().size() > 0);
         assertThat(statistic.getPrepareStatementCount()).isEqualTo(2); // + authors sub query
@@ -71,21 +71,21 @@ public class BookRepositoryTest {
     }
 
     @Test
-    void addExistedAuthorShouldInsertAuthorToBookAuthorsList() {
+    void shouldInsertAuthorToBookAuthorsList() {
         final var newAuthorId = 3L;
         final var existedAuthor = em.find(Author.class, newAuthorId);
         assertThat(existedAuthor).isNotNull();
         final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
-        assertThat(initBook.getAuthors()).allMatch(a -> a.getId() != newAuthorId);
+        assertThat(initBook.getAuthors().stream().filter(a -> a.getId() == newAuthorId).count()).isZero();
         final var initAuthorCount = initBook.getAuthors().size();
 
         initBook.addAuthor(existedAuthor);
         em.flush();
         em.clear();
 
-        assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
         final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
         assertThat(bookFromDb.getAuthors()).hasSize(initAuthorCount + 1);
+        assertThat(bookFromDb.getAuthors().stream().filter(a -> a.getId() == newAuthorId).count()).isEqualTo(1);
 
         assertThat(statistic.getEntityUpdateCount()).isZero();
         assertThat(statistic.getEntityInsertCount()).isZero();
@@ -94,20 +94,20 @@ public class BookRepositoryTest {
 
     @Test
     void shouldRemoveAuthorFromBookAuthors() {
-        final var new_author_id = 2L;
-        final var existedAuthor = em.find(Author.class, new_author_id);
+        final var newAuthorId = 2L;
+        final var existedAuthor = em.find(Author.class, newAuthorId);
         assertThat(existedAuthor).isNotNull();
         final var initBook = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
-        assertThat(initBook.getAuthors()).anyMatch(a -> a.getId() == new_author_id);
+        assertThat(initBook.getAuthors().stream().filter(a -> a.getId() == newAuthorId).count()).isEqualTo(1);
         final var initAuthorCount = initBook.getAuthors().size();
 
         initBook.removeAuthor(existedAuthor);
         em.flush();
         em.clear();
 
-        assertThat(bookRepository.findById(EXISTED_BOOK_ID)).isPresent();
         final var bookFromDb = bookRepository.findById(EXISTED_BOOK_ID).orElseGet(() -> fail("item not exist"));
         assertThat(bookFromDb.getAuthors()).hasSize(initAuthorCount - 1);
+        assertThat(bookFromDb.getAuthors().stream().filter(a -> a.getId() == newAuthorId).count()).isZero();
 
         assertThat(statistic.getEntityUpdateCount()).isZero();
         assertThat(statistic.getEntityInsertCount()).isZero();

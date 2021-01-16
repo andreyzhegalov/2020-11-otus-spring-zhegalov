@@ -2,8 +2,6 @@ package ru.otus.spring.hw.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.stream.Collectors;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.AfterEach;
@@ -49,7 +47,7 @@ public class CommentRepositoryTest {
     }
 
     @Test
-    void shouldReturnCommentDtoForAllComments() {
+    void shouldReturnCommentDtoForAllCommentsInOneQuery() {
         var commentsDto = commentRepository.findAllBy(CommentDto.class);
         assertThat(commentsDto).isNotNull().hasSize(COMMENT_COUNT).allMatch(cd -> cd.getClass() == CommentDto.class);
 
@@ -57,7 +55,7 @@ public class CommentRepositoryTest {
     }
 
     @Test
-    void shouldReturnCommentByIdWhenCommentExisted() {
+    void shouldReturnCommentByIdWhenCommentExistedInTwoQuery() {
         final var comment = commentRepository.findById(EXISTED_COMMENT_ID);
 
         assertThat(comment).isPresent();
@@ -78,13 +76,13 @@ public class CommentRepositoryTest {
         assertThat(book).isNotNull();
 
         assertThat(commentRepository.findAllBy(Comment.class).stream().filter(c -> c.getBook().getId() == existedBookId)
-                .collect(Collectors.toList())).isNotEmpty();
+                .count()).isNotZero();
 
         em.remove(book);
         em.flush();
         em.clear();
 
         assertThat(commentRepository.findAllBy(Comment.class).stream().filter(c -> c.getBook().getId() == existedBookId)
-                .collect(Collectors.toList())).isEmpty();
+                .count()).isZero();
     }
 }
