@@ -19,24 +19,20 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "books")
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
-@Getter
+@Data
 public class Book {
     private final static long NOT_EXISTED_ID = 0L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
-    private long id;
+    private long id = NOT_EXISTED_ID;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -51,12 +47,6 @@ public class Book {
             CascadeType.MERGE })
     @JoinColumn(name = "genre_id")
     private Genre genre;
-
-    public Book(String title, Genre genre) {
-        this.id = NOT_EXISTED_ID;
-        this.title = title;
-        this.genre = genre;
-    }
 
     public Book(long id, String title, Genre genre) {
         this.id = id;

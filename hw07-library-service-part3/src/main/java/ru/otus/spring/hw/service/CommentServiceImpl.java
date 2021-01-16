@@ -22,7 +22,10 @@ public class CommentServiceImpl implements CommentService {
     public void addComment(CommentDto commentDto) {
         final var book = bookRepository.findById(commentDto.getBookId())
                 .orElseThrow(() -> new ServiceException("book with id " + commentDto.getBookId() + " not exist"));
-        commentRepository.save(new Comment(commentDto.getText(), book));
+        final var comment = new Comment();
+        comment.setText(commentDto.getText());
+        comment.setBook(book);
+        commentRepository.save(comment);
     }
 
     @Override
