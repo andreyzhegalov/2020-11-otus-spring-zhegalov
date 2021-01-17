@@ -31,6 +31,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentDto> findAll() {
-        return commentRepository.findAllBy(CommentDto.class);
+        return commentRepository.findAllBy();
     }
 }

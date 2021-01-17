@@ -6,12 +6,13 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.Repository;
 
+import ru.otus.spring.hw.dto.CommentDto;
 import ru.otus.spring.hw.model.Comment;
 
 public interface CommentRepository extends Repository<Comment, Long> {
 
     @EntityGraph(attributePaths = { "book" })
-    <T> List<T> findAllBy(Class<T> type);
+    List<CommentDto> findAllBy();
 
     @EntityGraph(attributePaths = { "book" })
     Optional<Comment> findById(Long id);

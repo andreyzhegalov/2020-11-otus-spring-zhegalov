@@ -2,7 +2,6 @@ package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -57,7 +56,7 @@ public class BookServiceImplTest {
     void shouldReturnAllBooks() {
         bookService.findAll();
 
-        then(bookRepository).should().findAllBy(any());
+        then(bookRepository).should().findAll();
         then(authorRepository).shouldHaveNoInteractions();
         then(genreRepository).shouldHaveNoInteractions();
         then(commentService).shouldHaveNoInteractions();

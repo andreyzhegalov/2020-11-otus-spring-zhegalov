@@ -1,7 +1,6 @@
 package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -41,7 +40,7 @@ public class CommentServiceImplTest {
     @Test
     void shouldReturnAllComments() {
         commentService.findAll();
-        then(commentRepository).should().findAllBy(any());
+        then(commentRepository).should().findAllBy();
     }
 
     @Test

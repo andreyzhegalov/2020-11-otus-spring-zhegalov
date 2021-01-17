@@ -15,7 +15,7 @@ public class IOBookService {
     private static final String GET_GENRE_ID = "Введите идентификатор жанра:";
     private final IOService ioService;
 
-    public void print(List<BookDto> books) {
+    public void print(List<String> books) {
         books.forEach(b -> ioService.print(b.toString()));
     }
 

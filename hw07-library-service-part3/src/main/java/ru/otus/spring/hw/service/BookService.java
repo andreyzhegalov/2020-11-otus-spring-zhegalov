@@ -11,7 +11,7 @@ public interface BookService {
 
     void deleteBook(long id);
 
-    List<BookDto> findAll();
+    List<String> findAll();
 
     void addAuthor(long bookId, AuthorDto authorDto);
 

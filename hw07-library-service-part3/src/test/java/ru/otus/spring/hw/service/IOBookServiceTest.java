@@ -15,8 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.dto.BookDto;
-
 @SpringBootTest
 public class IOBookServiceTest {
     @Import(IOBookService.class)
@@ -32,10 +30,7 @@ public class IOBookServiceTest {
 
     @Test
     void printBooksShouldPrintViaIOService() {
-        final var bookDto1 = new BookDto("title", 1L);
-        final var bookDto2 = new BookDto("title", 1L);
-
-        ioBookService.print(List.of(bookDto1, bookDto2));
+        ioBookService.print(List.of(new String("book1"), new String("book2")));
         then(ioService).should(atLeastOnce()).print(anyString());
         then(ioService).should(never()).read();
     }
