@@ -18,6 +18,7 @@
 5. *hw05-library-service-part1* - Приложение хранящее информацию о книгах в библиотеке на базе Spring JDBC.
 6. *hw06-library-service-part2* - Приложение хранящее информацию о книгах в библиотеке на базе JPA+Hibernate.
 7. *hw07-library-service-part3* - Приложение хранящее информацию о книгах в библиотеке на базе Spring Data JPA.
+8. *hw08-library-service-part4* - Приложение хранящее информацию о книгах в библиотеке на базе Spring Data MongoDb.
 
 
 ##### License

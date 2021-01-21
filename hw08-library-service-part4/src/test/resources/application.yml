@@ -1,0 +1,10 @@
+spring:
+  shell:
+    interactive:
+      enabled: false
+
+logging:
+  level:
+    ROOT: ERROR
+    org.springframework: INFO
+    ru.otus.spring.hw: DEBUG

@@ -36,6 +36,7 @@
         <module>hw05-library-service-part1</module>
         <module>hw06-library-service-part2</module>
         <module>hw07-library-service-part3</module>
+        <module>hw08-library-service-part4</module>
     </modules>
 
     <build>
