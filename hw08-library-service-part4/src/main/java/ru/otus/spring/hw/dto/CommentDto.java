@@ -12,7 +12,7 @@ import ru.otus.spring.hw.model.Comment;
 @ToString
 public class CommentDto {
     private final String text;
-    private final long bookId;
+    private final String bookId;
 
     public CommentDto(@NotNull Comment comment) {
         this.text = comment.getText();

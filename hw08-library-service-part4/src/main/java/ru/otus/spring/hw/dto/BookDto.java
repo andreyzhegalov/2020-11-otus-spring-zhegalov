@@ -14,7 +14,7 @@ import ru.otus.spring.hw.model.Book;
 @Getter
 public class BookDto {
     @Setter
-    private long id;
+    private String id;
     private final String title;
     private final List<String> authorIds = new ArrayList<>();
     private final String genreId;

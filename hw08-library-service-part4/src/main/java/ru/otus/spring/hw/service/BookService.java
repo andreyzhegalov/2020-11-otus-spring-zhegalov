@@ -9,11 +9,11 @@ public interface BookService {
 
     void save(BookDto bookDto);
 
-    void deleteBook(long id);
+    void deleteBook(String id);
 
     List<String> findAll();
 
-    void addAuthor(long bookId, AuthorDto authorDto);
+    void addAuthor(String bookId, AuthorDto authorDto);
 
-    void removeAuthor(long bookId, AuthorDto authorDto);
+    void removeAuthor(String bookId, AuthorDto authorDto);
 }

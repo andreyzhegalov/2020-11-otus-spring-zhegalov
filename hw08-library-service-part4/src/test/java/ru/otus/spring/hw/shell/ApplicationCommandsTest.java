@@ -100,14 +100,14 @@ class ApplicationCommandsTest {
 
     @Test
     void shouldDeleteBook() {
-        final var id = 1L;
+        final var id = "1";
         shell.evaluate(() -> "db " + id);
         then(bookService).should().deleteBook(eq(id));
     }
 
     @Test
     void shouldUpdateBook() {
-        final long id = 3L;
+        final var id = "3";
         given(ioBookService.getBook()).willReturn(new BookDto("title", "1"));
         shell.evaluate(() -> "ub " + id);
         then(ioBookService).should().getBook();
@@ -124,7 +124,7 @@ class ApplicationCommandsTest {
 
     @Test
     void shouldAddNewCommentForBook() {
-        final var bookId = 1L;
+        final var bookId = "1";
         given(ioCommentService.getComment()).willReturn(new CommentDto("comment", bookId));
         shell.evaluate(() -> "add-comment");
         then(ioCommentService).should().getComment();
@@ -133,7 +133,7 @@ class ApplicationCommandsTest {
 
     @Test
     void shouldAddExistedAuthorToBook() {
-        final var bookId = 1L;
+        final var bookId = "1";
         final var addedAuthorId = "2";
         final var addedAuthor = new Author(addedAuthorId, "");
         final var addedAuthorDto = new AuthorDto(addedAuthor);
@@ -148,7 +148,7 @@ class ApplicationCommandsTest {
 
     @Test
     void shouldRemoveExistedAuthorFromBook() {
-        final var bookId = 1L;
+        final var bookId = "1";
         final var addedAuthorId = "2";
         final var addedAuthor = new Author(addedAuthorId, "");
         final var addedAuthorDto = new AuthorDto(addedAuthor);

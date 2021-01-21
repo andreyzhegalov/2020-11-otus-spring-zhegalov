@@ -33,7 +33,7 @@ public class IOCommentServiceTest {
 
     @Test
     void printCommentShouldPrintViaIOService() {
-        final var bookId = 1L;
+        final var bookId = "1";
         final var comment1 = new CommentDto("comment", bookId);
         final var comment2 = new CommentDto("comment", bookId);
 

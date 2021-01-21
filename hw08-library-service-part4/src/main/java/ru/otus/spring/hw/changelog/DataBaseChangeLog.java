@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.mongock.changelog;
+package ru.otus.spring.hw.changelog;
 
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;

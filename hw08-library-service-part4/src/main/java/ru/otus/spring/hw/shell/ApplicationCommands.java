@@ -40,12 +40,12 @@ public class ApplicationCommands {
     }
 
     @ShellMethod(value = "Delete book", key = { "db", "delete-book" })
-    public void deleteBook(@ShellOption long id) {
+    public void deleteBook(@ShellOption String id) {
         bookService.deleteBook(id);
     }
 
     @ShellMethod(value = "Update book", key = { "ub", "update-book" })
-    public void updateBook(@ShellOption long id) {
+    public void updateBook(@ShellOption String id) {
         final var bookDto = ioBookService.getBook();
         bookDto.setId(id);
         bookService.save(bookDto);
@@ -76,13 +76,13 @@ public class ApplicationCommands {
     }
 
     @ShellMethod(value = "Add author to book", key = { "aa", "add-author" })
-    public void addAuthor(@ShellOption long bookId) {
+    public void addAuthor(@ShellOption String bookId) {
         final var authorDto = ioAuthorService.getAuthor();
         bookService.addAuthor(bookId, authorDto);
     }
 
     @ShellMethod(value = "Remove author from book", key = { "da", "delete-author" })
-    public void removeAuthor(@ShellOption long bookId) {
+    public void removeAuthor(@ShellOption String bookId) {
         final var authorDto = ioAuthorService.getAuthor();
         bookService.removeAuthor(bookId, authorDto);
     }

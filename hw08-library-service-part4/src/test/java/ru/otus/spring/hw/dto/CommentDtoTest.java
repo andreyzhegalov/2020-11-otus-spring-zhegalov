@@ -12,7 +12,7 @@ class CommentDtoTest {
 
     @Test
     void shouldMakeCommentDtoFromComment() {
-        final var comment = new Comment("1", "text", new Book(2L, "title", new Genre("3", "name")));
+        final var comment = new Comment("1", "text", new Book("2", "title", new Genre("3", "name")));
 
         final var commentDto = new CommentDto(comment);
 

@@ -23,7 +23,7 @@ public class BookServiceImpl implements BookService {
     private final GenreRepository genreRepository;
 
     @Override
-    public void deleteBook(long id) {
+    public void deleteBook(String id) {
         bookRepository.deleteById(id);
     }
 
@@ -45,7 +45,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addAuthor(long bookId, AuthorDto authorDto) {
+    public void addAuthor(String bookId, AuthorDto authorDto) {
         final var book = getBookById(bookId);
         final var author = getAuthorById(authorDto.getId());
         book.addAuthor(author);
@@ -53,7 +53,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void removeAuthor(long bookId, AuthorDto authorDto) {
+    public void removeAuthor(String bookId, AuthorDto authorDto) {
         final var book = getBookById(bookId);
         final var author = getAuthorById(authorDto.getId());
         book.removeAuthor(author);
@@ -70,7 +70,7 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new ServiceException("Genre with id " + genreId + " not exist"));
     }
 
-    private Book getBookById(long bookId) {
+    private Book getBookById(String bookId) {
         return bookRepository.findById(bookId)
                 .orElseThrow(() -> new ServiceException("Book with id " + bookId + " not found"));
     }

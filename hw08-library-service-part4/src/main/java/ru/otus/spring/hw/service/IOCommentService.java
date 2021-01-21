@@ -20,7 +20,7 @@ public class IOCommentService {
 
     public CommentDto getComment() {
         ioService.print(GET_BOOK_ID);
-        final var bookId = Long.parseLong(ioService.read());
+        final var bookId = ioService.read();
         ioService.print(GET_COMMENT_MESSAGE);
         final var text = ioService.read();
         return new CommentDto(text, bookId);

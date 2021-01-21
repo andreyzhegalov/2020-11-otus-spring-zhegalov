@@ -45,7 +45,7 @@ public class CommentServiceImplTest {
 
     @Test
     void shouldSaveNewCommentForExistedBook() {
-        final var bookId = 1L;
+        final var bookId = "1";
         final var commentDto = new CommentDto("new text", bookId);
         given(bookRepository.findById(bookId)).willReturn(Optional.of(new Book()));
 
@@ -57,7 +57,7 @@ public class CommentServiceImplTest {
 
     @Test
     void shouldNotSaveNewCommentIfBookNotExist() {
-        final var notExistedBookId = 1L;
+        final var notExistedBookId = "1";
         final var commentDto = new CommentDto("new text", notExistedBookId);
         given(bookRepository.findById(notExistedBookId)).willReturn(Optional.empty());
 

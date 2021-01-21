@@ -91,7 +91,7 @@ public class BookServiceImplTest {
 
     @Test
     void shouldUpdateBook() {
-        final var bookId = 1L;
+        final var bookId = "1";
         final var authorId = "2";
         final var genreId = "3";
         final var bookDto = new BookDto("title", genreId);
@@ -134,7 +134,7 @@ public class BookServiceImplTest {
 
     @Test
     void deleteByIdShouldDeleteBook() {
-        final var deletedBookId = 1L;
+        final var deletedBookId = "1";
 
         bookService.deleteBook(deletedBookId);
 
@@ -145,7 +145,7 @@ public class BookServiceImplTest {
 
     @Test
     void shouldAddAuthorToAuthorsList() {
-        final var bookId = 1L;
+        final var bookId = "1";
         final var authorId = "2";
         final var authorDto = new AuthorDto(authorId);
         final var author = new Author(authorDto.getId(), "name");
@@ -163,7 +163,7 @@ public class BookServiceImplTest {
 
     @Test
     void addAuthorToNotExistedBookShouldThrowException() {
-        final var notExistedBookId = 10L;
+        final var notExistedBookId = "1";
         given(bookRepository.findById(notExistedBookId)).willReturn(Optional.empty());
 
         assertThatCode(() -> bookService.addAuthor(notExistedBookId, new AuthorDto("1")))
@@ -172,7 +172,7 @@ public class BookServiceImplTest {
 
     @Test
     void addNotExistedAuthorShouldThrowException() {
-        final var bookId = 1L;
+        final var bookId = "1";
         final var notExistedAuthorId = "2";
         given(bookRepository.findById(bookId)).willReturn(Optional.of(new Book()));
         given(authorRepository.findById(notExistedAuthorId)).willReturn(Optional.empty());
@@ -183,7 +183,7 @@ public class BookServiceImplTest {
 
     @Test
     void shouldRemoveAuthorFromAuthorList() {
-        final var bookId = 1L;
+        final var bookId = "1";
         final var authorId = "2";
         final var authorDto = new AuthorDto(authorId);
         final var author = new Author(authorDto.getId(), "name");
