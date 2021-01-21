@@ -16,10 +16,10 @@ public class BookDto {
     @Setter
     private long id;
     private final String title;
-    private final List<Long> authorIds = new ArrayList<>();
-    private final long genreId;
+    private final List<String> authorIds = new ArrayList<>();
+    private final String genreId;
 
-    public BookDto(String title, long genreId) {
+    public BookDto(String title, String genreId) {
         this.title = title;
         this.genreId = genreId;
     }

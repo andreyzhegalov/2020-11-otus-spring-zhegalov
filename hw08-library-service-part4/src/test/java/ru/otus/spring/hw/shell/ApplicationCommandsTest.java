@@ -108,7 +108,7 @@ class ApplicationCommandsTest {
     @Test
     void shouldUpdateBook() {
         final long id = 3L;
-        given(ioBookService.getBook()).willReturn(new BookDto("title", 1L));
+        given(ioBookService.getBook()).willReturn(new BookDto("title", "1"));
         shell.evaluate(() -> "ub " + id);
         then(ioBookService).should().getBook();
         then(bookService).should().save(bookDtoCaptor.capture());
@@ -134,7 +134,7 @@ class ApplicationCommandsTest {
     @Test
     void shouldAddExistedAuthorToBook() {
         final var bookId = 1L;
-        final var addedAuthorId = 2L;
+        final var addedAuthorId = "2";
         final var addedAuthor = new Author(addedAuthorId, "");
         final var addedAuthorDto = new AuthorDto(addedAuthor);
         given(ioAuthorService.getAuthor()).willReturn(addedAuthorDto);
@@ -149,7 +149,7 @@ class ApplicationCommandsTest {
     @Test
     void shouldRemoveExistedAuthorFromBook() {
         final var bookId = 1L;
-        final var addedAuthorId = 2L;
+        final var addedAuthorId = "2";
         final var addedAuthor = new Author(addedAuthorId, "");
         final var addedAuthorDto = new AuthorDto(addedAuthor);
         given(ioAuthorService.getAuthor()).willReturn(addedAuthorDto);

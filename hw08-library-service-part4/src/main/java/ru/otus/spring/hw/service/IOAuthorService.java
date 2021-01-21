@@ -17,7 +17,7 @@ public class IOAuthorService {
 
     public AuthorDto getAuthor() {
         ioService.print(GET_AUTHOR_ID);
-        final var authorId = Long.parseLong(ioService.read());
+        final var authorId = ioService.read();
         return new AuthorDto(authorId);
     }
 

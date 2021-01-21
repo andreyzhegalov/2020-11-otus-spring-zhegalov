@@ -34,8 +34,8 @@ public class IOAuthorServiceTest {
 
     @Test
     void printAuthorShouldPrintViaIOService() {
-        final var author1 = new Author(1L, "author");
-        final var author2 = new Author(2L, "author");
+        final var author1 = new Author("1", "author");
+        final var author2 = new Author("2", "author");
 
         ioAuthorService.print(List.of(author1, author2));
         then(ioService).should(atLeastOnce()).print(anyString());

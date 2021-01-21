@@ -60,12 +60,12 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(book);
     }
 
-    private Author getAuthorById(long authorId) {
+    private Author getAuthorById(String authorId) {
         return authorRepository.findById(authorId)
                 .orElseThrow(() -> new ServiceException("Author with id " + authorId + " not exist"));
     }
 
-    private Genre getGenreById(long genreId) {
+    private Genre getGenreById(String genreId) {
         return genreRepository.findById(genreId)
                 .orElseThrow(() -> new ServiceException("Genre with id " + genreId + " not exist"));
     }

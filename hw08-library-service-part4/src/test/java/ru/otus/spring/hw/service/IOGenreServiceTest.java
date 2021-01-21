@@ -31,8 +31,8 @@ public class IOGenreServiceTest {
 
     @Test
     void printGenreShouldPrintViaIOService() {
-        final var genre1 = new Genre(1L, "genre");
-        final var genre2 = new Genre(2L, "genre");
+        final var genre1 = new Genre("1", "genre");
+        final var genre2 = new Genre("2", "genre");
 
         ioGenreService.print(List.of(genre1, genre2));
         then(ioService).should(atLeastOnce()).print(anyString());

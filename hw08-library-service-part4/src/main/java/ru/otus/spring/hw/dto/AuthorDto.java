@@ -9,7 +9,7 @@ import ru.otus.spring.hw.model.Author;
 @Getter
 @RequiredArgsConstructor
 public class AuthorDto {
-    private final long id;
+    private final String id;
 
     public AuthorDto(@NotNull Author author) {
         this.id = author.getId();
