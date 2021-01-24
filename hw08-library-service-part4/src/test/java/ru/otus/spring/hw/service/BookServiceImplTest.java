@@ -81,7 +81,9 @@ public class BookServiceImplTest {
         final var authorId = "2";
         final var genreId = "3";
         final var bookDto = new BookDto("title", genreId);
-        given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author(authorId, "name")));
+        final var author = new Author("name");
+        author.setId(authorId);
+        given(authorRepository.findById(authorId)).willReturn(Optional.of(author));
         given(genreRepository.findById(genreId)).willReturn(Optional.empty());
 
         assertThatCode(() -> bookService.save(bookDto)).isInstanceOf(ServiceException.class);
@@ -97,7 +99,9 @@ public class BookServiceImplTest {
         final var bookDto = new BookDto("title", genreId);
         bookDto.setId(bookId);
         bookDto.getAuthorIds().add(authorId);
-        given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author(authorId, "name")));
+        final var author = new Author("name");
+        author.setId(authorId);
+        given(authorRepository.findById(authorId)).willReturn(Optional.of(author));
         given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));
 
         bookService.save(bookDto);
@@ -118,7 +122,9 @@ public class BookServiceImplTest {
         final var genreId = "3";
         final var newBookDto = new BookDto("title", genreId);
         newBookDto.getAuthorIds().add(authorId);
-        given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author(authorId, "name")));
+        final var author = new Author("name");
+        author.setId(authorId);
+        given(authorRepository.findById(authorId)).willReturn(Optional.of(author));
         given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));
 
         bookService.save(newBookDto);
@@ -148,7 +154,8 @@ public class BookServiceImplTest {
         final var bookId = "1";
         final var authorId = "2";
         final var authorDto = new AuthorDto(authorId);
-        final var author = new Author(authorDto.getId(), "name");
+        final var author = new Author("name");
+        author.setId(authorDto.getId());
         final var book = new Book();
         book.addAuthor(author);
         given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
@@ -186,7 +193,8 @@ public class BookServiceImplTest {
         final var bookId = "1";
         final var authorId = "2";
         final var authorDto = new AuthorDto(authorId);
-        final var author = new Author(authorDto.getId(), "name");
+        final var author = new Author("name");
+        author.setId(authorDto.getId());
         final var book = new Book();
         book.removeAuthor(author);
         given(bookRepository.findById(bookId)).willReturn(Optional.of(book));

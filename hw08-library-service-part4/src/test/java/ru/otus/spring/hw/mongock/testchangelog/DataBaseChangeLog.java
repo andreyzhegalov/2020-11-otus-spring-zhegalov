@@ -42,7 +42,7 @@ public class DataBaseChangeLog {
     }
 
     @ChangeSet(order = "004", id = "initBook", author = "azhegalov", runAlways = true)
-    public void initBook(BookRepository repository) {
+    public void initBook(BookRepository repository, AuthorRepository authorRepository) {
         book1 = new Book("book1", genre2);
         book1.addAuthor(author1);
         book1.addAuthor(author2);
@@ -51,5 +51,15 @@ public class DataBaseChangeLog {
         book2 = new Book("book2", genre1);
         book2.addAuthor(author1);
         repository.save(book2);
+
+        final var loadedAuthor1 = authorRepository.findById(author1.getId()).orElseThrow();
+        loadedAuthor1.addBook(book1);
+        loadedAuthor1.addBook(book2);
+        authorRepository.save(loadedAuthor1);
+
+        final var loadedAuthor2 = authorRepository.findById(author2.getId()).orElseThrow();
+        loadedAuthor2.addBook(book2);
+        authorRepository.save(loadedAuthor2);
     }
+
 }

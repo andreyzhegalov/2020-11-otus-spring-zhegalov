@@ -4,10 +4,11 @@ spring:
       enabled: false
   data:
     mongodb:
-      port: 0
+      # port: 0
       database: library_test
       # uri: mongodb://localhost
       # port: 27017
+      uri: mongodb://172.17.0.3
 
 mongock:
   runner-type: "ApplicationRunner" # default

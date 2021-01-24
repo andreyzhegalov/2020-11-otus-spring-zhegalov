@@ -6,7 +6,7 @@ spring:
     mongodb:
       # port: 0
       database: library
-      uri: mongodb://172.17.0.3
+      uri: mongodb://172.17.0.5
       # port: 27017
 mongock:
   runner-type: "ApplicationRunner" # default
