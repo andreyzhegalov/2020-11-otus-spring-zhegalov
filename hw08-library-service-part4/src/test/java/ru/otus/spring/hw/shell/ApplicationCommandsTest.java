@@ -8,6 +8,8 @@ import static org.mockito.BDDMockito.then;
 
 import java.util.Optional;
 
+import com.github.cloudyrock.spring.v5.MongockSpring5.MongockApplicationRunner;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -33,6 +35,10 @@ import ru.otus.spring.hw.service.IOGenreService;
 
 @SpringBootTest
 class ApplicationCommandsTest {
+
+    // Override mongock runner
+    @MockBean
+    private MongockApplicationRunner mongockApplicationRunner;
 
     @Autowired
     private Shell shell;

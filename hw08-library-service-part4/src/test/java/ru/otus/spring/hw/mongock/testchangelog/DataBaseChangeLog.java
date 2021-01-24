@@ -6,9 +6,11 @@ import com.mongodb.client.MongoDatabase;
 
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.BookRepository;
+import ru.otus.spring.hw.repositories.CommentRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
 
 @ChangeLog(order = "001")
@@ -62,4 +64,9 @@ public class DataBaseChangeLog {
         authorRepository.save(loadedAuthor2);
     }
 
+    @ChangeSet(order = "005", id = "initComments", author = "azhegalov", runAlways = true)
+    public void initComments(CommentRepository commentRepository) {
+        final var comment1 = new Comment("comment for book1", book1);
+        commentRepository.save(comment1);
+    }
 }

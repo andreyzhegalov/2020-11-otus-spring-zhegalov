@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Document
+@Document(collection = "books")
 @NoArgsConstructor
 @Data
 public class Book {

@@ -4,14 +4,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Objects;
 
+import com.github.cloudyrock.spring.v5.MongockTestConfiguration;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
 
-@DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
+@MongockTestConfiguration
+// @DataMongoTest(excludeAutoConfiguration =
+// EmbeddedMongoAutoConfiguration.class)
+@DataMongoTest()
 @EnableConfigurationProperties
 @ComponentScan({ "ru.otus.spring.hw.repositories" })
 public class AuthorRepositoryTest {
