@@ -14,9 +14,7 @@ class BookDtoTest {
 
     @Test
     void shouldMakeBookDtoFromBook() {
-        final var book = new Book("1", "title", new Genre("1", "genre"));
-        book.addAuthor(new Author("name2"));
-        book.addAuthor(new Author("name3"));
+        final var book = new Book("1", "title", new Genre("1", "genre"), new Author("name2"), new Author("name3"));
 
         final var bookDto = new BookDto(book);
 

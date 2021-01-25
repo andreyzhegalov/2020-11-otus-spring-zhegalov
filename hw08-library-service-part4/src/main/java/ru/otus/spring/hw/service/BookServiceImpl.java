@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -34,20 +35,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void save(BookDto bookDto) {
         final var genre = getGenreById(bookDto.getGenreId());
-        final var book = new Book(bookDto.getId(), bookDto.getTitle(), genre);
-
-        for (final var id : bookDto.getAuthorIds()) {
-            book.addAuthor(getAuthorById(id));
-        }
-
-        bookRepository.save(book);
-    }
-
-    @Override
-    public void addAuthor(String bookId, AuthorDto authorDto) {
-        final var book = getBookById(bookId);
-        final var author = getAuthorById(authorDto.getId());
-        book.addAuthor(author);
+        final var book = new Book(bookDto.getId(), bookDto.getTitle(), genre, bookDto.getAuthorIds().stream().map(this::getAuthorById).toArray(Author[]::new));
         bookRepository.save(book);
     }
 

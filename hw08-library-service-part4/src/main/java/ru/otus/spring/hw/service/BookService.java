@@ -14,7 +14,6 @@ public interface BookService {
 
     List<Book> findAll();
 
-    void addAuthor(String bookId, AuthorDto authorDto);
 
     void removeAuthor(String bookId, AuthorDto authorDto);
 }

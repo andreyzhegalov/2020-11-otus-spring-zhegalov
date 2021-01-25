@@ -45,13 +45,10 @@ public class DataBaseChangeLog {
 
     @ChangeSet(order = "004", id = "initBook", author = "azhegalov", runAlways = true)
     public void initBook(BookRepository repository, AuthorRepository authorRepository) {
-        book1 = new Book("book1", genre2);
-        book1.addAuthor(author1);
-        book1.addAuthor(author2);
+        book1 = new Book("book1", genre2, author1, author2);
         repository.save(book1);
 
-        book2 = new Book("book2", genre1);
-        book2.addAuthor(author1);
+        book2 = new Book("book2", genre1, author1);
         repository.save(book2);
 
         final var loadedAuthor1 = authorRepository.findById(author1.getId()).orElseThrow();

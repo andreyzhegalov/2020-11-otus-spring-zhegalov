@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -24,19 +25,17 @@ public class Book {
 
     private Genre genre;
 
-    public Book(String id, String title, Genre genre) {
+    public Book(String id, String title, Genre genre, Author... authors) {
         this.id = id;
         this.title = title;
         this.genre = genre;
+        this.authors = Arrays.asList(authors);
     }
 
-    public Book(String title, Genre genre) {
+    public Book(String title, Genre genre, Author... authors) {
         this.title = title;
         this.genre = genre;
-    }
-
-    public void addAuthor(Author author) {
-        authors.add(author);
+        this.authors = Arrays.asList(authors);
     }
 
     public void removeAuthor(Author author) {

@@ -150,45 +150,6 @@ public class BookServiceImplTest {
     }
 
     @Test
-    void shouldAddAuthorToAuthorsList() {
-        final var bookId = "1";
-        final var authorId = "2";
-        final var authorDto = new AuthorDto(authorId);
-        final var author = new Author("name");
-        author.setId(authorDto.getId());
-        final var book = new Book();
-        book.addAuthor(author);
-        given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
-        given(authorRepository.findById(authorId)).willReturn(Optional.of(author));
-
-        bookService.addAuthor(bookId, authorDto);
-
-        then(bookRepository).should().findById(bookId);
-        then(authorRepository).should().findById(eq(authorId));
-        then(bookRepository).should().save(book);
-    }
-
-    @Test
-    void addAuthorToNotExistedBookShouldThrowException() {
-        final var notExistedBookId = "1";
-        given(bookRepository.findById(notExistedBookId)).willReturn(Optional.empty());
-
-        assertThatCode(() -> bookService.addAuthor(notExistedBookId, new AuthorDto("1")))
-                .isInstanceOf(ServiceException.class);
-    }
-
-    @Test
-    void addNotExistedAuthorShouldThrowException() {
-        final var bookId = "1";
-        final var notExistedAuthorId = "2";
-        given(bookRepository.findById(bookId)).willReturn(Optional.of(new Book()));
-        given(authorRepository.findById(notExistedAuthorId)).willReturn(Optional.empty());
-
-        assertThatCode(() -> bookService.addAuthor(bookId, new AuthorDto(notExistedAuthorId)))
-                .isInstanceOf(ServiceException.class);
-    }
-
-    @Test
     void shouldRemoveAuthorFromAuthorList() {
         final var bookId = "1";
         final var authorId = "2";

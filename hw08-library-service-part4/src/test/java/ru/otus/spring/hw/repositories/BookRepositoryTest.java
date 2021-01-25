@@ -1,8 +1,10 @@
 package ru.otus.spring.hw.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Collections;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -16,6 +18,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 import ru.otus.spring.hw.event.BookMongoEventListener;
+import ru.otus.spring.hw.model.Author;
+import ru.otus.spring.hw.model.Book;
 
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 @ComponentScan({ "ru.otus.spring.hw.repositories" })
@@ -31,6 +35,9 @@ public class BookRepositoryTest {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private GenreRepository genreRepository;
 
     @Test
     void shouldReturnCorrectBookWithAuthorList() {
@@ -68,5 +75,35 @@ public class BookRepositoryTest {
         bookRepository.delete(bookWithComments);
 
         assertThat(commentRepository.findAllByBook_id(bookWithComments.getId())).isEmpty();
+    }
+
+    @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+    @Test
+    void savedNewBookShouldThrowExceptionIfAuthorNotExist() {
+        final var notExistedAuthor = new Author("not existed id", "unknown author", Collections.emptyList());
+        assertThat(authorRepository.findById(notExistedAuthor.getId())).isEmpty();
+        final var existedGenre = genreRepository.findByName("genre3").orElseGet(() -> fail("genre not exist"));
+
+        final var newBook = new Book("new book", existedGenre, notExistedAuthor);
+
+        assertThatCode(() -> bookRepository.save(newBook)).isInstanceOf(RepositoryException.class);
+    }
+
+    @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+    @Test
+    void aNewBookShouldBeAddedToTheExistedAuthor() {
+        final var existedAuthor = authorRepository.findByName("name3").orElseGet(() -> fail("author not exist"));
+        final var existedGenre = genreRepository.findByName("genre3").orElseGet(() -> fail("genre not exist"));
+
+        final var newTitle = "new book";
+        assertThat(bookRepository.findByTitle(newTitle)).isEmpty();
+        final var newBook = new Book(newTitle, existedGenre, existedAuthor);
+
+        final var savedBook = bookRepository.save(newBook);
+
+        final var updatedAuthor = authorRepository.findById(existedAuthor.getId())
+                .orElseGet(() -> fail("updated author not exist"));
+
+        assertThat(updatedAuthor.getBooks()).containsOnlyOnce(savedBook);
     }
 }

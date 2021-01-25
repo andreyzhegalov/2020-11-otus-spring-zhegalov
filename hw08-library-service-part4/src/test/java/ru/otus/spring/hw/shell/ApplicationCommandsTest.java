@@ -138,22 +138,6 @@ class ApplicationCommandsTest {
     }
 
     @Test
-    void shouldAddExistedAuthorToBook() {
-        final var bookId = "1";
-        final var addedAuthorId = "2";
-        final var addedAuthor = new Author("");
-        addedAuthor.setId(addedAuthorId);
-        final var addedAuthorDto = new AuthorDto(addedAuthor);
-        given(ioAuthorService.getAuthor()).willReturn(addedAuthorDto);
-        given(authorRepository.findById(eq(addedAuthorId))).willReturn(Optional.of(addedAuthor));
-
-        shell.evaluate(() -> "add-author " + bookId);
-
-        then(ioAuthorService).should().getAuthor();
-        then(bookService).should().addAuthor(eq(bookId), eq(addedAuthorDto));
-    }
-
-    @Test
     void shouldRemoveExistedAuthorFromBook() {
         final var bookId = "1";
         final var addedAuthorId = "2";

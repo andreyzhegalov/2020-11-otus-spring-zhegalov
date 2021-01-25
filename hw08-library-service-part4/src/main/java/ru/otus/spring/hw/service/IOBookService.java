@@ -1,5 +1,6 @@
 package ru.otus.spring.hw.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ import ru.otus.spring.hw.model.Book;
 @Service
 public class IOBookService {
     private static final String GET_TITLE_MESSAGE = "Введите название книги:";
-    private static final String GET_AUTHOR_ID = "Введите идентификатор автора:";
+    private static final String GET_AUTHORS_ID = "Введите идентификаторы авторов через запятую:";
     private static final String GET_GENRE_ID = "Введите идентификатор жанра:";
     private final IOService ioService;
 
@@ -39,12 +40,12 @@ public class IOBookService {
     public BookDto getBook() {
         ioService.print(GET_TITLE_MESSAGE);
         final var bookTitle = ioService.read();
-        ioService.print(GET_AUTHOR_ID);
-        final var authorId = ioService.read();
+        ioService.print(GET_AUTHORS_ID);
+        final var authorIds = Arrays.stream(ioService.read().split(",")).map(String::trim).collect(Collectors.toList());
         ioService.print(GET_GENRE_ID);
         final var genreId = ioService.read();
         final var bookDto = new BookDto(bookTitle, genreId);
-        bookDto.getAuthorIds().add(authorId);
+        bookDto.getAuthorIds().addAll(authorIds);
         return bookDto;
     }
 }
