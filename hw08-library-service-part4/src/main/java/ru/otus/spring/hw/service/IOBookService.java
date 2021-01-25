@@ -1,11 +1,14 @@
 package ru.otus.spring.hw.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dto.BookDto;
+import ru.otus.spring.hw.model.Author;
+import ru.otus.spring.hw.model.Book;
 
 @RequiredArgsConstructor
 @Service
@@ -15,8 +18,22 @@ public class IOBookService {
     private static final String GET_GENRE_ID = "Введите идентификатор жанра:";
     private final IOService ioService;
 
-    public void print(List<String> books) {
-        books.forEach(b -> ioService.print(b.toString()));
+    public void print(List<Book> books) {
+        books.forEach(b -> printBook(b));
+    }
+
+    private void printBook(Book book) {
+        final var sb = new StringBuffer();
+        sb.append("id: " + book.getId());
+        sb.append("; ");
+        sb.append("title: " + book.getTitle());
+        sb.append("; ");
+        final var authors = book.getAuthors().stream().map(Author::getName).collect(Collectors.joining(",")).toString();
+        sb.append("authors: ");
+        sb.append(authors);
+        sb.append("; ");
+        sb.append("genre: " + book.getGenre().getName());
+        ioService.print(sb.toString());
     }
 
     public BookDto getBook() {

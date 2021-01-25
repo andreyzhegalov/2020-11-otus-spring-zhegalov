@@ -21,7 +21,15 @@ public class IOAuthorService {
         return new AuthorDto(authorId);
     }
 
+    private void printAuthor(Author author) {
+        final var sb = new StringBuffer();
+        sb.append("id: " + author.getId());
+        sb.append("; ");
+        sb.append("name: " + author.getName());
+        ioService.print(sb.toString());
+    }
+
     public void print(List<Author> authors) {
-        authors.forEach(b -> ioService.print(b.toString()));
+        authors.forEach(a -> printAuthor(a));
     }
 }
