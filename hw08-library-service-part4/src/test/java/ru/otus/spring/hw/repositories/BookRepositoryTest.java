@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -20,12 +21,16 @@ import ru.otus.spring.hw.event.BookMongoEventListener;
 @ComponentScan({ "ru.otus.spring.hw.repositories" })
 @Import(BookMongoEventListener.class)
 public class BookRepositoryTest {
+    private static final String BOOK_WITH_COMMENTS = "book1";
 
     @Autowired
     private BookRepository bookRepository;
 
     @Autowired
     private AuthorRepository authorRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Test
     void shouldReturnCorrectBookWithAuthorList() {
@@ -51,5 +56,17 @@ public class BookRepositoryTest {
         bookRepository.delete(bookWithManyAuthors);
 
         assertThat(authorRepository.findAllByBooks_id(bookWithManyAuthors.getId())).isEmpty();
+    }
+
+    @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+    @Test
+    void deletingBookShouldDeleteAllBookComments() {
+        final var bookWithComments = bookRepository.findByTitle(BOOK_WITH_COMMENTS)
+                .orElseGet(() -> fail("book not found"));
+        assertThat(commentRepository.findAllByBook_id(bookWithComments.getId())).isNotEmpty();
+
+        bookRepository.delete(bookWithComments);
+
+        assertThat(commentRepository.findAllByBook_id(bookWithComments.getId())).isEmpty();
     }
 }
