@@ -60,7 +60,7 @@ public class DataBaseChangeLog {
         authorRepository.save(loadedAuthor1);
 
         final var loadedAuthor2 = authorRepository.findById(author2.getId()).orElseThrow();
-        loadedAuthor2.addBook(book2);
+        loadedAuthor2.addBook(book1);
         authorRepository.save(loadedAuthor2);
     }
 

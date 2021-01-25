@@ -11,9 +11,6 @@ import org.springframework.context.annotation.ComponentScan;
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 @ComponentScan("ru.otus.spring.hw.repositories")
 public class CommentRepositoryTest {
-    private static final int COMMENT_COUNT = 2;
-    private static final long EXISTED_COMMENT_ID = 1L;
-
     @Autowired
     private CommentRepository commentRepository;
 

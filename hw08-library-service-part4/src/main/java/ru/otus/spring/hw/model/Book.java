@@ -1,7 +1,7 @@
 package ru.otus.spring.hw.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,7 +20,7 @@ public class Book {
     private String title;
 
     @Setter
-    private Set<Author> authors = new HashSet<>();
+    private List<Author> authors = new ArrayList<>();
 
     private Genre genre;
 
