@@ -1,6 +1,5 @@
 package ru.otus.spring.hw.shell;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -105,16 +104,6 @@ class ApplicationCommandsTest {
         final var id = "1";
         shell.evaluate(() -> "db " + id);
         then(bookService).should().deleteBook(eq(id));
-    }
-
-    @Test
-    void shouldUpdateBook() {
-        final var id = "3";
-        given(ioBookService.getBook()).willReturn(new BookDto("title", "1"));
-        shell.evaluate(() -> "ub " + id);
-        then(ioBookService).should().getBook();
-        then(bookService).should().save(bookDtoCaptor.capture());
-        assertThat(bookDtoCaptor.getValue()).extracting("id").isEqualTo(id);
     }
 
     @Test

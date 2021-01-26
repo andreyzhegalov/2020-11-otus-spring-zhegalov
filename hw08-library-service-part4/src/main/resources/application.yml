@@ -4,19 +4,14 @@ spring:
       enabled: true
   data:
     mongodb:
-      # port: 0
-      database: library
-      uri: mongodb://172.17.0.3
-      # port: 27017
+      database: library_zhegalov
+      uri: mongodb://127.0.0.1
 
 mongock:
-  # runner-type: "ApplicationRunner" # default
   runner-type: "InitializingBean"
   change-logs-scan-package:
     - ru.otus.spring.hw.changelog
 
 logging:
   level:
-    ROOT: INFO
-    org.springframework: INFO
-    ru.otus.spring.hw: DEBUG
+    ROOT: OFF

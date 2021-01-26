@@ -90,31 +90,6 @@ public class BookServiceImplTest {
     }
 
     @Test
-    void shouldUpdateBook() {
-        final var bookId = "1";
-        final var authorId = "2";
-        final var genreId = "3";
-        final var bookDto = new BookDto("title", genreId);
-        bookDto.setId(bookId);
-        bookDto.getAuthorIds().add(authorId);
-        final var author = new Author("name");
-        author.setId(authorId);
-        given(authorRepository.findById(authorId)).willReturn(Optional.of(author));
-        given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));
-
-        bookService.save(bookDto);
-
-        then(authorRepository).should().findById(authorId);
-        then(genreRepository).should().findById(genreId);
-        then(bookRepository).should().save(bookCaptor.capture());
-
-        final var updatedBook = bookCaptor.getValue();
-        assertThat(updatedBook.getId()).isEqualTo(bookId);
-        assertThat(updatedBook.getAuthors()).isNotNull().isNotEmpty();
-        assertThat(updatedBook.getGenre()).isInstanceOf(Genre.class);
-    }
-
-    @Test
     void shouldSaveNewBook() {
         final var authorId = "2";
         final var genreId = "3";
