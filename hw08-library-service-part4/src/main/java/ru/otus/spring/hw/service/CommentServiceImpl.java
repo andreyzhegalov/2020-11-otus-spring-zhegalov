@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDto> findAll() {
-        return commentRepository.findAllBy();
+        return commentRepository.findAll().stream().map(c -> new CommentDto(c)).collect(Collectors.toList());
     }
 }

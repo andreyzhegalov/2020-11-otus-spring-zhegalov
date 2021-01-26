@@ -40,7 +40,7 @@ public class CommentServiceImplTest {
     @Test
     void shouldReturnAllComments() {
         commentService.findAll();
-        then(commentRepository).should().findAllBy();
+        then(commentRepository).should().findAll();
     }
 
     @Test
