@@ -28,6 +28,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDto> findAll() {
-        return commentRepository.findAllBy();
+        return commentRepository.findAllDto();
     }
 }

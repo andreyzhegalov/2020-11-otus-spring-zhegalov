@@ -11,6 +11,8 @@ import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoCo
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
 
+import ru.otus.spring.hw.dto.CommentDto;
+
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 @ComponentScan("ru.otus.spring.hw.repositories")
 public class CommentRepositoryTest {
@@ -35,14 +37,13 @@ public class CommentRepositoryTest {
     }
 
     @Test
-    void shouldReturnCommentDtoForAllCommentsInOneQuery() {
-    }
+    void shouldReturnAllCommentDto() {
+        final var commentList = commentRepository.findAll();
+        final var commentDtoList = commentRepository.findAllDto();
+        assertThat(commentDtoList).isNotEmpty().doesNotContainNull().allMatch(c -> c.getClass() == CommentDto.class)
+                .allMatch(c -> Objects.nonNull(c.getBookId()));
 
-    @Test
-    void shouldReturnCommentByIdWhenCommentExistedInTwoQuery() {
-    }
-
-    @Test
-    void shouldDeleteCommentAfterBookWasDeleted() {
+        final var commentDto = commentDtoList.get(0);
+        assertThat(bookRepository.findById(commentDto.getBookId())).isNotEmpty();
     }
 }
