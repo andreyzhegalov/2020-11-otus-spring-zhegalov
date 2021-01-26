@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.event;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 import org.mockito.internal.util.collections.Sets;
@@ -8,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventLis
 import org.springframework.data.mongodb.core.mapping.event.AfterDeleteEvent;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
-import org.springframework.data.mongodb.core.mapping.event.BeforeDeleteEvent;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class BookMongoEventListener extends AbstractMongoEventListener<Book> {
         super.onBeforeConvert(event);
         final var book = event.getSource();
         book.getAuthors().forEach(a -> {
-            if (!authorRepository.existsById(a.getId())) {
+            if (Objects.nonNull(a) && !authorRepository.existsById(a.getId())) {
                 throw new RepositoryException("author with id " + a.getId() + " not exist");
             }
         });
@@ -61,13 +61,6 @@ public class BookMongoEventListener extends AbstractMongoEventListener<Book> {
         final var source = event.getSource();
         final var id = source.get("_id").toString();
         authorRepository.removeBookArrayElementsById(id);
-    }
-
-    @Override
-    public void onBeforeDelete(@NotNull BeforeDeleteEvent<Book> event) {
-        super.onBeforeDelete(event);
-        final var source = event.getSource();
-        final var id = source.get("_id").toString();
         commentRepository.removeAllByBook_id(id);
     }
 }

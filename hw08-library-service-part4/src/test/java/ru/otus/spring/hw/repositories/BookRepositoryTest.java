@@ -10,9 +10,6 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
@@ -21,10 +18,8 @@ import ru.otus.spring.hw.event.BookMongoEventListener;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 
-@DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
-@ComponentScan({ "ru.otus.spring.hw.repositories" })
 @Import(BookMongoEventListener.class)
-public class BookRepositoryTest {
+public class BookRepositoryTest extends AbstractRepositoryTest {
     private static final String BOOK_WITH_COMMENTS = "book1";
 
     @Autowired

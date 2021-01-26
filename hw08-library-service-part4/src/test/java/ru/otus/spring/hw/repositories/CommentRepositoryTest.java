@@ -7,13 +7,8 @@ import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.context.annotation.ComponentScan;
 
-@DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
-@ComponentScan("ru.otus.spring.hw.repositories")
-public class CommentRepositoryTest {
+public class CommentRepositoryTest extends AbstractRepositoryTest {
     private static final String BOOK_WITH_COMMENTS = "book1";
     @Autowired
     private CommentRepository commentRepository;

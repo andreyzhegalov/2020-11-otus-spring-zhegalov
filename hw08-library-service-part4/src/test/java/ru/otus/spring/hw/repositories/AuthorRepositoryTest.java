@@ -9,10 +9,6 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
@@ -20,11 +16,8 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import ru.otus.spring.hw.event.AuthorMongoEventListener;
 import ru.otus.spring.hw.model.Book;
 
-@DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
-@EnableConfigurationProperties
-@ComponentScan({ "ru.otus.spring.hw.repositories" })
 @Import(AuthorMongoEventListener.class)
-public class AuthorRepositoryTest {
+public class AuthorRepositoryTest extends AbstractRepositoryTest {
 
     private static final String AUTHOR_WITHOUT_BOOK = "name3";
 
