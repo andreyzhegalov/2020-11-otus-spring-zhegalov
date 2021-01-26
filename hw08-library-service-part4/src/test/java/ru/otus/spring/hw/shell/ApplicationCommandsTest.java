@@ -6,8 +6,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
-import java.util.Optional;
-
 import com.github.cloudyrock.spring.v5.MongockSpring5.MongockApplicationRunner;
 
 import org.junit.jupiter.api.Test;
@@ -18,10 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.shell.Shell;
 
-import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.dto.CommentDto;
-import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.BookRepository;
 import ru.otus.spring.hw.repositories.CommentRepository;
@@ -135,21 +131,5 @@ class ApplicationCommandsTest {
         shell.evaluate(() -> "add-comment");
         then(ioCommentService).should().getComment();
         then(commentService).should().addComment(any(CommentDto.class));
-    }
-
-    @Test
-    void shouldRemoveExistedAuthorFromBook() {
-        final var bookId = "1";
-        final var addedAuthorId = "2";
-        final var addedAuthor = new Author("");
-        addedAuthor.setId(addedAuthorId);
-        final var addedAuthorDto = new AuthorDto(addedAuthor);
-        given(ioAuthorService.getAuthor()).willReturn(addedAuthorDto);
-        given(authorRepository.findById(eq(addedAuthorId))).willReturn(Optional.of(addedAuthor));
-
-        shell.evaluate(() -> "delete-author " + bookId);
-
-        then(ioAuthorService).should().getAuthor();
-        then(bookService).should().removeAuthor(eq(bookId), eq(addedAuthorDto));
     }
 }

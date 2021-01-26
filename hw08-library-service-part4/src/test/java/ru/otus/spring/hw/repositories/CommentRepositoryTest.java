@@ -33,16 +33,4 @@ public class CommentRepositoryTest {
         final var bookComments = commentRepository.findAllByBook_id(bookWithComments.getId());
         assertThat(bookComments).isNotEmpty().allMatch(Objects::nonNull);
     }
-
-    @Test
-    void shouldReturnCommentDtoForAllCommentsInOneQuery() {
-    }
-
-    @Test
-    void shouldReturnCommentByIdWhenCommentExistedInTwoQuery() {
-    }
-
-    @Test
-    void shouldDeleteCommentAfterBookWasDeleted() {
-    }
 }

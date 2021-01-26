@@ -22,5 +22,4 @@ public class GenreRepositoryTest {
         final var genres = genreRepository.findAll();
         assertThat(genres).hasSize(3);
     }
-
 }

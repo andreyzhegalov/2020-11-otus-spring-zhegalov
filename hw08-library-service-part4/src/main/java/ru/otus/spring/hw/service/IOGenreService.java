@@ -13,14 +13,13 @@ public class IOGenreService {
     private final IOService ioService;
 
     private void printGenre(Genre genre) {
-        final var sb = new StringBuffer();
-        sb.append("id: " + genre.getId());
-        sb.append("; ");
-        sb.append("name: " + genre.getName());
-        ioService.print(sb.toString());
+        String sb = "id: " + genre.getId() +
+                "; " +
+                "name: " + genre.getName();
+        ioService.print(sb);
     }
 
     public void print(List<Genre> genres) {
-        genres.forEach(g -> printGenre(g));
+        genres.forEach(this::printGenre);
     }
 }

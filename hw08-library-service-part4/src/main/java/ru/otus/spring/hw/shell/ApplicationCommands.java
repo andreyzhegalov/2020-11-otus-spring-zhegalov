@@ -74,10 +74,4 @@ public class ApplicationCommands {
         final var comment = ioCommentService.getComment();
         commentService.addComment(comment);
     }
-
-    @ShellMethod(value = "Remove author from book", key = { "da", "delete-author" })
-    public void removeAuthor(@ShellOption String bookId) {
-        final var authorDto = ioAuthorService.getAuthor();
-        bookService.removeAuthor(bookId, authorDto);
-    }
 }

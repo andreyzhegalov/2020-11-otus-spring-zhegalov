@@ -24,10 +24,10 @@ public class IOAuthorService {
     }
 
     private void printAuthor(Author author) {
-        final var sb = new StringBuffer();
-        sb.append("id: " + author.getId());
+        final StringBuilder sb = new StringBuilder();
+        sb.append("id: ").append(author.getId());
         sb.append("; ");
-        sb.append("name: " + author.getName());
+        sb.append("name: ").append(author.getName());
         sb.append("; ");
         final var books = author.getBooks().stream().map(Book::getTitle).collect(Collectors.joining(",")).toString();
         sb.append("books: ");
@@ -36,6 +36,6 @@ public class IOAuthorService {
     }
 
     public void print(List<Author> authors) {
-        authors.forEach(a -> printAuthor(a));
+        authors.forEach(this::printAuthor);
     }
 }

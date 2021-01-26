@@ -22,7 +22,6 @@ public class DataBaseChangeLog {
     private Author author2;
 
     private Book book1;
-    private Book book2;
 
     @ChangeSet(order = "001", id = "dropDb", author = "azhegalov", runAlways = true)
     public void dropDb(MongoDatabase db) {
@@ -48,7 +47,7 @@ public class DataBaseChangeLog {
         book1 = new Book("book1", genre2, author1, author2);
         repository.save(book1);
 
-        book2 = new Book("book2", genre1, author1);
+        Book book2 = new Book("book2", genre1, author1);
         repository.save(book2);
 
         final var loadedAuthor1 = authorRepository.findById(author1.getId()).orElseThrow();

@@ -15,15 +15,14 @@ public class IOCommentService {
     private final IOService ioService;
 
     public void print(List<CommentDto> comments) {
-        comments.forEach(c -> printComment(c));
+        comments.forEach(this::printComment);
     }
 
     private void printComment(CommentDto comment) {
-        final var sb = new StringBuffer();
-        sb.append("book id: " + comment.getBookId());
-        sb.append("; ");
-        sb.append("text: " + comment.getText());
-        ioService.print(sb.toString());
+        String sb = "book id: " + comment.getBookId() +
+                "; " +
+                "text: " + comment.getText();
+        ioService.print(sb);
     }
 
     public CommentDto getComment() {

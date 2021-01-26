@@ -2,7 +2,6 @@ package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -17,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
@@ -148,24 +146,4 @@ public class BookServiceImplTest {
         then(authorRepository).shouldHaveNoInteractions();
         then(genreRepository).shouldHaveNoInteractions();
     }
-
-    @Test
-    void shouldRemoveAuthorFromAuthorList() {
-        final var bookId = "1";
-        final var authorId = "2";
-        final var authorDto = new AuthorDto(authorId);
-        final var author = new Author("name");
-        author.setId(authorDto.getId());
-        final var book = new Book();
-        book.removeAuthor(author);
-        given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
-        given(authorRepository.findById(authorId)).willReturn(Optional.of(author));
-
-        bookService.removeAuthor(bookId, authorDto);
-
-        then(bookRepository).should().findById(bookId);
-        then(authorRepository).should().findById(eq(authorId));
-        then(bookRepository).should().save(book);
-    }
-
 }
