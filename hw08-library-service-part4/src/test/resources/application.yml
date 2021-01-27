@@ -4,7 +4,7 @@ spring:
       enabled: false
   data:
     mongodb:
-      database: library_zhegalov
+      database: library_test
       uri: mongodb://172.17.0.3
 
 mongock:
@@ -14,6 +14,6 @@ mongock:
 
 logging:
   level:
-    ROOT: DEBUG
+    ROOT: INFO
     org.springframework: INFO
-    ru.otus.spring.hw: DEBUG
+    ru.otus.spring.hw: INFO

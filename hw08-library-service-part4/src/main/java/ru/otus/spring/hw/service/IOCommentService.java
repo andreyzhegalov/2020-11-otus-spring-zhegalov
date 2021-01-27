@@ -22,6 +22,8 @@ public class IOCommentService {
         final var sb = new StringBuffer();
         sb.append("book id: " + comment.getBookId());
         sb.append("; ");
+        sb.append("book title: " + comment.getBookTitle());
+        sb.append("; ");
         sb.append("text: " + comment.getText());
         ioService.print(sb.toString());
     }

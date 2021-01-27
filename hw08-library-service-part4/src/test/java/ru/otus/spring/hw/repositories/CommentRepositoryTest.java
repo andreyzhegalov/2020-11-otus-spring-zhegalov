@@ -38,7 +38,6 @@ public class CommentRepositoryTest {
 
     @Test
     void shouldReturnAllCommentDto() {
-        final var commentList = commentRepository.findAll();
         final var commentDtoList = commentRepository.findAllDto();
         assertThat(commentDtoList).isNotEmpty().doesNotContainNull().allMatch(c -> c.getClass() == CommentDto.class)
                 .allMatch(c -> Objects.nonNull(c.getBookId()));

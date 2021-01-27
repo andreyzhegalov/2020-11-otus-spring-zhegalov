@@ -5,7 +5,7 @@ spring:
   data:
     mongodb:
       database: library_zhegalov
-      uri: mongodb://127.0.0.1
+      uri: mongodb://172.17.0.3
 
 mongock:
   runner-type: "InitializingBean"

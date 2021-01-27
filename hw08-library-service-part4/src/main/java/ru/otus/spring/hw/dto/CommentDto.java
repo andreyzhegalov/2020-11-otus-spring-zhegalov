@@ -18,6 +18,7 @@ public class CommentDto {
     private String id = new String();
     private String text;
     private String bookId;
+    private String bookTitle;
 
     public CommentDto(String text, String bookId) {
         this.text = text;
