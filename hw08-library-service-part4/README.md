@@ -22,6 +22,7 @@
 ### Использование
 
 Для запуска приложения необходимо:
+0. Настроить подключение к MongoDB. Для этого в application.yml указать правильный url.
 1. Собрать приложение
 ````
 mvn clean package
@@ -32,3 +33,10 @@ mvn clean package
 java -jar hw08-library-service-part4-1.0.jar
 ````
 
+**Примечание**
+При запуске приложения в MongoDb создается и заполняется база library_zhegalov.
+Для удаления необходимо выполнить
+````
+use library_zhegalov
+db.dropDatabase()
+````

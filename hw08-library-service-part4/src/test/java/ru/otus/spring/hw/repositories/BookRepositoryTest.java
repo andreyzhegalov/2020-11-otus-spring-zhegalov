@@ -5,14 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
@@ -21,11 +17,11 @@ import ru.otus.spring.hw.event.BookMongoEventListener;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 
-@DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
-@ComponentScan({ "ru.otus.spring.hw.repositories" })
 @Import(BookMongoEventListener.class)
-public class BookRepositoryTest {
+public class BookRepositoryTest extends AbstractRepositoryTest {
     private static final String BOOK_WITH_COMMENTS = "book1";
+    private static final String EXISTED_AUTHOR_NAME = "name3";
+    private static final String EXISTED_GENRE_NAME = "genre3";
 
     @Autowired
     private BookRepository bookRepository;
@@ -38,17 +34,6 @@ public class BookRepositoryTest {
 
     @Autowired
     private GenreRepository genreRepository;
-
-    @Test
-    void shouldReturnCorrectBookWithAuthorList() {
-        final var books = bookRepository.findAll();
-        assertThat(books).isNotNull();
-        assertThat(books).isNotEmpty();
-        final var book = books.get(0);
-
-        assertThat(book.getAuthors()).isNotNull().allMatch(Objects::nonNull)
-                .allMatch(b -> b.getId() != null && !b.getId().isEmpty());
-    }
 
     @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
     @Test
@@ -82,7 +67,8 @@ public class BookRepositoryTest {
     void savedNewBookShouldThrowExceptionIfAuthorNotExist() {
         final var notExistedAuthor = new Author("not existed id", "unknown author", Collections.emptyList());
         assertThat(authorRepository.findById(notExistedAuthor.getId())).isEmpty();
-        final var existedGenre = genreRepository.findByName("genre3").orElseGet(() -> fail("genre not exist"));
+        final var existedGenre = genreRepository.findByName(EXISTED_GENRE_NAME)
+                .orElseGet(() -> fail("genre not exist"));
 
         final var newBook = new Book("new book", existedGenre, notExistedAuthor);
 
@@ -92,10 +78,12 @@ public class BookRepositoryTest {
     @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
     @Test
     void aNewBookShouldBeAddedToTheExistedAuthor() {
-        final var existedAuthor = authorRepository.findByName("name3").orElseGet(() -> fail("author not exist"));
-        final var existedGenre = genreRepository.findByName("genre3").orElseGet(() -> fail("genre not exist"));
-
+        final var existedAuthor = authorRepository.findByName(EXISTED_AUTHOR_NAME)
+                .orElseGet(() -> fail("author not exist"));
+        final var existedGenre = genreRepository.findByName(EXISTED_GENRE_NAME)
+                .orElseGet(() -> fail("genre not exist"));
         final var newTitle = "new book";
+
         assertThat(bookRepository.findByTitle(newTitle)).isEmpty();
         final var newBook = new Book(newTitle, existedGenre, existedAuthor);
 

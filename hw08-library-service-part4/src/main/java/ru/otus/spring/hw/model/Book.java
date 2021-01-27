@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Document(collection = "books")
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 public class Book {
     @Id
     private String id;
@@ -36,9 +36,5 @@ public class Book {
         this.title = title;
         this.genre = genre;
         this.authors = Arrays.asList(authors);
-    }
-
-    public void removeAuthor(Author author) {
-        authors.remove(author);
     }
 }

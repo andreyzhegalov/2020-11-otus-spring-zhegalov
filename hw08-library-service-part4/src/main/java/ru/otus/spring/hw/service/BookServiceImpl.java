@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
@@ -34,16 +33,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public void save(BookDto bookDto) {
         final var genre = getGenreById(bookDto.getGenreId());
-        final var book = new Book(bookDto.getId(), bookDto.getTitle(), genre, bookDto.getAuthorIds().stream().map(this::getAuthorById).toArray(Author[]::new));
-        bookRepository.save(book);
-
-                    }
-
-    @Override
-    public void removeAuthor(String bookId, AuthorDto authorDto) {
-        final var book = getBookById(bookId);
-        final var author = getAuthorById(authorDto.getId());
-        book.removeAuthor(author);
+        final var book = new Book(bookDto.getId(), bookDto.getTitle(), genre,
+                bookDto.getAuthorIds().stream().map(this::getAuthorById).toArray(Author[]::new));
         bookRepository.save(book);
     }
 
@@ -55,10 +46,5 @@ public class BookServiceImpl implements BookService {
     private Genre getGenreById(String genreId) {
         return genreRepository.findById(genreId)
                 .orElseThrow(() -> new ServiceException("Genre with id " + genreId + " not exist"));
-    }
-
-    private Book getBookById(String bookId) {
-        return bookRepository.findById(bookId)
-                .orElseThrow(() -> new ServiceException("Book with id " + bookId + " not found"));
     }
 }

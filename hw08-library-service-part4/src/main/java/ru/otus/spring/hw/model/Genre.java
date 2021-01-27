@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Document(collection = "genres")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Genre {

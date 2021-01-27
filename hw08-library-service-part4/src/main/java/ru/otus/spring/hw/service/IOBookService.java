@@ -20,20 +20,20 @@ public class IOBookService {
     private final IOService ioService;
 
     public void print(List<Book> books) {
-        books.forEach(b -> printBook(b));
+        books.forEach(this::printBook);
     }
 
     private void printBook(Book book) {
-        final var sb = new StringBuffer();
-        sb.append("id: " + book.getId());
+        final StringBuilder sb = new StringBuilder();
+        sb.append("id: ").append(book.getId());
         sb.append("; ");
-        sb.append("title: " + book.getTitle());
+        sb.append("title: ").append(book.getTitle());
         sb.append("; ");
         final var authors = book.getAuthors().stream().map(Author::getName).collect(Collectors.joining(",")).toString();
         sb.append("authors: ");
         sb.append(authors);
         sb.append("; ");
-        sb.append("genre: " + book.getGenre().getName());
+        sb.append("genre: ").append(book.getGenre().getName());
         ioService.print(sb.toString());
     }
 
