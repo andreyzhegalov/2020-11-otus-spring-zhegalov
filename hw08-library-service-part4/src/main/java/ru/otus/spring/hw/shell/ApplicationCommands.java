@@ -44,13 +44,6 @@ public class ApplicationCommands {
         bookService.deleteBook(id);
     }
 
-    @ShellMethod(value = "Update book", key = { "ub", "update-book" })
-    public void updateBook(@ShellOption String id) {
-        final var bookDto = ioBookService.getBook();
-        bookDto.setId(id);
-        bookService.save(bookDto);
-    }
-
     @ShellMethod(value = "Print all genres", key = { "pg", "print-genres" })
     public void printAllGenre() {
         final var genres = genreRepository.findAll();

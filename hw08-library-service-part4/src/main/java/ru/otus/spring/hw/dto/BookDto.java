@@ -6,14 +6,10 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import ru.otus.spring.hw.model.Book;
 
-@ToString
 @Getter
 public class BookDto {
-    @Setter
     private String id;
     private final String title;
     private final List<String> authorIds = new ArrayList<>();

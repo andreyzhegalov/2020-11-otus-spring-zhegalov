@@ -2,10 +2,6 @@ spring:
   shell:
     interactive:
       enabled: false
-  data:
-    mongodb:
-      database: library_test
-      uri: mongodb://172.17.0.3
 
 mongock:
   runner-type: "ApplicationRunner" # default
