@@ -7,7 +7,9 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import ru.otus.spring.hw.event.BookMongoEventListener;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
 
 @Import(BookMongoEventListener.class)
@@ -34,42 +37,43 @@ public class BookRepositoryTest extends AbstractRepositoryTest {
     @Autowired
     private BookRepository bookRepository;
 
-    @Autowired
-    private AuthorRepository authorRepository;
-
-    @Autowired
-    private CommentRepository commentRepository;
-
     @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
     @Test
     void deletingBookShouldDeleteBookFromAuthors() {
+        final Function<String, List<Author>> getAuthorsWithBook = bookId -> mongoOperations
+                .find(query(where("books.id").is(bookId)), Author.class);
+
         var books = bookRepository.findAll();
         assertThat(books).isNotNull();
         books = books.stream().filter(b -> b.getAuthors().size() > 1).collect(Collectors.toList());
         assertThat(books).isNotEmpty();
         final var bookWithManyAuthors = books.get(0);
 
-        assertThat(authorRepository.findAllByBooks_id(bookWithManyAuthors.getId())).isNotEmpty();
+        assertThat(getAuthorsWithBook.apply(bookWithManyAuthors.getId())).isNotEmpty();
 
         bookRepository.delete(bookWithManyAuthors);
 
-        assertThat(authorRepository.findAllByBooks_id(bookWithManyAuthors.getId())).isEmpty();
+        assertThat(getAuthorsWithBook.apply(bookWithManyAuthors.getId())).isEmpty();
     }
 
     @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
     @Test
     void deletingBookShouldDeleteAllBookComments() {
+        final Function<String, List<Comment>> commentsByBookId = bookId -> mongoOperations
+                .find(query(where("book.id").is(bookId)), Comment.class);
+
         final var bookWithComments = bookRepository.findByTitle(BOOK_WITH_COMMENTS)
                 .orElseGet(() -> fail("book not found"));
-        assertThat(commentRepository.findAllByBook_id(bookWithComments.getId())).isNotEmpty();
+
+        assertThat(commentsByBookId.apply(bookWithComments.getId())).isNotEmpty();
 
         bookRepository.delete(bookWithComments);
 
-        assertThat(commentRepository.findAllByBook_id(bookWithComments.getId())).isEmpty();
+        assertThat(commentsByBookId.apply(bookWithComments.getId())).isEmpty();
     }
 
     private Genre getExistedGenre() {
-        return Optional.of(mongoOperations.findOne(query(where("name").is(EXISTED_GENRE_NAME)), Genre.class))
+        return Optional.ofNullable(mongoOperations.findOne(query(where("name").is(EXISTED_GENRE_NAME)), Genre.class))
                 .orElseGet(() -> fail("genre not exist"));
     }
 
@@ -77,7 +81,8 @@ public class BookRepositoryTest extends AbstractRepositoryTest {
     @Test
     void savedNewBookShouldThrowExceptionIfAuthorNotExist() {
         final var notExistedAuthor = new Author("not existed id", "unknown author", Collections.emptyList());
-        assertThat(authorRepository.findById(notExistedAuthor.getId())).isEmpty();
+        final var authorWithId = mongoOperations.findById(notExistedAuthor.getId(), Author.class);
+        assertThat(authorWithId).isNull();
 
         final var newBook = new Book("new book", getExistedGenre(), notExistedAuthor);
 
@@ -87,7 +92,8 @@ public class BookRepositoryTest extends AbstractRepositoryTest {
     @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
     @Test
     void aNewBookShouldBeAddedToTheExistedAuthor() {
-        final var existedAuthor = authorRepository.findByName(EXISTED_AUTHOR_NAME)
+        final var existedAuthor = Optional
+                .ofNullable(mongoOperations.findOne(query(where("name").is(EXISTED_AUTHOR_NAME)), Author.class))
                 .orElseGet(() -> fail("author not exist"));
         final var newTitle = "new book";
 
@@ -96,7 +102,7 @@ public class BookRepositoryTest extends AbstractRepositoryTest {
 
         final var savedBook = bookRepository.save(newBook);
 
-        final var updatedAuthor = authorRepository.findById(existedAuthor.getId())
+        final var updatedAuthor = Optional.ofNullable(mongoOperations.findById(existedAuthor.getId(), Author.class))
                 .orElseGet(() -> fail("updated author not exist"));
 
         assertThat(updatedAuthor.getBooks()).containsOnlyOnce(savedBook);
