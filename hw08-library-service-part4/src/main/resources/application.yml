@@ -1,0 +1,17 @@
+spring:
+  shell:
+    interactive:
+      enabled: true
+  data:
+    mongodb:
+      database: library_zhegalov
+      uri: mongodb://172.17.0.3
+
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.spring.hw.changelog
+
+logging:
+  level:
+    ROOT: OFF
