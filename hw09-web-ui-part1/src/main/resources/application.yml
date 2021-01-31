@@ -1,11 +1,11 @@
 spring:
-  shell:
-    interactive:
-      enabled: true
   data:
     mongodb:
       database: library_zhegalov
       uri: mongodb://172.17.0.3
+
+server:
+  port : 8081
 
 mongock:
   runner-type: "InitializingBean"
@@ -14,4 +14,7 @@ mongock:
 
 logging:
   level:
-    ROOT: INFO
+    ROOT: DEBUG
+    org.springframework: DEBUG
+    ru.otus.spring.hw: DEBUG
+    org.mongodb.driver: INFO
