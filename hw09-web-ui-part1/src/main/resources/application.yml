@@ -3,9 +3,15 @@ spring:
     mongodb:
       database: library_zhegalov
       uri: mongodb://172.17.0.3
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 
 server:
-  port : 8081
+  port: 8081
+  error:
+    include-stacktrace: always
 
 mongock:
   runner-type: "InitializingBean"
