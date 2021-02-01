@@ -5,9 +5,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dto.BookDtoForPrint;
+import ru.otus.spring.hw.dto.BookDtoInput;
 import ru.otus.spring.hw.service.BookService;
 
 @Controller
@@ -24,4 +26,9 @@ public class BookController {
         return "book";
     }
 
+    @PostMapping("/book")
+    public String create(BookDtoInput dto) {
+        bookService.save(dto);
+        return "redirect:/book";
+    }
 }

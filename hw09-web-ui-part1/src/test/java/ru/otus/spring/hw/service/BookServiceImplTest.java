@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.dto.BookDto;
+import ru.otus.spring.hw.dto.BookDtoInput;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
@@ -62,48 +63,59 @@ public class BookServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfAuthorNotExistForUpdatedBook() {
-        final var authorId = "2";
-        final var genreId = "3";
-        final var bookDto = new BookDto("title", genreId);
-        bookDto.getAuthorIds().add(authorId);
-        given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));
-        given(authorRepository.findById(authorId)).willReturn(Optional.empty());
+        final var genreName = "genre";
+        final var authorName = "name";
 
-        assertThatCode(() -> bookService.save(bookDto)).isInstanceOf(ServiceException.class);
+        final var newBookDto = new BookDtoInput();
+        newBookDto.setGenreName(genreName);
+        newBookDto.setAuthorsName(authorName);
+        given(authorRepository.findByName(authorName)).willReturn(Optional.empty());
+        given(genreRepository.findByName(genreName)).willReturn(Optional.of(new Genre()));
 
-        then(authorRepository).should().findById(authorId);
+        assertThatCode(() -> bookService.save(newBookDto)).isInstanceOf(ServiceException.class);
+
+        then(genreRepository).should().findByName(genreName);
+        then(authorRepository).should().findByName(authorName);
     }
 
     @Test
     void shouldThrowExceptionIfGenreNotExistForUpdatedBook() {
-        final var authorId = "2";
-        final var genreId = "3";
-        final var bookDto = new BookDto("title", genreId);
-        final var author = new Author("name");
-        author.setId(authorId);
-        given(authorRepository.findById(authorId)).willReturn(Optional.of(author));
-        given(genreRepository.findById(genreId)).willReturn(Optional.empty());
+        final var genreName = "genre";
+        final var authorName = "name";
 
-        assertThatCode(() -> bookService.save(bookDto)).isInstanceOf(ServiceException.class);
+        final var newBookDto = new BookDtoInput();
+        newBookDto.setGenreName(genreName);
+        newBookDto.setAuthorsName(authorName);
+        given(authorRepository.findByName(authorName)).willReturn(Optional.of(new Author(authorName)));
+        given(genreRepository.findByName(genreName)).willReturn(Optional.empty());
 
-        then(genreRepository).should().findById(genreId);
+        assertThatCode(() -> bookService.save(newBookDto)).isInstanceOf(ServiceException.class);
+
+        then(genreRepository).should().findByName(genreName);
     }
 
     @Test
-    void shouldSaveNewBook() {
-        final var authorId = "2";
-        final var genreId = "3";
-        final var newBookDto = new BookDto("title", genreId);
-        newBookDto.getAuthorIds().add(authorId);
-        final var author = new Author("name");
-        author.setId(authorId);
-        given(authorRepository.findById(authorId)).willReturn(Optional.of(author));
-        given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre(genreId, "genre")));
+    void shouldSaveNewBookFromDto() {
+        final var authorsName = Arrays.asList("name1, name2");
+        final var genreName = "genre3";
+
+        final var newBookDto = new BookDtoInput();
+        newBookDto.setTitle("title");
+        newBookDto.setGenreName(genreName);
+        newBookDto.setAuthorsName(String.join(",", authorsName));
+
+        final var author1 = new Author("name1");
+        final var author2 = new Author("name2");
+
+        given(authorRepository.findByName("name1")).willReturn(Optional.of(author1));
+        given(authorRepository.findByName("name2")).willReturn(Optional.of(author2));
+        given(genreRepository.findByName(genreName)).willReturn(Optional.of(new Genre("genre")));
 
         bookService.save(newBookDto);
 
-        then(authorRepository).should().findById(authorId);
-        then(genreRepository).should().findById(genreId);
+        then(authorRepository).should().findByName("name1");
+        then(authorRepository).should().findByName("name2");
+        then(genreRepository).should().findByName(genreName);
         then(bookRepository).should().save(bookCaptor.capture());
 
         final var savedBook = bookCaptor.getValue();

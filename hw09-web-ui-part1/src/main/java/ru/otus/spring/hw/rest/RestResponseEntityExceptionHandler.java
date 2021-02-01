@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import ru.otus.spring.hw.repositories.RepositoryException;
+import ru.otus.spring.hw.service.ServiceException;
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(RepositoryException.class)
-    public ResponseEntity<Object> repositoryExceptionHandler(RepositoryException ex) {
+    @ExceptionHandler(value = { RepositoryException.class, ServiceException.class })
+    public ResponseEntity<Object> repositoryExceptionHandler(Throwable ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

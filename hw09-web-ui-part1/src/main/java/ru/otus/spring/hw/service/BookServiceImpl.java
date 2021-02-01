@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.dto.BookDto;
+import ru.otus.spring.hw.dto.BookDtoInput;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
@@ -30,21 +30,21 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll();
     }
 
+    private Author getAuthorByName(String authorName) {
+        return authorRepository.findByName(authorName)
+                .orElseThrow(() -> new ServiceException("Author with name " + authorName + " not exist"));
+    }
+
+    private Genre getGenreByName(String genreName) {
+        return genreRepository.findByName(genreName)
+                .orElseThrow(() -> new ServiceException("Genre with name " + genreName + " not exist"));
+    }
+
     @Override
-    public void save(BookDto bookDto) {
-        final var genre = getGenreById(bookDto.getGenreId());
+    public void save(BookDtoInput bookDto) {
+        final var genre = getGenreByName(bookDto.getGenreName());
         final var book = new Book(bookDto.getId(), bookDto.getTitle(), genre,
-                bookDto.getAuthorIds().stream().map(this::getAuthorById).toArray(Author[]::new));
+                bookDto.getAuthorsName().stream().map(this::getAuthorByName).toArray(Author[]::new));
         bookRepository.save(book);
-    }
-
-    private Author getAuthorById(String authorId) {
-        return authorRepository.findById(authorId)
-                .orElseThrow(() -> new ServiceException("Author with id " + authorId + " not exist"));
-    }
-
-    private Genre getGenreById(String genreId) {
-        return genreRepository.findById(genreId)
-                .orElseThrow(() -> new ServiceException("Genre with id " + genreId + " not exist"));
     }
 }
