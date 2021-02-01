@@ -3,6 +3,7 @@ package ru.otus.spring.hw.rest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -51,5 +52,13 @@ public class BookControllerTest {
         mvc.perform(post("/book")).andDo(print()).andExpect(status().isBadRequest());
 
         then(bookService).should().save(any(BookDtoInput.class));
+    }
+
+    @Test
+    void shouldRemoveBook() throws Exception {
+        final var bookId = "123";
+        mvc.perform(delete("/book").param("id", bookId)).andDo(print()).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/book"));
+        then(bookService).should().deleteBook(bookId);
     }
 }
