@@ -16,15 +16,13 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.RepositoryException;
 
-@WebMvcTest
-@ComponentScan({ "ru.otus.spring.hw.rest" })
+@WebMvcTest(controllers = AuthorController.class)
 public class AuthorControllerTest {
     @Autowired
     private MockMvc mvc;
