@@ -11,4 +11,6 @@ public interface CommentService {
     List<CommentDto> findAll();
 
     List<CommentDto> findAllByBookId(String id);
+
+    void deleteById(String id);
 }

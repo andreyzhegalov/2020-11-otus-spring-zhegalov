@@ -35,7 +35,7 @@ public class CommentRepositoryTest extends AbstractRepositoryTest {
     void shouldReturnAllCommentDto() {
         final var commentDtoList = commentRepository.findAllDto();
         assertThat(commentDtoList).isNotEmpty().doesNotContainNull().allMatch(c -> c.getClass() == CommentDto.class)
-                .allMatch(c -> Objects.nonNull(c.getBookId()));
+                .allMatch(c -> Objects.nonNull(c.getBookId())).allMatch(c -> Objects.nonNull(c.getId()));
 
         final var commentDto = commentDtoList.get(0);
         assertThat(bookRepository.findById(commentDto.getBookId())).isNotEmpty();
@@ -49,7 +49,7 @@ public class CommentRepositoryTest extends AbstractRepositoryTest {
 
         final var commentDtoList = commentRepository.findAllDtoByBookId(bookWithComments.getId());
         assertThat(commentDtoList).isNotEmpty().doesNotContainNull().allMatch(c -> c.getClass() == CommentDto.class)
-                .allMatch(c -> Objects.nonNull(c.getBookId()));
+                .allMatch(c -> Objects.nonNull(c.getBookId())).allMatch(c -> Objects.nonNull(c.getId()));
 
         final var commentDto = commentDtoList.get(0);
         assertThat(bookRepository.findById(commentDto.getBookId())).isNotEmpty();

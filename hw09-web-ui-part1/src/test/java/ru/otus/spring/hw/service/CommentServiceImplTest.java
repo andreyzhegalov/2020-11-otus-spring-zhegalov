@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -65,5 +66,13 @@ public class CommentServiceImplTest {
 
         then(bookRepository).should().findById(notExistedBookId);
         then(commentRepository).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldDeleteCommentById() {
+        final var commentId = "123";
+
+        commentService.deleteById(commentId);
+        then(commentRepository).should().deleteById(eq(commentId));
     }
 }

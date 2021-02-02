@@ -2,14 +2,14 @@ package ru.otus.spring.hw.dto;
 
 import org.jetbrains.annotations.NotNull;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.otus.spring.hw.model.Comment;
 
-@Getter
+@Data
 @NoArgsConstructor
 public class CommentDto {
-    private final String id = "";
+    private String id;
     private String text;
     private String bookId;
     private String bookTitle;

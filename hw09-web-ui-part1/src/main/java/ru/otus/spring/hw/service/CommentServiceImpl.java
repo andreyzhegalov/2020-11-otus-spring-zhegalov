@@ -32,8 +32,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDto> findAllByBookId(String id) {
-        // TODO make for findAllById
-        return findAll();
+    public List<CommentDto> findAllByBookId(String bookId) {
+        return commentRepository.findAllDtoByBookId(bookId);
+    }
+
+    @Override
+    public void deleteById(String id) {
+        commentRepository.deleteById(id);
     }
 }
