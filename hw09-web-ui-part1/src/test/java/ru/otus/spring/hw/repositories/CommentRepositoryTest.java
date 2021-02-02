@@ -40,4 +40,23 @@ public class CommentRepositoryTest extends AbstractRepositoryTest {
         final var commentDto = commentDtoList.get(0);
         assertThat(bookRepository.findById(commentDto.getBookId())).isNotEmpty();
     }
+
+    @Test
+    void shouldReturnCommentDtoByBookId() {
+        final var bookWithComments = bookRepository.findByTitle(BOOK_WITH_COMMENTS)
+                .orElseGet(() -> fail("book not found"));
+        assertThat(commentRepository.findAllByBook_id(bookWithComments.getId())).isNotEmpty();
+
+        final var commentDtoList = commentRepository.findAllDtoByBookId(bookWithComments.getId());
+        assertThat(commentDtoList).isNotEmpty().doesNotContainNull().allMatch(c -> c.getClass() == CommentDto.class)
+                .allMatch(c -> Objects.nonNull(c.getBookId()));
+
+        final var commentDto = commentDtoList.get(0);
+        assertThat(bookRepository.findById(commentDto.getBookId())).isNotEmpty();
+    }
+
+    @Test
+    void shouldReturnEmptyListCommentsForNotExistedBook() {
+        assertThat(commentRepository.findAllDtoByBookId("not_existed_book_id")).isEmpty();
+    }
 }

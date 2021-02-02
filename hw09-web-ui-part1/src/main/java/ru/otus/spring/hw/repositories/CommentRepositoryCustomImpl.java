@@ -6,6 +6,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwi
 import static org.springframework.data.mongodb.core.aggregation.ObjectOperators.ObjectToArray.valueOfToArray;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -27,5 +28,10 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 project("id", "text").and("book_id_map.v").as("book_id"), lookup("books", "book_id", "_id", "book"),
                 unwind("book"), project("id", "text").and("book_id").as("bookId").and("book.title").as("bookTitle"));
         return mongoTemplate.aggregate(aggregation, Comment.class, CommentDto.class).getMappedResults();
+    }
+
+    @Override
+    public List<CommentDto> findAllDtoByBookId(String bookId) {
+        return findAllDto().stream().filter(c -> c.getBookId().equals(bookId)).collect(Collectors.toList());
     }
 }

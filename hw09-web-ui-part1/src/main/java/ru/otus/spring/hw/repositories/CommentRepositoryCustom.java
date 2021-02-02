@@ -8,4 +8,6 @@ public interface CommentRepositoryCustom {
 
     List<CommentDto> findAllDto();
 
+    List<CommentDto> findAllDtoByBookId(String bookId);
+
 }
