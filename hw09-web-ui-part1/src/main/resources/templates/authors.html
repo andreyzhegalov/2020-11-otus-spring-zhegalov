@@ -21,15 +21,19 @@
         margin-top: 10px;
       }
 
-      .persons,
-      .persons td {
+      .authors,
+      .authors td {
         border: 1px solid lightgray;
         padding: 5px;
       }
     </style>
   </head>
   <body>
-    <h1>Authors:</h1>
+    <div class="row">
+      <a th:href="@{/books}" href="books.html">Back</a>
+    </div>
+    <hr />
+    <h3>Authors:</h3>
 
     <table class="authors">
       <thead>
@@ -44,9 +48,9 @@
           <td>
             <form
               id="deleted-author-form"
-              th:action="@{/author(id=${author.id})}"
+              th:action="@{/authors(id=${author.id})}"
               th:method="delete"
-              action="author.html"
+              action="authors.html"
             >
               <button type="submit">Delete</button>
             </form>
@@ -58,11 +62,11 @@
     <!-- Added author -->
     <form
       id="added-author-form"
-      th:action="@{/author}"
+      th:action="@{/authors}"
       th:method="post"
-      action="author.html"
+      action="authors.html"
     >
-      <h1>Add author:</h1>
+      <h3>Add author:</h3>
 
       <div class="row">
         <label for="holder-input">Name:</label>

@@ -75,4 +75,11 @@ public class CommentServiceImplTest {
         commentService.deleteById(commentId);
         then(commentRepository).should().deleteById(eq(commentId));
     }
+
+    @Test
+    void shouldReturnAllBookDtoById() {
+        final var bookId = "123";
+        commentService.findAllByBookId(bookId);
+        then(commentRepository).should().findAllDtoByBookId(eq(bookId));
+    }
 }

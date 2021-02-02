@@ -30,17 +30,23 @@ public class BookControllerTest {
     private BookService bookService;
 
     @Test
+    void shouldRedirectFromRootToBooks() throws Exception {
+        mvc.perform(get("/")).andExpect(view().name("redirect:/books"));
+    }
+
+    @Test
     void shouldReturnAllBooks() throws Exception {
-        mvc.perform(get("/book")).andDo(print()).andExpect(status().isOk()).andExpect(model().attributeExists("books"))
-                .andExpect(view().name("book"));
+        mvc.perform(get("/books")).andDo(print()).andExpect(status().isOk()).andExpect(model().attributeExists("books"))
+                .andExpect(view().name("books"));
         then(bookService).should().findAll();
     }
 
     @Test
     void shouldAddNewBookForExistedAuthorAndGenre() throws Exception {
 
-        mvc.perform(post("/book").param("title", "book title").param("genreName", "book genre").param("authorsName",
-                "name1 , name2")).andDo(print()).andExpect(status().isFound()).andExpect(view().name("redirect:/book"));
+        mvc.perform(post("/books").param("title", "book title").param("genreName", "book genre").param("authorsName",
+                "name1 , name2")).andDo(print()).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/books"));
 
         then(bookService).should().save(any(BookDtoInput.class));
     }
@@ -49,7 +55,7 @@ public class BookControllerTest {
     void shouldRetunBadRequesWhenSaveBookServiceThrowException() throws Exception {
         doThrow(ServiceException.class).when(bookService).save(any(BookDtoInput.class));
 
-        mvc.perform(post("/book")).andDo(print()).andExpect(status().isBadRequest());
+        mvc.perform(post("/books")).andDo(print()).andExpect(status().isBadRequest());
 
         then(bookService).should().save(any(BookDtoInput.class));
     }
@@ -57,8 +63,8 @@ public class BookControllerTest {
     @Test
     void shouldRemoveBook() throws Exception {
         final var bookId = "123";
-        mvc.perform(delete("/book").param("id", bookId)).andDo(print()).andExpect(status().isFound())
-                .andExpect(view().name("redirect:/book"));
+        mvc.perform(delete("/books").param("id", bookId)).andDo(print()).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/books"));
         then(bookService).should().deleteBook(bookId);
     }
 }

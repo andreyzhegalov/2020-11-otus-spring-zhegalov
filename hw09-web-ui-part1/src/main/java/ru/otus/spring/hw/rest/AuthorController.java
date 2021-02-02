@@ -17,22 +17,22 @@ public class AuthorController {
 
     private final AuthorRepository authorRepository;
 
-    @GetMapping("/author")
+    @GetMapping("/authors")
     public String listBook(Model model) {
         final var authors = authorRepository.findAll();
         model.addAttribute("authors", authors);
-        return "author";
+        return "authors";
     }
 
-    @PostMapping("/author")
-    public String saveAuthor(Author author) {
-        authorRepository.save(author);
-        return "redirect:/author";
+    @PostMapping("/authors")
+    public String saveAuthor(Author authors) {
+        authorRepository.save(authors);
+        return "redirect:/authors";
     }
 
-    @DeleteMapping("/author")
+    @DeleteMapping("/authors")
     public String deleteAuthor(@RequestParam("id") String id) {
         authorRepository.deleteById(id);
-        return "redirect:/author";
+        return "redirect:/authors";
     }
 }

@@ -21,16 +21,21 @@
         margin-top: 10px;
       }
 
-      .persons,
-      .persons td {
+      .books,
+      .books td {
         border: 1px solid lightgray;
         padding: 5px;
       }
     </style>
   </head>
   <body>
-    <h1>Books:</h1>
-
+    <div class="row">
+      <label for="holder-input">Goto:</label>
+      <a th:href="@{/authors}" href="authors.html">Authors</a>
+      <a th:href="@{/genres}" href="genres.html">Genres</a>
+    </div>
+    <hr />
+    <h3>Books:</h3>
     <table class="books">
       <thead>
         <tr>
@@ -47,7 +52,9 @@
           <td th:text="${book.genreName}">genre1</td>
           <td th:text="${book.authorsName}">name1, name2</td>
           <td>
-            <a th:href="@{/comments(bookId=${book.id})}" href="comments.html">Comments</a>
+            <a th:href="@{/comments(bookId=${book.id})}" href="comments.html"
+              >Comments</a
+            >
           </td>
           <td>
             <form
@@ -70,7 +77,7 @@
       th:method="post"
       action="book.html"
     >
-      <h1>Add book:</h1>
+      <h3>Add book:</h3>
 
       <div class="row">
         <label for="holder-input">Title:</label>

@@ -22,26 +22,26 @@ public class BookController {
 
     @GetMapping("/")
     public String startPage() {
-        return "redirect:/book";
+        return "redirect:/books";
     }
 
-    @GetMapping("/book")
+    @GetMapping("/books")
     public String listBook(Model model) {
         final var books = bookService.findAll();
         final var booksDto = books.stream().map(BookDtoForPrint::new).collect(Collectors.toList());
         model.addAttribute("books", booksDto);
-        return "book";
+        return "books";
     }
 
-    @PostMapping("/book")
+    @PostMapping("/books")
     public String create(BookDtoInput dto) {
         bookService.save(dto);
-        return "redirect:/book";
+        return "redirect:/books";
     }
 
-    @DeleteMapping("/book")
+    @DeleteMapping("/books")
     public String deleteAuthor(@RequestParam("id") String id) {
         bookService.deleteBook(id);
-        return "redirect:/book";
+        return "redirect:/books";
     }
 }

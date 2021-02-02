@@ -35,15 +35,15 @@ public class AuthorControllerTest {
 
     @Test
     void shouldReturnAuthorList() throws Exception {
-        mvc.perform(get("/author")).andDo(print()).andExpect(status().isOk()).andExpect(view().name("author"));
+        mvc.perform(get("/authors")).andDo(print()).andExpect(status().isOk()).andExpect(view().name("authors"));
         then(authorRepository).should().findAll();
     }
 
     @Test
     void shouldAddNewAuthor() throws Exception {
         final var authorName = "author name";
-        mvc.perform(post("/author").param("name", "author name")).andDo(print()).andExpect(status().isFound())
-                .andExpect(view().name("redirect:/author"));
+        mvc.perform(post("/authors").param("name", "author name")).andDo(print()).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/authors"));
 
         then(authorRepository).should().save(authorCaptor.capture());
         assertThat(authorCaptor.getValue().getName()).isEqualTo(authorName);
@@ -52,8 +52,8 @@ public class AuthorControllerTest {
     @Test
     void shouldRemoveAuthor() throws Exception {
         final var authorId = "123";
-        mvc.perform(delete("/author").param("id", authorId)).andDo(print()).andExpect(status().isFound())
-                .andExpect(view().name("redirect:/author"));
+        mvc.perform(delete("/authors").param("id", authorId)).andDo(print()).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/authors"));
         then(authorRepository).should().deleteById(authorId);
     }
 
@@ -62,7 +62,7 @@ public class AuthorControllerTest {
         final var authorId = "id_author_with_book";
         doThrow(RepositoryException.class).when(authorRepository).deleteById(authorId);
 
-        mvc.perform(delete("/author").param("id", authorId)).andDo(print()).andExpect(status().isBadRequest());
+        mvc.perform(delete("/authors").param("id", authorId)).andDo(print()).andExpect(status().isBadRequest());
 
         then(authorRepository).should().deleteById(authorId);
     }

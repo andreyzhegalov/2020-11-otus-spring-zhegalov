@@ -21,8 +21,8 @@
         margin-top: 10px;
       }
 
-      .persons,
-      .persons td {
+      .comments,
+      .comments td {
         border: 1px solid lightgray;
         padding: 5px;
       }
@@ -30,10 +30,10 @@
   </head>
   <body>
     <div class="row">
-        <label for="holder-input">Back:</label>
-      <a th:href="@{/book}" href="book.html">Books</a>
+      <a th:href="@{/books}" href="books.html">Back</a>
     </div>
-    <h1>Comments:</h1>
+    <hr />
+    <h3>Comments:</h3>
 
     <table class="comments">
       <thead>
@@ -68,7 +68,7 @@
       th:method="post"
       action="comments.html"
     >
-      <h1>Add comment:</h1>
+      <h3>Add comment:</h3>
 
       <div class="row">
         <label for="text-input">Text:</label>
