@@ -37,6 +37,8 @@
           <th>Title</th>
           <th>Genre</th>
           <th>Authors</th>
+          <th>Comments</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -44,6 +46,9 @@
           <td th:text="${book.title}">book1</td>
           <td th:text="${book.genreName}">genre1</td>
           <td th:text="${book.authorsName}">name1, name2</td>
+          <td>
+            <a th:href="@{/comments(bookId=${book.id})}" href="comments.html">Comments</a>
+          </td>
           <td>
             <form
               id="deleted-book-form"

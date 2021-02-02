@@ -30,4 +30,10 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentDto> findAll() {
         return commentRepository.findAllDto();
     }
+
+    @Override
+    public List<CommentDto> findAllByBookId(String id) {
+        // TODO make for findAllById
+        return findAll();
+    }
 }

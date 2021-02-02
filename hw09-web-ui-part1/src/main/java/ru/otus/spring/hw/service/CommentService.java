@@ -9,4 +9,6 @@ public interface CommentService {
     void addComment(CommentDto commentDto);
 
     List<CommentDto> findAll();
+
+    List<CommentDto> findAllByBookId(String id);
 }
