@@ -10,5 +10,7 @@ public interface BookRepository extends MongoRepository<Book, String> {
 
     boolean existsBookByAuthors_id(String authorId);
 
+    boolean existsBookByGenre_id(String genreId);
+
     Optional<Book> findByTitle(String name);
 }
