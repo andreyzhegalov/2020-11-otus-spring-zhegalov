@@ -15,6 +15,7 @@ import ru.otus.spring.hw.event.GenreRepositoryListener;
 public class GenreRepositoryTest extends AbstractRepositoryTest {
 
     private static final String USAGE_GENRE = "genre1";
+    private static final String NOT_USAGE_GENRE = "genre3";
 
     @Autowired
     private GenreRepository genreRepository;
@@ -25,5 +26,12 @@ public class GenreRepositoryTest extends AbstractRepositoryTest {
         final var genre = genreRepository.findByName(USAGE_GENRE).orElseGet(() -> fail("genre not exist"));
 
         assertThatCode(() -> genreRepository.delete(genre)).isInstanceOf(RepositoryException.class);
+    }
+
+    @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+    @Test
+    public void shouldRemoveGenre() {
+        final var genre = genreRepository.findByName(NOT_USAGE_GENRE).orElseGet(() -> fail("genre not exist"));
+        assertThatCode(() -> genreRepository.delete(genre)).doesNotThrowAnyException();
     }
 }

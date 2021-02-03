@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -10,6 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -37,8 +40,17 @@ public class AuthorControllerTest {
     @Test
     void shouldReturnAuthorList() throws Exception {
         mvc.perform(get("/authors")).andDo(print()).andExpect(status().isOk())
-                .andExpect(model().attributeExists("authors")).andExpect(view().name("authors"));
+                .andExpect(model().attributeExists("authors"))
+                .andExpect(model().attribute("authors", instanceOf(List.class))).andExpect(view().name("authors"));
         then(authorRepository).should().findAll();
+    }
+
+    @Test
+    void shouldNotSaveAuthorWithEmptyName() throws Exception {
+        mvc.perform(post("/authors").param("name", "")).andDo(print()).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/authors"));
+
+        then(authorRepository).shouldHaveNoInteractions();
     }
 
     @Test
@@ -57,6 +69,13 @@ public class AuthorControllerTest {
         mvc.perform(delete("/authors").param("id", authorId)).andDo(print()).andExpect(status().isFound())
                 .andExpect(view().name("redirect:/authors"));
         then(authorRepository).should().deleteById(authorId);
+    }
+
+    @Test
+    void shouldNotRemoveAuthorIfIdEmpty() throws Exception {
+        mvc.perform(delete("/authors").param("id", "")).andDo(print()).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/authors"));
+        then(authorRepository).shouldHaveNoInteractions();
     }
 
     @Test

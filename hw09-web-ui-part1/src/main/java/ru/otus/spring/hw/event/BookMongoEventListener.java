@@ -1,7 +1,6 @@
 package ru.otus.spring.hw.event;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 import org.mockito.internal.util.collections.Sets;
@@ -37,7 +36,7 @@ public class BookMongoEventListener extends AbstractMongoEventListener<Book> {
         super.onBeforeConvert(event);
         final var book = event.getSource();
         book.getAuthors().forEach(a -> {
-            if (Objects.nonNull(a) && !authorRepository.existsById(a.getId())) {
+            if (!authorRepository.existsById(a.getId())) {
                 throw new RepositoryException("author with id " + a.getId() + " not exist");
             }
         });

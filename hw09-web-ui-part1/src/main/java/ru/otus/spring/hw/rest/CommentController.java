@@ -1,7 +1,5 @@
 package ru.otus.spring.hw.rest;
 
-import java.util.Objects;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,18 +28,19 @@ public class CommentController {
     @PostMapping("/comments")
     public String saveComment(@RequestParam("bookId") String bookId, RedirectAttributes redirectAttributes,
             String text) {
-        final var comment = new CommentDto(text, bookId);
-        commentService.addComment(comment);
+        if (!text.trim().isEmpty()) {
+            final var comment = new CommentDto(text, bookId);
+            commentService.addComment(comment);
+        }
         redirectAttributes.addAttribute("bookId", bookId);
         return "redirect:/comments";
     }
 
     @DeleteMapping("/comments")
     public String removeById(@RequestParam("id") String id, String bookId, RedirectAttributes redirectAttributes) {
-        if (Objects.isNull(id) || id.isEmpty()) {
-            return "redirect:/comments";
+        if (!id.trim().isEmpty()) {
+            commentService.deleteById(id);
         }
-        commentService.deleteById(id);
         redirectAttributes.addAttribute("bookId", bookId);
         return "redirect:/comments";
     }

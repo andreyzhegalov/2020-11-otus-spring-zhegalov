@@ -42,6 +42,23 @@ public class BookControllerTest {
     }
 
     @Test
+    void shouldNotSaveBookWithEmptyTitle() throws Exception {
+        mvc.perform(post("/books").param("title", " ").param("genreName", "book genre").param("authorsName",
+                "name1 , name2")).andDo(print()).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/books"));
+
+        then(bookService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldNotSaveBookWithOutTitle() throws Exception {
+        mvc.perform(post("/books").param("genreName", "book genre").param("authorsName", "name1 , name2"))
+                .andDo(print()).andExpect(status().isFound()).andExpect(view().name("redirect:/books"));
+
+        then(bookService).shouldHaveNoInteractions();
+    }
+
+    @Test
     void shouldAddNewBookForExistedAuthorAndGenre() throws Exception {
 
         mvc.perform(post("/books").param("title", "book title").param("genreName", "book genre").param("authorsName",
@@ -55,9 +72,16 @@ public class BookControllerTest {
     void shouldRetunBadRequesWhenSaveBookServiceThrowException() throws Exception {
         doThrow(ServiceException.class).when(bookService).save(any(BookDto.class));
 
-        mvc.perform(post("/books")).andDo(print()).andExpect(status().isBadRequest());
+        mvc.perform(post("/books").param("title", "book1")).andDo(print()).andExpect(status().isBadRequest());
 
         then(bookService).should().save(any(BookDto.class));
+    }
+
+    @Test
+    void shouldNotRemoveBookIfIdEmpty() throws Exception {
+        mvc.perform(delete("/books").param("id", "")).andDo(print()).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/books"));
+        then(bookService).shouldHaveNoInteractions();
     }
 
     @Test

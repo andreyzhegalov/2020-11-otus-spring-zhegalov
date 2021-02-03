@@ -1,7 +1,5 @@
 package ru.otus.spring.hw.rest;
 
-import java.util.Objects;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,17 +24,18 @@ public class GenreController {
     }
 
     @PostMapping("/genres")
-    public String saveGenre(Genre genres) {
-        genreRepository.save(genres);
+    public String saveGenre(Genre genre) {
+        if (!genre.getName().trim().isEmpty()) {
+            genreRepository.save(genre);
+        }
         return "redirect:/genres";
     }
 
     @DeleteMapping("/genres")
     public String deleteGenre(@RequestParam("id") String id) {
-        if (Objects.isNull(id) || id.isEmpty()) {
-            return "redirect:/genres";
+        if (!id.trim().isEmpty()) {
+            genreRepository.deleteById(id);
         }
-        genreRepository.deleteById(id);
         return "redirect:/genres";
     }
 }

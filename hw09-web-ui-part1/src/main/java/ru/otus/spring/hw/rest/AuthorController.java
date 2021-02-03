@@ -28,17 +28,18 @@ public class AuthorController {
     }
 
     @PostMapping("/authors")
-    public String saveAuthor(Author authors) {
-        authorRepository.save(authors);
+    public String saveAuthor(Author author) {
+        if (!author.getName().trim().isEmpty()) {
+            authorRepository.save(author);
+        }
         return "redirect:/authors";
     }
 
     @DeleteMapping("/authors")
     public String deleteAuthor(@RequestParam("id") String id) {
-        // if (Objects.isNull(id) || id.isEmpty()) {
-        // return "redirect:/authors";
-        // }
-        authorRepository.deleteById(id);
+        if (!id.trim().isEmpty()) {
+            authorRepository.deleteById(id);
+        }
         return "redirect:/authors";
     }
 }

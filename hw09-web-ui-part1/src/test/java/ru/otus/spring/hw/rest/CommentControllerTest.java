@@ -49,6 +49,14 @@ public class CommentControllerTest {
     }
 
     @Test
+    void shouldNotSaveCommentWithEmptyText() throws Exception {
+        mvc.perform(post("/comments").param("bookId", "123").param("text", "")).andDo(print())
+                .andExpect(status().isFound()).andExpect(view().name("redirect:/comments"));
+
+        then(commentService).shouldHaveNoInteractions();
+    }
+
+    @Test
     void shouldSaveBookComment() throws Exception {
         final var bookId = "123";
         final var text = "comment";
@@ -58,6 +66,13 @@ public class CommentControllerTest {
         then(commentService).should().addComment(captor.capture());
         assertThat(captor.getValue().getBookId()).isEqualTo(bookId);
         assertThat(captor.getValue().getText()).isEqualTo(text);
+    }
+
+    @Test
+    void shouldNotRemoveCommentIfIdEmpty() throws Exception {
+        mvc.perform(delete("/comments").param("id", "").param("bookId", "123")).andDo(print())
+                .andExpect(status().isFound()).andExpect(view().name("redirect:/comments"));
+        then(commentService).shouldHaveNoInteractions();
     }
 
     @Test

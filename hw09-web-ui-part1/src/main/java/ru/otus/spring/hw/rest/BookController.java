@@ -35,16 +35,17 @@ public class BookController {
 
     @PostMapping("/books")
     public String createBook(BookDto dto) {
-        bookService.save(dto);
+        if (Objects.nonNull(dto.getTitle()) && !dto.getTitle().trim().isEmpty()) {
+            bookService.save(dto);
+        }
         return "redirect:/books";
     }
 
     @DeleteMapping("/books")
     public String deleteBook(@RequestParam("id") String id) {
-        if (Objects.isNull(id) || id.isEmpty()) {
-            return "redirect:/books";
+        if (!id.trim().isEmpty()) {
+            bookService.deleteBook(id);
         }
-        bookService.deleteBook(id);
         return "redirect:/books";
     }
 }

@@ -42,6 +42,14 @@ public class GenreControllerTest {
     }
 
     @Test
+    void shouldNotSaveGenreWithEmptyName() throws Exception {
+        mvc.perform(post("/genres").param("name", "")).andDo(print()).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/genres"));
+
+        then(genreRepository).shouldHaveNoInteractions();
+    }
+
+    @Test
     void shouldAddNewGenre() throws Exception {
         final var genreName = "genre name";
         mvc.perform(post("/genres").param("name", "genre name")).andDo(print()).andExpect(status().isFound())
@@ -57,6 +65,13 @@ public class GenreControllerTest {
         mvc.perform(delete("/genres").param("id", genreId)).andDo(print()).andExpect(status().isFound())
                 .andExpect(view().name("redirect:/genres"));
         then(genreRepository).should().deleteById(genreId);
+    }
+
+    @Test
+    void shouldNotRemoveGenreIfIdEmpty() throws Exception {
+        mvc.perform(delete("/genres").param("id", "")).andDo(print()).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/genres"));
+        then(genreRepository).shouldHaveNoInteractions();
     }
 
     @Test

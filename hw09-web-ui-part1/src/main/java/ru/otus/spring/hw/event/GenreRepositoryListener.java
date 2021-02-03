@@ -1,5 +1,6 @@
 package ru.otus.spring.hw.event;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeDeleteEvent;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ public class GenreRepositoryListener extends AbstractMongoEventListener<Genre> {
     private final BookRepository bookRepository;
 
     @Override
-    public void onBeforeDelete(BeforeDeleteEvent<Genre> event) {
+    public void onBeforeDelete(@NotNull BeforeDeleteEvent<Genre> event) {
         super.onBeforeDelete(event);
         final var source = event.getSource();
         final var genreId = source.get("_id").toString();
