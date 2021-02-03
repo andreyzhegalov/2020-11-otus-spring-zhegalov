@@ -1,5 +1,6 @@
 package ru.otus.spring.hw.rest;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
@@ -40,6 +41,9 @@ public class BookController {
 
     @DeleteMapping("/books")
     public String deleteBook(@RequestParam("id") String id) {
+        if (Objects.isNull(id) || id.isEmpty()) {
+            return "redirect:/books";
+        }
         bookService.deleteBook(id);
         return "redirect:/books";
     }

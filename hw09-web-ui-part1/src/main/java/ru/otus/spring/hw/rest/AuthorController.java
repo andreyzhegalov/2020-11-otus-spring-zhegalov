@@ -1,5 +1,7 @@
 package ru.otus.spring.hw.rest;
 
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
+import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 
@@ -19,7 +22,7 @@ public class AuthorController {
 
     @GetMapping("/authors")
     public String listAuthors(Model model) {
-        final var authors = authorRepository.findAll();
+        final var authors = authorRepository.findAll().stream().map(AuthorDto::new).collect(Collectors.toList());
         model.addAttribute("authors", authors);
         return "authors";
     }
@@ -32,6 +35,9 @@ public class AuthorController {
 
     @DeleteMapping("/authors")
     public String deleteAuthor(@RequestParam("id") String id) {
+        // if (Objects.isNull(id) || id.isEmpty()) {
+        // return "redirect:/authors";
+        // }
         authorRepository.deleteById(id);
         return "redirect:/authors";
     }

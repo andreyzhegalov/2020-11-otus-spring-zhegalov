@@ -1,5 +1,7 @@
 package ru.otus.spring.hw.rest;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,6 +38,9 @@ public class CommentController {
 
     @DeleteMapping("/comments")
     public String removeById(@RequestParam("id") String id, String bookId, RedirectAttributes redirectAttributes) {
+        if (Objects.isNull(id) || id.isEmpty()) {
+            return "redirect:/comments";
+        }
         commentService.deleteById(id);
         redirectAttributes.addAttribute("bookId", bookId);
         return "redirect:/comments";
