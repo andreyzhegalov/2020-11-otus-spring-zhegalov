@@ -34,13 +34,13 @@ public class BookController {
     }
 
     @PostMapping("/books")
-    public String create(BookDtoInput dto) {
+    public String createBook(BookDtoInput dto) {
         bookService.save(dto);
         return "redirect:/books";
     }
 
     @DeleteMapping("/books")
-    public String deleteAuthor(@RequestParam("id") String id) {
+    public String deleteBook(@RequestParam("id") String id) {
         bookService.deleteBook(id);
         return "redirect:/books";
     }

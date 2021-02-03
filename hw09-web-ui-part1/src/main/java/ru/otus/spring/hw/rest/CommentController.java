@@ -18,7 +18,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/comments")
-    public String findAll(@RequestParam("bookId") String bookId, Model model) {
+    public String getAll(@RequestParam("bookId") String bookId, Model model) {
         final var bookComments = commentService.findAllByBookId(bookId);
         model.addAttribute("comments", bookComments);
         model.addAttribute("bookId", bookId);

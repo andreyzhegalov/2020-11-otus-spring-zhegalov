@@ -18,7 +18,7 @@ public class AuthorController {
     private final AuthorRepository authorRepository;
 
     @GetMapping("/authors")
-    public String listBook(Model model) {
+    public String listAuthors(Model model) {
         final var authors = authorRepository.findAll();
         model.addAttribute("authors", authors);
         return "authors";
