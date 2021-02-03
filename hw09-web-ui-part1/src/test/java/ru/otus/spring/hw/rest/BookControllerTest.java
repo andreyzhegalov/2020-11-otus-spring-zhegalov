@@ -69,7 +69,7 @@ public class BookControllerTest {
     }
 
     @Test
-    void shouldRetunBadRequesWhenSaveBookServiceThrowException() throws Exception {
+    void shouldReturnBadRequestWhenSaveBookServiceThrowException() throws Exception {
         doThrow(ServiceException.class).when(bookService).save(any(BookDto.class));
 
         mvc.perform(post("/books").param("title", "book1")).andDo(print()).andExpect(status().isBadRequest());
