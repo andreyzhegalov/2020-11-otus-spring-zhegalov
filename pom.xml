@@ -38,6 +38,7 @@
         <module>hw07-library-service-part3</module>
         <module>hw08-library-service-part4</module>
         <module>hw09-web-ui-part1</module>
+        <module>hw10-web-ui-part2</module>
     </modules>
 
     <build>

@@ -1,0 +1,27 @@
+spring:
+  data:
+    mongodb:
+      database: library_zhegalov
+      uri: mongodb://172.17.0.3
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+server:
+  port: 8081
+  error:
+    include-stacktrace: always
+
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.spring.hw.changelog
+
+logging:
+  level:
+    ROOT: DEBUG
+    org.springframework: DEBUG
+    ru.otus.spring.hw: DEBUG
+    org.mongodb.driver: INFO

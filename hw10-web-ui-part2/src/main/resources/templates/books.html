@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>List of all books</title>
+    <style type="text/css">
+      body {
+        padding: 50px;
+      }
+
+      label {
+        display: inline-block;
+        width: 100px;
+      }
+
+      input:read-only {
+        background: lightgray;
+      }
+
+      .row {
+        margin-top: 10px;
+      }
+
+      .books,
+      .books td {
+        border: 1px solid lightgray;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row">
+      <label for="holder-input">Goto:</label>
+      <a th:href="@{/authors}" href="authors.html">Authors</a>
+      <a th:href="@{/genres}" href="genres.html">Genres</a>
+    </div>
+    <hr />
+    <h3>Books:</h3>
+    <table class="books">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Genre</th>
+          <th>Authors</th>
+          <th>Comments</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="book : ${books}">
+          <td th:text="${book.title}">book1</td>
+          <td th:text="${book.genreName}">genre1</td>
+          <td th:text="${#strings.arrayJoin( book.authorsName, ', ')}">
+            name1, name2
+          </td>
+          <td>
+            <a th:href="@{/comments(bookId=${book.id})}" href="comments.html"
+              >Comments</a
+            >
+          </td>
+          <td>
+            <form
+              id="deleted-book-form"
+              th:action="@{/books(id=${book.id})}"
+              th:method="delete"
+              action="book.html"
+            >
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!--  Added book -->
+    <form
+      id="added-book-form"
+      th:action="@{/books}"
+      th:method="post"
+      action="books.html"
+    >
+      <h3>Add book:</h3>
+
+      <div class="row">
+        <label for="book-title">Title:</label>
+        <input id="book-title" name="title" type="text" value="" />
+      </div>
+
+      <div class="row">
+        <label for="genres">Genre:</label>
+        <select id="genres" name="genreId">
+          <option disabled selected value> -- select an genre -- </option>
+          <option
+            th:each="genre : ${genres}"
+            th:value="${genre.id}"
+            th:text="${genre.name}"
+            value="genre name"
+          >
+            genre name
+          </option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="authors">Authors:</label>
+        <select id="authors" name="authorsId" multiple>
+          <option
+            th:each="author : ${authors}"
+            th:value="${author.id}"
+            th:text="${author.name}"
+          >
+            author name
+          </option>
+        </select>
+      </div>
+
+      <div class="row">
+        <button type="submit">Save</button>
+      </div>
+    </form>
+  </body>
+</html>
