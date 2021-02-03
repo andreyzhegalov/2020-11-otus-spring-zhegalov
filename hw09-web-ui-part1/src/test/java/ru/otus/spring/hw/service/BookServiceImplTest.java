@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.dto.BookDtoInput;
+import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
@@ -66,7 +67,7 @@ public class BookServiceImplTest {
         final var genreName = "genre";
         final var authorName = "name";
 
-        final var newBookDto = new BookDtoInput();
+        final var newBookDto = new BookDto();
         newBookDto.setGenreName(genreName);
         newBookDto.setAuthorsName(authorName);
         given(authorRepository.findByName(authorName)).willReturn(Optional.empty());
@@ -83,7 +84,7 @@ public class BookServiceImplTest {
         final var genreName = "genre";
         final var authorName = "name";
 
-        final var newBookDto = new BookDtoInput();
+        final var newBookDto = new BookDto();
         newBookDto.setGenreName(genreName);
         newBookDto.setAuthorsName(authorName);
         given(authorRepository.findByName(authorName)).willReturn(Optional.of(new Author(authorName)));
@@ -96,10 +97,10 @@ public class BookServiceImplTest {
 
     @Test
     void shouldSaveNewBookFromDto() {
-        final var authorsName = Arrays.asList("name1, name2");
+        final var authorsName = Collections.singletonList("name1, name2");
         final var genreName = "genre3";
 
-        final var newBookDto = new BookDtoInput();
+        final var newBookDto = new BookDto();
         newBookDto.setTitle("title");
         newBookDto.setGenreName(genreName);
         newBookDto.setAuthorsName(String.join(",", authorsName));

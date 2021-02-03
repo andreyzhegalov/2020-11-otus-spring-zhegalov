@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.dto.BookDtoInput;
+import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
@@ -41,10 +41,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void save(BookDtoInput bookDto) {
+    public void save(BookDto bookDto) {
         final var genre = getGenreByName(bookDto.getGenreName());
         final var book = new Book(bookDto.getId(), bookDto.getTitle(), genre,
-                bookDto.getAuthorsName().stream().map(this::getAuthorByName).toArray(Author[]::new));
+                bookDto.getAuthorsNameList().stream().map(this::getAuthorByName).toArray(Author[]::new));
         bookRepository.save(book);
     }
 }

@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.dto.BookDtoForPrint;
-import ru.otus.spring.hw.dto.BookDtoInput;
+import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.service.BookService;
 
 @Controller
@@ -28,13 +27,13 @@ public class BookController {
     @GetMapping("/books")
     public String listBook(Model model) {
         final var books = bookService.findAll();
-        final var booksDto = books.stream().map(BookDtoForPrint::new).collect(Collectors.toList());
+        final var booksDto = books.stream().map(BookDto::new).collect(Collectors.toList());
         model.addAttribute("books", booksDto);
         return "books";
     }
 
     @PostMapping("/books")
-    public String createBook(BookDtoInput dto) {
+    public String createBook(BookDto dto) {
         bookService.save(dto);
         return "redirect:/books";
     }

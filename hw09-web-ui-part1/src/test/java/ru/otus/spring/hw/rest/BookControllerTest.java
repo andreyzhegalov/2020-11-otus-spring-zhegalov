@@ -17,7 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import ru.otus.spring.hw.dto.BookDtoInput;
+import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.service.BookService;
 import ru.otus.spring.hw.service.ServiceException;
 
@@ -48,16 +48,16 @@ public class BookControllerTest {
                 "name1 , name2")).andDo(print()).andExpect(status().isFound())
                 .andExpect(view().name("redirect:/books"));
 
-        then(bookService).should().save(any(BookDtoInput.class));
+        then(bookService).should().save(any(BookDto.class));
     }
 
     @Test
     void shouldRetunBadRequesWhenSaveBookServiceThrowException() throws Exception {
-        doThrow(ServiceException.class).when(bookService).save(any(BookDtoInput.class));
+        doThrow(ServiceException.class).when(bookService).save(any(BookDto.class));
 
         mvc.perform(post("/books")).andDo(print()).andExpect(status().isBadRequest());
 
-        then(bookService).should().save(any(BookDtoInput.class));
+        then(bookService).should().save(any(BookDto.class));
     }
 
     @Test
