@@ -2,7 +2,7 @@ spring:
   data:
     mongodb:
       database: library_zhegalov
-      uri: mongodb://172.17.0.3
+      uri: mongodb://localhost
 
   mvc:
     hiddenmethod:
@@ -10,7 +10,7 @@ spring:
         enabled: true
 
 server:
-  port: 8081
+  port: 8080
   error:
     include-stacktrace: always
 
@@ -22,6 +22,6 @@ mongock:
 logging:
   level:
     ROOT: INFO
-    org.springframework: DEBUG
-    ru.otus.spring.hw: DEBUG
+    org.springframework: INFO
+    ru.otus.spring.hw: INFO
     org.mongodb.driver: INFO
