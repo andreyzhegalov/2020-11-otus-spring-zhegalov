@@ -1,7 +1,10 @@
 package ru.otus.spring.hw.rest;
 
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,11 +17,12 @@ import ru.otus.spring.hw.service.CommentService;
 
 @RequiredArgsConstructor
 @Controller
+@Validated
 public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/comments")
-    public String getAll(@RequestParam("bookId") String bookId, Model model) {
+    public String getAll(@RequestParam("bookId") @NotBlank String bookId, Model model) {
         final var bookComments = commentService.findAllByBookId(bookId);
         model.addAttribute("comments", bookComments);
         model.addAttribute("bookId", bookId);
@@ -26,21 +30,17 @@ public class CommentController {
     }
 
     @PostMapping("/comments")
-    public String saveComment(@RequestParam("bookId") String bookId, RedirectAttributes redirectAttributes,
-            String text) {
-        if (!text.trim().isEmpty()) {
-            final var comment = new CommentDto(text, bookId);
-            commentService.addComment(comment);
-        }
+    public String saveComment(@RequestParam("bookId") @NotBlank String bookId, @NotBlank String text,
+            RedirectAttributes redirectAttributes) {
+        commentService.addComment(new CommentDto(text, bookId));
         redirectAttributes.addAttribute("bookId", bookId);
         return "redirect:/comments";
     }
 
     @DeleteMapping("/comments")
-    public String removeById(@RequestParam("id") String id, String bookId, RedirectAttributes redirectAttributes) {
-        if (!id.trim().isEmpty()) {
-            commentService.deleteById(id);
-        }
+    public String removeById(@RequestParam("id") @NotBlank String id, @NotBlank String bookId,
+            RedirectAttributes redirectAttributes) {
+        commentService.deleteById(id);
         redirectAttributes.addAttribute("bookId", bookId);
         return "redirect:/comments";
     }

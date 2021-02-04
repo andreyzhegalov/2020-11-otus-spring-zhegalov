@@ -2,8 +2,13 @@ package ru.otus.spring.hw.rest;
 
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +21,7 @@ import ru.otus.spring.hw.repositories.AuthorRepository;
 
 @Controller
 @RequiredArgsConstructor
+@Validated
 public class AuthorController {
 
     private final AuthorRepository authorRepository;
@@ -28,18 +34,23 @@ public class AuthorController {
     }
 
     @PostMapping("/authors")
-    public String saveAuthor(Author author) {
-        if (!author.getName().trim().isEmpty()) {
-            authorRepository.save(author);
+    public String saveAuthor(@Validated AuthorDto authorDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            final var error = bindingResult.getAllErrors().stream().map(ObjectError::toString)
+                    .collect(Collectors.joining(", "));
+            throw new ControllerException(error);
         }
+        authorRepository.save(toEntity(authorDto));
         return "redirect:/authors";
     }
 
     @DeleteMapping("/authors")
-    public String deleteAuthor(@RequestParam("id") String id) {
-        if (!id.trim().isEmpty()) {
-            authorRepository.deleteById(id);
-        }
+    public String deleteAuthor(@RequestParam("id") @NotBlank String id) {
+        authorRepository.deleteById(id);
         return "redirect:/authors";
+    }
+
+    private Author toEntity(AuthorDto dto) {
+        return new Author(dto.getName());
     }
 }

@@ -1,12 +1,15 @@
 package ru.otus.spring.hw.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -43,9 +46,8 @@ public class GenreControllerTest {
 
     @Test
     void shouldNotSaveGenreWithEmptyName() throws Exception {
-        mvc.perform(post("/genres").param("name", "")).andDo(print()).andExpect(status().isFound())
-                .andExpect(view().name("redirect:/genres"));
-
+        mvc.perform(post("/genres").param("name", "")).andDo(print()).andExpect(status().isBadRequest())
+                .andExpect(content().string(not(emptyString())));
         then(genreRepository).shouldHaveNoInteractions();
     }
 
@@ -69,17 +71,18 @@ public class GenreControllerTest {
 
     @Test
     void shouldNotRemoveGenreIfIdEmpty() throws Exception {
-        mvc.perform(delete("/genres").param("id", "")).andDo(print()).andExpect(status().isFound())
-                .andExpect(view().name("redirect:/genres"));
+        mvc.perform(delete("/genres").param("id", "")).andDo(print()).andExpect(status().isBadRequest())
+                .andExpect(content().string(not(emptyString())));
         then(genreRepository).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldReturnErrorIfDeletedGenreHasBook() throws Exception {
         final var genreId = "id_genre_with_book";
-        doThrow(RepositoryException.class).when(genreRepository).deleteById(genreId);
+        doThrow(new RepositoryException("error message")).when(genreRepository).deleteById(genreId);
 
-        mvc.perform(delete("/genres").param("id", genreId)).andDo(print()).andExpect(status().isBadRequest());
+        mvc.perform(delete("/genres").param("id", genreId)).andDo(print()).andExpect(status().isBadRequest())
+                .andExpect(content().string(not(emptyString())));
 
         then(genreRepository).should().deleteById(genreId);
     }

@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 import org.jetbrains.annotations.NotNull;
 
 import lombok.Getter;
@@ -19,8 +22,11 @@ import ru.otus.spring.hw.model.Book;
 public class BookDto {
     private final static String SEPARATOR = ",";
     private String id;
+    @NotBlank
     private String title;
+    @NotEmpty
     private List<String> authorsName = new ArrayList<>();
+    @NotBlank
     private String genreName;
 
     public String getAuthorsName() {

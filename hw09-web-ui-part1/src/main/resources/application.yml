@@ -2,7 +2,7 @@ spring:
   data:
     mongodb:
       database: library_zhegalov
-      uri: mongodb://localhost
+      uri: mongodb://172.17.0.3
 
   mvc:
     hiddenmethod:
@@ -22,6 +22,6 @@ mongock:
 logging:
   level:
     ROOT: INFO
-    org.springframework: INFO
-    ru.otus.spring.hw: INFO
+    org.springframework: DEBUG
+    ru.otus.spring.hw: DEBUG
     org.mongodb.driver: INFO
