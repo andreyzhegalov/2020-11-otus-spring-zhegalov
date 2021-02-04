@@ -2,12 +2,12 @@ package ru.otus.spring.hw.rest;
 
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,12 +39,7 @@ public class BookController {
     }
 
     @PostMapping("/books")
-    public String createBook(@Validated BookDto dto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            final var error = bindingResult.getAllErrors().stream().map(ObjectError::toString)
-                    .collect(Collectors.joining(", "));
-            throw new ControllerException(error);
-        }
+    public String createBook(@Valid BookDto dto, BindingResult bindingResult) {
         bookService.save(dto);
         return "redirect:/books";
     }
