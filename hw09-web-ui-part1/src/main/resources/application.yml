@@ -2,7 +2,7 @@ spring:
   data:
     mongodb:
       database: library_zhegalov
-      uri: mongodb://localhost
+      uri: mongodb://172.17.0.3
 
   mvc:
     hiddenmethod:
@@ -10,7 +10,7 @@ spring:
         enabled: true
 
 server:
-  port: 8080
+  port: 8081
   error:
     include-stacktrace: always
 
