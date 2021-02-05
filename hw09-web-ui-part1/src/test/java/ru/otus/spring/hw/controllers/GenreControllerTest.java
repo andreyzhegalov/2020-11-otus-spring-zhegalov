@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.rest;
+package ru.otus.spring.hw.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.emptyString;
