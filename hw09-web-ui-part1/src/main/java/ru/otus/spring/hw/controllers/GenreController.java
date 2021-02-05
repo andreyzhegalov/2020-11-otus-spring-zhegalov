@@ -14,36 +14,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dto.GenreDto;
-import ru.otus.spring.hw.model.Genre;
-import ru.otus.spring.hw.repositories.GenreRepository;
+import ru.otus.spring.hw.service.GenreService;
 
 @RequiredArgsConstructor
 @Controller
 @Validated
 public class GenreController {
-    private final GenreRepository genreRepository;
+    private final GenreService genreService;
 
     @GetMapping("/genres")
     public String getList(Model model) {
-        final var genres = genreRepository.findAll();
+        final var genres = genreService.findAll();
         model.addAttribute("genres", genres);
         return "genres";
     }
 
     @PostMapping("/genres")
     public String saveGenre(@Valid GenreDto genreDto, BindingResult bindingResult) {
-        genreRepository.save(toEntity(genreDto));
+        genreService.saveGenreDto(genreDto);
         return "redirect:/genres";
     }
 
     @DeleteMapping("/genres")
     public String deleteGenre(@RequestParam("id") @NotBlank String id) {
-        genreRepository.deleteById(id);
+        genreService.deleteById(id);
         return "redirect:/genres";
     }
-
-    private Genre toEntity(GenreDto dto) {
-        return new Genre(dto.getName());
-    }
-
 }
