@@ -7,7 +7,7 @@ import ru.otus.spring.hw.model.Genre;
 
 public interface GenreService {
 
-    Genre saveGenreDto(GenreDto genreDto);
+    void saveGenreDto(GenreDto genreDto);
 
     List<Genre> findAll();
 

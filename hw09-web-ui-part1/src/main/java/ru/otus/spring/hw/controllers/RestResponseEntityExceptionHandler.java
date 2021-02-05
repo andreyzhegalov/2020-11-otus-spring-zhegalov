@@ -14,8 +14,7 @@ import ru.otus.spring.hw.service.ServiceException;
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = { ConstraintViolationException.class, ControllerException.class,
-            RepositoryException.class, ServiceException.class })
+    @ExceptionHandler(value = { ConstraintViolationException.class, RepositoryException.class, ServiceException.class })
     public ResponseEntity<Object> repositoryExceptionHandler(Throwable ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

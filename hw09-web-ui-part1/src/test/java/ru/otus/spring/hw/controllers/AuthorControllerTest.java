@@ -25,9 +25,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.repositories.AuthorRepository;
+import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.repositories.RepositoryException;
+import ru.otus.spring.hw.service.AuthorService;
 
 @WebMvcTest(controllers = AuthorController.class)
 public class AuthorControllerTest {
@@ -35,24 +35,24 @@ public class AuthorControllerTest {
     private MockMvc mvc;
 
     @MockBean
-    private AuthorRepository authorRepository;
+    private AuthorService authorService;
 
     @Captor
-    private ArgumentCaptor<Author> authorCaptor;
+    private ArgumentCaptor<AuthorDto> authorCaptor;
 
     @Test
     void shouldReturnAuthorList() throws Exception {
         mvc.perform(get("/authors")).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().attributeExists("authors"))
                 .andExpect(model().attribute("authors", instanceOf(List.class))).andExpect(view().name("authors"));
-        then(authorRepository).should().findAll();
+        then(authorService).should().findAll();
     }
 
     @Test
     void shouldNotSaveAuthorWithEmptyName() throws Exception {
         mvc.perform(post("/authors").param("name", "")).andDo(print()).andExpect(status().isBadRequest())
                 .andExpect(content().string(not(emptyString())));
-        then(authorRepository).shouldHaveNoInteractions();
+        then(authorService).shouldHaveNoInteractions();
     }
 
     @Test
@@ -61,7 +61,7 @@ public class AuthorControllerTest {
         mvc.perform(post("/authors").param("name", authorName)).andDo(print()).andExpect(status().isFound())
                 .andExpect(view().name("redirect:/authors"));
 
-        then(authorRepository).should().save(authorCaptor.capture());
+        then(authorService).should().saveAuthorDto(authorCaptor.capture());
         assertThat(authorCaptor.getValue().getName()).isEqualTo(authorName);
     }
 
@@ -70,24 +70,24 @@ public class AuthorControllerTest {
         final var authorId = "123";
         mvc.perform(delete("/authors").param("id", authorId)).andDo(print()).andExpect(status().isFound())
                 .andExpect(view().name("redirect:/authors"));
-        then(authorRepository).should().deleteById(authorId);
+        then(authorService).should().deleteById(authorId);
     }
 
     @Test
     void shouldNotRemoveAuthorIfIdEmpty() throws Exception {
         mvc.perform(delete("/authors").param("id", "")).andDo(print()).andExpect(status().isBadRequest())
                 .andExpect(content().string(not(emptyString())));
-        then(authorRepository).shouldHaveNoInteractions();
+        then(authorService).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldReturnErrorIfDeletedAuthorHasBook() throws Exception {
         final var authorId = "id_author_with_book";
-        doThrow(new RepositoryException("error")).when(authorRepository).deleteById(authorId);
+        doThrow(new RepositoryException("error")).when(authorService).deleteById(authorId);
 
         mvc.perform(delete("/authors").param("id", authorId)).andDo(print()).andExpect(status().isBadRequest())
                 .andExpect(content().string(not(emptyString())));
 
-        then(authorRepository).should().deleteById(authorId);
+        then(authorService).should().deleteById(authorId);
     }
 }

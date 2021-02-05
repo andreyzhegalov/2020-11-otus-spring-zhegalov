@@ -15,8 +15,8 @@ public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
 
     @Override
-    public Genre saveGenreDto(GenreDto genreDto) {
-        return genreRepository.save(toEntity(genreDto));
+    public void saveGenreDto(GenreDto genreDto) {
+        genreRepository.save(toEntity(genreDto));
     }
 
     private Genre toEntity(GenreDto dto) {
