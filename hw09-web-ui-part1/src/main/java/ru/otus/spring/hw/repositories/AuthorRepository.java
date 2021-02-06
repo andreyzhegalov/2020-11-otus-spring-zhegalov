@@ -9,4 +9,6 @@ import ru.otus.spring.hw.model.Author;
 public interface AuthorRepository extends MongoRepository<Author, String>, AuthorRepositoryCustom {
 
     Optional<Author> findByName(String name);
+
+    Optional<Author> findById(String id);
 }

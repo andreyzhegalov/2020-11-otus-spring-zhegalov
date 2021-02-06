@@ -103,10 +103,10 @@
 
       <div class="row">
         <label for="authors">Authors:</label>
-        <select id="authors" name="authorsName" multiple>
+        <select id="authors" name="authorsId" multiple>
           <option
             th:each="author : ${authors}"
-            th:value="${author.name}"
+            th:value="${author.id}"
             th:text="${author.name}"
           >
             author name

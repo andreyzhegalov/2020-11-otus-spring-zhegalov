@@ -50,7 +50,7 @@ public class GenreServiceImplTest {
     @Test
     void shouldReturnAllGenres() {
         genreService.findAllDto();
-        then(genreRepository).should().findAll();
+        then(genreRepository).should().findAllBy();
     }
 
     @Test

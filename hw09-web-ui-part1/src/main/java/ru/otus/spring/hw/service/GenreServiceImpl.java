@@ -1,7 +1,6 @@
 package ru.otus.spring.hw.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -33,6 +32,6 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public List<GenreDto> findAllDto() {
-        return genreRepository.findAll().stream().map(GenreDto::new).collect(Collectors.toList());
+        return genreRepository.findAllBy();
     }
 }

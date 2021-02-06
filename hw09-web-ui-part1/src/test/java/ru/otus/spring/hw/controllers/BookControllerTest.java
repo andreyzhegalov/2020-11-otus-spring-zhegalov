@@ -57,15 +57,14 @@ public class BookControllerTest {
 
     @Test
     void shouldNotSaveBookWithEmptyTitle() throws Exception {
-        mvc.perform(
-                post("/books").param("title", " ").param("genreId", "genreId").param("authorsName", "name1 , name2"))
+        mvc.perform(post("/books").param("title", " ").param("genreId", "genreId").param("authorsId", "authorsId"))
                 .andDo(print()).andExpect(status().isBadRequest()).andExpect(content().string(not(emptyString())));
         then(bookService).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldNotSaveBookWithOutTitle() throws Exception {
-        mvc.perform(post("/books").param("genreId", "genreId").param("authorsName", "name1 , name2")).andDo(print())
+        mvc.perform(post("/books").param("genreId", "genreId").param("authorsId", "authorsId")).andDo(print())
                 .andExpect(status().isBadRequest()).andExpect(content().string(not(emptyString())));
 
         then(bookService).shouldHaveNoInteractions();
@@ -75,7 +74,7 @@ public class BookControllerTest {
     void shouldAddNewBookForExistedAuthorAndGenre() throws Exception {
 
         mvc.perform(post("/books").param("title", "book title").param("genreId", "genreId")
-                .param("authorsName", "name1").param("authorsName", "name2")).andDo(print())
+                .param("authorsId", "authorId").param("authorsId", "authorsId")).andDo(print())
                 .andExpect(status().isFound()).andExpect(view().name("redirect:/books"));
 
         then(bookService).should().save(any(BookDto.class));
@@ -85,9 +84,9 @@ public class BookControllerTest {
     void shouldReturnBadRequestWhenSaveBookServiceThrowException() throws Exception {
         doThrow(new ServiceException("error message")).when(bookService).save(any(BookDto.class));
 
-        mvc.perform(post("/books").param("title", "book title").param("genreId", "genreId").param("authorsName",
-                "name1 , name2")).andDo(print()).andExpect(status().isBadRequest())
-                .andExpect(content().string(not(emptyString())));
+        mvc.perform(
+                post("/books").param("title", "book title").param("genreId", "genreId").param("authorsId", "authorsId"))
+                .andDo(print()).andExpect(status().isBadRequest()).andExpect(content().string(not(emptyString())));
 
         then(bookService).should().save(any(BookDto.class));
     }

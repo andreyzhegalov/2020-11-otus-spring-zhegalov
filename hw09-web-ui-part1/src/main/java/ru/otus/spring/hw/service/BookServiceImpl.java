@@ -29,9 +29,9 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll();
     }
 
-    private Author getAuthorByName(String authorName) {
-        return authorRepository.findByName(authorName)
-                .orElseThrow(() -> new ServiceException("Author with name " + authorName + " not exist"));
+    private Author getAuthorById(String authorId) {
+        return authorRepository.findById(authorId)
+                .orElseThrow(() -> new ServiceException("Author with id " + authorId + " not exist"));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class BookServiceImpl implements BookService {
         final var genre = genreRepository.findById(bookDto.getGenreId())
                 .orElseThrow(() -> new ServiceException("Genre with id " + bookDto.getGenreId() + " not exist"));
         final var book = new Book(bookDto.getId(), bookDto.getTitle(), genre,
-                bookDto.getAuthorsName().stream().map(this::getAuthorByName).toArray(Author[]::new));
+                bookDto.getAuthorsId().stream().map(this::getAuthorById).toArray(Author[]::new));
         bookRepository.save(book);
     }
 }
