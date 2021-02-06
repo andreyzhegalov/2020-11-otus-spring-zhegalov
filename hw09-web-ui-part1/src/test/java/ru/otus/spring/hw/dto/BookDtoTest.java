@@ -19,5 +19,6 @@ public class BookDtoTest {
         assertThat(bookDto.getTitle()).isEqualTo(book.getTitle());
         assertThat(bookDto.getGenreName()).isEqualTo(book.getGenre().getName());
         assertThat(bookDto.getAuthorsName()).isEqualTo(Arrays.asList("name1", "name2"));
+        assertThat(bookDto.getGenreId()).isEqualTo(book.getGenre().getId());
     }
 }

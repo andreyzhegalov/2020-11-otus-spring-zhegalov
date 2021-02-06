@@ -88,11 +88,11 @@
 
       <div class="row">
         <label for="genres">Genre:</label>
-        <select id="genres" name="genreName">
+        <select id="genres" name="genreId">
           <option disabled selected value> -- select an genre -- </option>
           <option
             th:each="genre : ${genres}"
-            th:value="${genre.name}"
+            th:value="${genre.id}"
             th:text="${genre.name}"
             value="genre name"
           >

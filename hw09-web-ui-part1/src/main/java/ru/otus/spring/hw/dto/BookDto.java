@@ -25,12 +25,14 @@ public class BookDto {
     @NotEmpty
     private List<String> authorsName = new ArrayList<>();
     @NotBlank
+    private String genreId;
     private String genreName;
 
     public BookDto(@NotNull Book book) {
         this.id = book.getId();
         this.title = book.getTitle();
         this.authorsName = book.getAuthors().stream().map(Author::getName).collect(Collectors.toList());
+        this.genreId = book.getGenre().getId();
         this.genreName = book.getGenre().getName();
     }
 }
