@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.Objects;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -22,12 +20,6 @@ public class AuthorRepositoryTest extends AbstractRepositoryTest {
 
     @Autowired
     private AuthorRepository authorRepository;
-
-    @Test
-    void shouldReturnAllAuthorDto() {
-        final var authorDtoList = authorRepository.findAllDto();
-        assertThat(authorDtoList).isNotNull().isNotEmpty().allMatch(Objects::nonNull);
-    }
 
     @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
     @Test

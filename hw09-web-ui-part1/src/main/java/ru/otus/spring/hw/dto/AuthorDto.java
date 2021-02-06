@@ -26,4 +26,10 @@ public class AuthorDto {
         this.name = author.getName();
         this.booksTitle = author.getBooks().stream().map(Book::getTitle).collect(Collectors.toList());
     }
+
+    public Author toEntity() {
+        final var author = new Author(getName());
+        author.setId(getId());
+        return author;
+    }
 }

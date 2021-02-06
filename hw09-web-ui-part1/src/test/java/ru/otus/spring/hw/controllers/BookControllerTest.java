@@ -21,9 +21,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.otus.spring.hw.dto.BookDto;
-import ru.otus.spring.hw.service.AuthorService;
+import ru.otus.spring.hw.repositories.AuthorRepository;
+import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.service.BookService;
-import ru.otus.spring.hw.service.GenreService;
 import ru.otus.spring.hw.service.ServiceException;
 
 @WebMvcTest(controllers = BookController.class)
@@ -35,10 +35,10 @@ public class BookControllerTest {
     private BookService bookService;
 
     @MockBean
-    private AuthorService authorService;
+    private AuthorRepository authorRepository;
 
     @MockBean
-    private GenreService genreService;
+    private GenreRepository genreService;
 
     @Test
     void shouldRedirectFromRootToBooks() throws Exception {
@@ -51,8 +51,8 @@ public class BookControllerTest {
                 .andExpect(model().attributeExists("authors")).andExpect(model().attributeExists("genres"))
                 .andExpect(view().name("books"));
         then(bookService).should().findAll();
-        then(authorService).should().findAllDto();
-        then(genreService).should().findAllDto();
+        then(authorRepository).should().findAll();
+        then(genreService).should().findAll();
     }
 
     @Test

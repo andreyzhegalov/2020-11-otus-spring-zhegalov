@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
+import ru.otus.spring.hw.dto.AuthorDto;
 import ru.otus.spring.hw.dto.BookDto;
-import ru.otus.spring.hw.service.AuthorService;
+import ru.otus.spring.hw.dto.GenreDto;
+import ru.otus.spring.hw.repositories.AuthorRepository;
+import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.service.BookService;
-import ru.otus.spring.hw.service.GenreService;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,9 +29,9 @@ public class BookController {
 
     private final BookService bookService;
 
-    private final AuthorService authorService;
+    private final AuthorRepository authorRepository;
 
-    private final GenreService genreService;
+    private final GenreRepository genreRepository;
 
     @GetMapping("/")
     public String startPage() {
@@ -41,8 +43,10 @@ public class BookController {
         final var books = bookService.findAll();
         final var booksDto = books.stream().map(BookDto::new).collect(Collectors.toList());
         model.addAttribute("books", booksDto);
-        model.addAttribute("authors", authorService.findAllDto());
-        model.addAttribute("genres", genreService.findAllDto());
+        model.addAttribute("authors",
+                authorRepository.findAll().stream().map(AuthorDto::new).collect(Collectors.toList()));
+        model.addAttribute("genres",
+                genreRepository.findAll().stream().map(GenreDto::new).collect(Collectors.toList()));
         return "books";
     }
 

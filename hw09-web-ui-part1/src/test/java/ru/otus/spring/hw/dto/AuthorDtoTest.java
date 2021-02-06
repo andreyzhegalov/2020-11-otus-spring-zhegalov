@@ -19,4 +19,13 @@ public class AuthorDtoTest {
         assertThat(authorDto.getBooksTitle()).containsExactlyInAnyOrder("book1", "book2");
     }
 
+    @Test
+    void shouldCreateAuthorFromDto() {
+        final var authorDto = new AuthorDto();
+        authorDto.setId("123");
+        authorDto.setName("author name");
+        final var author = authorDto.toEntity();
+        assertThat(author.getId()).isEqualTo(authorDto.getId());
+        assertThat(author.getName()).isEqualTo(authorDto.getName());
+    }
 }

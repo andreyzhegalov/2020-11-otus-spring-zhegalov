@@ -1,5 +1,7 @@
 package ru.otus.spring.hw.controllers;
 
+import java.util.stream.Collectors;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
@@ -14,31 +16,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dto.AuthorDto;
-import ru.otus.spring.hw.service.AuthorService;
+import ru.otus.spring.hw.repositories.AuthorRepository;
 
 @Controller
 @RequiredArgsConstructor
 @Validated
 public class AuthorController {
 
-    private final AuthorService authorService;
+    private final AuthorRepository authorRepository;
 
     @GetMapping("/authors")
     public String listAuthors(Model model) {
-        final var authors = authorService.findAllDto();
-        model.addAttribute("authors", authors);
+        final var authorDtoList = authorRepository.findAll().stream().map(AuthorDto::new).collect(Collectors.toList());
+        model.addAttribute("authors", authorDtoList);
         return "authors";
     }
 
     @PostMapping("/authors")
     public String saveAuthor(@Valid AuthorDto authorDto, BindingResult bindingResult) {
-        authorService.saveAuthorDto(authorDto);
+        authorRepository.save(authorDto.toEntity());
         return "redirect:/authors";
     }
 
     @DeleteMapping("/authors")
     public String deleteAuthor(@RequestParam("id") @NotBlank String id) {
-        authorService.deleteById(id);
+        authorRepository.deleteById(id);
         return "redirect:/authors";
     }
 }

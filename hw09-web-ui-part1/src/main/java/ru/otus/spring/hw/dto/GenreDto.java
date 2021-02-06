@@ -19,4 +19,11 @@ public class GenreDto {
         this.id = genre.getId();
         this.name = genre.getName();
     }
+
+    public Genre toEntity() {
+        final var genre = new Genre();
+        genre.setId(getId());
+        genre.setName(getName());
+        return genre;
+    }
 }

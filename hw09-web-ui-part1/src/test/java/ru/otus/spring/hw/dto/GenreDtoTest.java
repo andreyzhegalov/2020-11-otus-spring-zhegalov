@@ -16,4 +16,14 @@ public class GenreDtoTest {
         assertThat(genreDto.getId()).isEqualTo(genre.getId());
         assertThat(genreDto.getName()).isEqualTo(genre.getName());
     }
+
+    @Test
+    void shouldCreateGenreFromDto() {
+        final var genreDto = new GenreDto();
+        genreDto.setId("123");
+        genreDto.setName("genre name");
+        final var genre = genreDto.toEntity();
+        assertThat(genre.getId()).isEqualTo(genreDto.getId());
+        assertThat(genre.getName()).isEqualTo(genreDto.getName());
+    }
 }
