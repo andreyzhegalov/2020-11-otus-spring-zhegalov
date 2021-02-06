@@ -50,7 +50,7 @@ public class AuthorServiceImplTest {
     @Test
     void shouldReturnAllAuthors() {
         authorService.findAllDto();
-        then(authorRepository).should().findAll();
+        then(authorRepository).should().findAllDto();
     }
 
     @Test
