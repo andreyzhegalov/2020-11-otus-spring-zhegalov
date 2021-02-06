@@ -1,7 +1,6 @@
 package ru.otus.spring.hw.dto;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +19,6 @@ import ru.otus.spring.hw.model.Book;
 @Setter
 @NoArgsConstructor
 public class BookDto {
-    private final static String SEPARATOR = ",";
     private String id;
     @NotBlank
     private String title;
@@ -28,18 +26,6 @@ public class BookDto {
     private List<String> authorsName = new ArrayList<>();
     @NotBlank
     private String genreName;
-
-    public String getAuthorsName() {
-        return String.join(SEPARATOR, authorsName);
-    }
-
-    public void setAuthorsName(String authorsNames) {
-        this.authorsName = Arrays.stream(authorsNames.split(SEPARATOR)).map(String::trim).collect(Collectors.toList());
-    }
-
-    public List<String> getAuthorsNameList() {
-        return authorsName;
-    }
 
     public BookDto(@NotNull Book book) {
         this.id = book.getId();

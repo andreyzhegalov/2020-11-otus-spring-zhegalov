@@ -21,7 +21,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.otus.spring.hw.dto.BookDto;
+import ru.otus.spring.hw.service.AuthorService;
 import ru.otus.spring.hw.service.BookService;
+import ru.otus.spring.hw.service.GenreService;
 import ru.otus.spring.hw.service.ServiceException;
 
 @WebMvcTest(controllers = BookController.class)
@@ -32,6 +34,12 @@ public class BookControllerTest {
     @MockBean
     private BookService bookService;
 
+    @MockBean
+    private AuthorService authorService;
+
+    @MockBean
+    private GenreService genreService;
+
     @Test
     void shouldRedirectFromRootToBooks() throws Exception {
         mvc.perform(get("/")).andExpect(view().name("redirect:/books"));
@@ -40,8 +48,11 @@ public class BookControllerTest {
     @Test
     void shouldReturnAllBooks() throws Exception {
         mvc.perform(get("/books")).andDo(print()).andExpect(status().isOk()).andExpect(model().attributeExists("books"))
+                .andExpect(model().attributeExists("authors")).andExpect(model().attributeExists("genres"))
                 .andExpect(view().name("books"));
         then(bookService).should().findAll();
+        then(authorService).should().findAllDto();
+        then(genreService).should().findAllDto();
     }
 
     @Test
@@ -63,9 +74,9 @@ public class BookControllerTest {
     @Test
     void shouldAddNewBookForExistedAuthorAndGenre() throws Exception {
 
-        mvc.perform(post("/books").param("title", "book title").param("genreName", "book genre").param("authorsName",
-                "name1 , name2")).andDo(print()).andExpect(status().isFound())
-                .andExpect(view().name("redirect:/books"));
+        mvc.perform(post("/books").param("title", "book title").param("genreName", "book genre")
+                .param("authorsName", "name1").param("authorsName", "name2")).andDo(print())
+                .andExpect(status().isFound()).andExpect(view().name("redirect:/books"));
 
         then(bookService).should().save(any(BookDto.class));
     }

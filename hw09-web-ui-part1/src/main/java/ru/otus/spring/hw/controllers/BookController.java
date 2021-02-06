@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dto.BookDto;
+import ru.otus.spring.hw.service.AuthorService;
 import ru.otus.spring.hw.service.BookService;
+import ru.otus.spring.hw.service.GenreService;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,6 +26,10 @@ import ru.otus.spring.hw.service.BookService;
 public class BookController {
 
     private final BookService bookService;
+
+    private final AuthorService authorService;
+
+    private final GenreService genreService;
 
     @GetMapping("/")
     public String startPage() {
@@ -35,6 +41,8 @@ public class BookController {
         final var books = bookService.findAll();
         final var booksDto = books.stream().map(BookDto::new).collect(Collectors.toList());
         model.addAttribute("books", booksDto);
+        model.addAttribute("authors", authorService.findAllDto());
+        model.addAttribute("genres", genreService.findAllDto());
         return "books";
     }
 

@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Author> findAll() {
-        return authorRepository.findAll();
+    public List<AuthorDto> findAllDto() {
+        return authorRepository.findAll().stream().map(AuthorDto::new).collect(Collectors.toList());
     }
 
     @Override

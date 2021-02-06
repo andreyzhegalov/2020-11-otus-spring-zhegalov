@@ -24,7 +24,7 @@ public class GenreController {
 
     @GetMapping("/genres")
     public String getList(Model model) {
-        final var genres = genreService.findAll();
+        final var genres = genreService.findAllDto();
         model.addAttribute("genres", genres);
         return "genres";
     }

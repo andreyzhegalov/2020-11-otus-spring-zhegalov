@@ -45,7 +45,7 @@ public class AuthorControllerTest {
         mvc.perform(get("/authors")).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().attributeExists("authors"))
                 .andExpect(model().attribute("authors", instanceOf(List.class))).andExpect(view().name("authors"));
-        then(authorService).should().findAll();
+        then(authorService).should().findAllDto();
     }
 
     @Test

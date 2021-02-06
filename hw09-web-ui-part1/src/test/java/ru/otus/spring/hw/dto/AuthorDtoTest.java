@@ -16,7 +16,7 @@ public class AuthorDtoTest {
         final var authorDto = new AuthorDto(author);
         assertThat(authorDto.getId()).isEqualTo(author.getId());
         assertThat(authorDto.getName()).isEqualTo(author.getName());
-        assertThat(authorDto.getBooksTitle()).isEqualTo("book1,book2");
+        assertThat(authorDto.getBooksTitle()).containsExactlyInAnyOrder("book1", "book2");
     }
 
 }

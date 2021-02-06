@@ -1,7 +1,5 @@
 package ru.otus.spring.hw.controllers;
 
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
@@ -27,7 +25,7 @@ public class AuthorController {
 
     @GetMapping("/authors")
     public String listAuthors(Model model) {
-        final var authors = authorService.findAll().stream().map(AuthorDto::new).collect(Collectors.toList());
+        final var authors = authorService.findAllDto();
         model.addAttribute("authors", authors);
         return "authors";
     }

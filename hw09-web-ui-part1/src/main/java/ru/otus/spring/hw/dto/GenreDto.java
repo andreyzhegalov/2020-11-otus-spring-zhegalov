@@ -5,6 +5,7 @@ import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.otus.spring.hw.model.Genre;
 
 @Getter
 @Setter
@@ -13,4 +14,9 @@ public class GenreDto {
     private String id;
     @NotBlank
     private String name;
+
+    public GenreDto(Genre genre) {
+        this.id = genre.getId();
+        this.name = genre.getName();
+    }
 }

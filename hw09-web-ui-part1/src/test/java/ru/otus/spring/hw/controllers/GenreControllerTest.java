@@ -41,7 +41,7 @@ public class GenreControllerTest {
     void shouldReturnAllGenre() throws Exception {
         mvc.perform(get("/genres")).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().attributeExists("genres")).andExpect(view().name("genres"));
-        then(genreService).should().findAll();
+        then(genreService).should().findAllDto();
     }
 
     @Test

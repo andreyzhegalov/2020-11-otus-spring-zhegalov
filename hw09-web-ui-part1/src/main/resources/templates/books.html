@@ -50,7 +50,9 @@
         <tr th:each="book : ${books}">
           <td th:text="${book.title}">book1</td>
           <td th:text="${book.genreName}">genre1</td>
-          <td th:text="${book.authorsName}">name1, name2</td>
+          <td th:text="${#strings.arrayJoin( book.authorsName, ', ')}">
+            name1, name2
+          </td>
           <td>
             <a th:href="@{/comments(bookId=${book.id})}" href="comments.html"
               >Comments</a
@@ -83,13 +85,33 @@
         <label for="book-title">Title:</label>
         <input id="book-title" name="title" type="text" value="" />
       </div>
+
       <div class="row">
-        <label for="book-genre">Genre:</label>
-        <input id="book-genre" name="genreName" type="text" value="" />
+        <label for="genres">Genre:</label>
+        <select id="genres" name="genreName">
+          <option disabled selected value> -- select an genre -- </option>
+          <option
+            th:each="genre : ${genres}"
+            th:value="${genre.name}"
+            th:text="${genre.name}"
+            value="genre name"
+          >
+            genre name
+          </option>
+        </select>
       </div>
+
       <div class="row">
-        <label for="book-authors">Authors (comma separate):</label>
-        <input id="book-authors" name="authorsName" type="text" value="" />
+        <label for="authors">Authors:</label>
+        <select id="authors" name="authorsName" multiple>
+          <option
+            th:each="author : ${authors}"
+            th:value="${author.name}"
+            th:text="${author.name}"
+          >
+            author name
+          </option>
+        </select>
       </div>
 
       <div class="row">

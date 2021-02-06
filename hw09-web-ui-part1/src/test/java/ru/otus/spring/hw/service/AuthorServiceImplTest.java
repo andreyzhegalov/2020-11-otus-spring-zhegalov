@@ -49,7 +49,7 @@ public class AuthorServiceImplTest {
 
     @Test
     void shouldReturnAllAuthors() {
-        authorService.findAll();
+        authorService.findAllDto();
         then(authorRepository).should().findAll();
     }
 

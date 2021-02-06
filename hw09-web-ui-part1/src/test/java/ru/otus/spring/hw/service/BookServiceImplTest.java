@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -68,7 +68,7 @@ public class BookServiceImplTest {
 
         final var newBookDto = new BookDto();
         newBookDto.setGenreName(genreName);
-        newBookDto.setAuthorsName(authorName);
+        newBookDto.setAuthorsName(Arrays.asList(authorName));
         given(authorRepository.findByName(authorName)).willReturn(Optional.empty());
         given(genreRepository.findByName(genreName)).willReturn(Optional.of(new Genre()));
 
@@ -85,7 +85,8 @@ public class BookServiceImplTest {
 
         final var newBookDto = new BookDto();
         newBookDto.setGenreName(genreName);
-        newBookDto.setAuthorsName(authorName);
+        newBookDto.setAuthorsName(Arrays.asList(authorName));
+
         given(authorRepository.findByName(authorName)).willReturn(Optional.of(new Author(authorName)));
         given(genreRepository.findByName(genreName)).willReturn(Optional.empty());
 
@@ -96,13 +97,13 @@ public class BookServiceImplTest {
 
     @Test
     void shouldSaveNewBookFromDto() {
-        final var authorsName = Collections.singletonList("name1, name2");
+        final var authorsName = Arrays.asList("name1", "name2");
         final var genreName = "genre3";
 
         final var newBookDto = new BookDto();
         newBookDto.setTitle("title");
         newBookDto.setGenreName(genreName);
-        newBookDto.setAuthorsName(String.join(",", authorsName));
+        newBookDto.setAuthorsName(authorsName);
 
         final var author1 = new Author("name1");
         final var author2 = new Author("name2");

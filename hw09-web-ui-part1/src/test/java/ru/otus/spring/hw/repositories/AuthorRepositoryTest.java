@@ -23,7 +23,7 @@ public class AuthorRepositoryTest extends AbstractRepositoryTest {
 
     @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
     @Test
-    public void removalOfTheAuthorWithTheBookShouldThrowException() {
+    void removalOfTheAuthorWithTheBookShouldThrowException() {
         final var author = authorRepository.findByName(AUTHOR_WITH_MANY_BOOKS)
                 .orElseGet(() -> fail("author not exist"));
 
@@ -32,7 +32,7 @@ public class AuthorRepositoryTest extends AbstractRepositoryTest {
 
     @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
     @Test
-    public void removalOfTheAuthorWithOutTheBookShouldDeleteAuthor() {
+    void removalOfTheAuthorWithOutTheBookShouldDeleteAuthor() {
         final var author = authorRepository.findByName(AUTHOR_WITHOUT_BOOK).orElseGet(() -> fail("author not found"));
         assertThat(author.getBooks()).isEmpty();
 
