@@ -64,8 +64,27 @@
 
   <script>
     var restServerUrl = "http://192.168.1.139:8081";
+
     $(function () {
       updateAuthorTable();
+    });
+
+    $(document).on("submit", "form[name='deleteAuthorForm']", function (event) {
+      event.preventDefault();
+
+      var $form = $(this);
+
+      $.ajax({
+        url: restServerUrl + $form.attr("action"),
+        type: "DELETE",
+        success: function (result) {
+          resetAuthorForm();
+          updateAuthorTable();
+        },
+        error: function (xhr, resp, text) {
+          alert(xhr.responseJSON["errors"].toString());
+        },
+      });
     });
 
     $("#added-author-form").submit(function (event) {
@@ -109,12 +128,11 @@
                             <td>${author.booksTitle}</td>
                             <td>
                               <form
-                                method="delete"
-                              >
-                                <button type="submit">Delete</button>
-                              </form>
-                            </td>
-                          </tr>
+                                name="deleteAuthorForm" action="/api/authors/${author.id}">
+                                <input type="hidden" name="id" value="${author.id}"/>
+                                <button type="submit"" >Delete</button>
+
+                              </form> </tr>
                       `);
         });
       });

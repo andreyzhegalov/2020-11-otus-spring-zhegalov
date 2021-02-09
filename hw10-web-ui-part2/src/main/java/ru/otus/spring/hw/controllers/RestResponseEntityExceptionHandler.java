@@ -8,26 +8,30 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import ru.otus.spring.hw.repositories.RepositoryException;
+import ru.otus.spring.hw.service.ServiceException;
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    // @ExceptionHandler(value = { ConstraintViolationException.class,
-    // RepositoryException.class, ServiceException.class })
-    // public void springHandleNotFound(HttpServletResponse response)
-    // hrows IOException {
-    // response.sendError(HttpStatus.NOT_FOUND.value());
-
-    // //
-    // public ResponseEntity<Object> repositoryExceptionHandler(Throwable ex) {
-    // return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    // }
-    //
+    @ExceptionHandler(value = { RepositoryException.class, ServiceException.class })
+    public ResponseEntity<Object> repositoryExceptionHandler(Throwable ex) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", new Date());
+        body.put("status", HttpStatus.BAD_REQUEST);
+        body.put("errors", ex.getMessage());
+        final var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(body, headers, HttpStatus.BAD_REQUEST);
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -37,7 +41,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         body.put("timestamp", new Date());
         body.put("status", status.value());
 
-        // Get all errors
         List<String> errors = ex.getBindingResult().getFieldErrors().stream().map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
 

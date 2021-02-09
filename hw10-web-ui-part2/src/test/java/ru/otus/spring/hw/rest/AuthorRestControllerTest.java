@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.repositories.AuthorRepository;
+import ru.otus.spring.hw.repositories.RepositoryException;
 
 @WebMvcTest(controllers = AuthorRestController.class)
 public class AuthorRestControllerTest {
@@ -64,5 +67,24 @@ public class AuthorRestControllerTest {
                 .andExpect(jsonPath("$.errors", hasItem("Please provide a author name")));
 
         then(authorRepository).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldRemoveAuthor() throws Exception {
+        final var authorId = "123";
+        mvc.perform(delete("/api/authors/{id}", authorId)).andDo(print()).andExpect(status().isOk());
+        then(authorRepository).should().deleteById(authorId);
+    }
+
+    @Test
+    void shouldReturnErrorIfDeletedAuthorHasBook() throws Exception {
+        final var authorId = "id_author_with_book";
+        final var errorMessage = "error";
+        doThrow(new RepositoryException(errorMessage)).when(authorRepository).deleteById(authorId);
+
+        mvc.perform(delete("/api/authors/{id}", authorId)).andDo(print()).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors", is(errorMessage)));
+
+        then(authorRepository).should().deleteById(authorId);
     }
 }
