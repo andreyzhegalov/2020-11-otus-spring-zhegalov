@@ -5,10 +5,12 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.springframework.validation.BindingResult;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -29,10 +31,8 @@ public class AuthorRestController {
 
     @CrossOrigin
     @PostMapping("/api/authors")
-    public void saveAuthor(@Valid AuthorDto authorDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return;
-        }
-        authorRepository.save(authorDto.toEntity());
+    @ResponseStatus(HttpStatus.CREATED)
+    public AuthorDto saveAuthor(@Valid @RequestBody AuthorDto authorDto) {
+        return new AuthorDto(authorRepository.save(authorDto.toEntity()));
     }
 }

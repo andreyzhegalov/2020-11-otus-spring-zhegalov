@@ -71,17 +71,37 @@
     $("#added-author-form").submit(function (event) {
       event.preventDefault();
       var $form = $(this);
-      $.post(restServerUrl + $form.attr("action"), $form.serialize()).done(
-        function () {
+      var data = {};
+
+      $.each(this.elements, function (i, v) {
+        var input = $(v);
+        data[input.attr("name")] = input.val();
+        delete data["undefined"];
+      });
+
+      $.ajax({
+        url: restServerUrl + $form.attr("action"),
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(data),
+        success: function (result) {
+          resetAuthorForm();
           updateAuthorTable();
-          $("#added-author-form")[0].reset();
-        }
-      );
+        },
+        error: function (xhr, resp, text) {
+          alert(xhr.responseJSON["errors"].toString());
+        },
+      });
     });
+
+    function resetAuthorForm() {
+      $("#authorsTable")[0].innerHTML = "";
+      $("#added-author-form")[0].reset();
+    }
 
     function updateAuthorTable() {
       $.get(restServerUrl + "/api/authors").done(function (authors) {
-        $("#authorsTable")[0].innerHTML = "";
         authors.forEach(function (author) {
           $("tbody").append(`
                           <tr>

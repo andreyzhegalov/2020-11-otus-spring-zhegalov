@@ -17,7 +17,7 @@ import ru.otus.spring.hw.model.Book;
 @Getter
 public class AuthorDto {
     private String id;
-    @NotBlank
+    @NotBlank(message = "Please provide a author name")
     private String name;
     private List<String> booksTitle = new ArrayList<>();
 
