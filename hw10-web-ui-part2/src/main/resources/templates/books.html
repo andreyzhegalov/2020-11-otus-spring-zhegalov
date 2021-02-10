@@ -53,33 +53,28 @@
     </table>
 
     <!--  Added book -->
-    <form
-      id="added-book-form"
-      th:action="@{/books}"
-      th:method="post"
-      action="books.html"
-    >
+    <form id="addedBookForm" action="/api/books">
       <h3>Add book:</h3>
 
       <div class="row">
-        <label for="book-title">Title:</label>
-        <input id="book-title" name="title" type="text" value="" />
+        <label for="bookTitle">Title:</label>
+        <input id="bookTitle" name="title" type="text" value="" />
       </div>
 
       <div class="row">
-        <label for="genres">Genre:</label>
+        <label for="genresSelect">Genre:</label>
         <select id="genresSelect" name="genreId">
           <option disabled selected value>-- select an genre --</option>
         </select>
       </div>
 
       <div class="row">
-        <label for="authors">Authors:</label>
+        <label for="authorsSelect">Authors:</label>
         <select id="authorsSelect" name="authorsId" multiple></select>
       </div>
 
       <div class="row">
-        <button type="submit">Save</button>
+        <button id="saveBookButton" type="submit">Save</button>
       </div>
     </form>
 
@@ -87,10 +82,48 @@
       var restServerUrl = "http://192.168.1.139:8081";
 
       $(function () {
+          updateAll();
+      });
+
+      $("#addedBookForm").submit(function (event) {
+        event.preventDefault();
+        var $form = $(this);
+        var data = {};
+
+        $.each(this.elements, function (i, v) {
+          var input = $(v);
+          data[input.attr("name")] = input.val();
+          delete data["undefined"];
+        });
+
+        $.ajax({
+          url: restServerUrl + $form.attr("action"),
+          type: "POST",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          success: function (result) {
+            resetAddedBookForm();
+            updateAll();
+          },
+          error: function (xhr, resp, text) {
+            alert(xhr.responseJSON["errors"].toString());
+          },
+        });
+      });
+
+      function updateAll(){
         updateBooks();
         updateGenres();
         updateAuthors();
-      });
+      }
+
+      function resetAddedBookForm() {
+        $("#booksTable")[0].innerHTML = "";
+        $("#genresSelect")[0].innerHTML = "";
+        $("#authorsSelect")[0].innerHTML = "";
+        $("#addedBookForm")[0].reset();
+      }
 
       function updateGenres() {
         $.get(restServerUrl + "/api/genres").done(function (genres) {

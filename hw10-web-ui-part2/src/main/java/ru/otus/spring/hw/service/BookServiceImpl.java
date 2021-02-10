@@ -35,11 +35,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void save(BookDto bookDto) {
+    public BookDto save(BookDto bookDto) {
         final var genre = genreRepository.findById(bookDto.getGenreId())
                 .orElseThrow(() -> new ServiceException("Genre with id " + bookDto.getGenreId() + " not exist"));
         final var book = new Book(bookDto.getId(), bookDto.getTitle(), genre,
                 bookDto.getAuthorsId().stream().map(this::getAuthorById).toArray(Author[]::new));
-        bookRepository.save(book);
+        return new BookDto(bookRepository.save(book));
     }
 }

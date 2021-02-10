@@ -18,12 +18,12 @@ import ru.otus.spring.hw.model.Book;
 @NoArgsConstructor
 public class BookDto {
     private String id;
-    @NotBlank
+    @NotBlank(message = "Please provide a book title")
     private String title;
     private List<String> authorsName = new ArrayList<>();
-    @NotEmpty
+    @NotEmpty(message = "Please provide a authors")
     private List<String> authorsId = new ArrayList<>();
-    @NotBlank
+    @NotBlank(message = "Please provide a genre")
     private String genreId;
     private String genreName;
 

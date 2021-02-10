@@ -7,7 +7,7 @@ import ru.otus.spring.hw.model.Book;
 
 public interface BookService {
 
-    void save(BookDto bookDto);
+    BookDto save(BookDto bookDto);
 
     void deleteBook(String id);
 

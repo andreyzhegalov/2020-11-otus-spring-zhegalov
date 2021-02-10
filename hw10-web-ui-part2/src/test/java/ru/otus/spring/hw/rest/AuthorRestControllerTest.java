@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -48,7 +50,14 @@ public class AuthorRestControllerTest {
     @Test
     void shouldAddNewAuthor() throws Exception {
         final var authorName = "author name";
-        mvc.perform(post("/api/authors").param("name", authorName)).andDo(print()).andExpect(status().isOk());
+        String authorJson = "{\"name\":\"author name\"}";
+        final var savedAuthor = new Author(authorName);
+        savedAuthor.setId("132");
+        given(authorRepository.save(any())).willReturn(savedAuthor);
+
+        mvc.perform(
+                post("/api/authors").content(authorJson).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(status().isCreated());
 
         then(authorRepository).should().save(authorCaptor.capture());
         assertThat(authorCaptor.getValue().getName()).isEqualTo(authorName);

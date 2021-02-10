@@ -36,7 +36,8 @@ public class AuthorRestController {
     @PostMapping("/api/authors")
     @ResponseStatus(HttpStatus.CREATED)
     public AuthorDto saveAuthor(@Valid @RequestBody AuthorDto authorDto) {
-        return new AuthorDto(authorRepository.save(authorDto.toEntity()));
+        final var savedAuthor = authorRepository.save(authorDto.toEntity());
+        return new AuthorDto(savedAuthor);
     }
 
     @CrossOrigin
