@@ -85,6 +85,28 @@
           updateAll();
       });
 
+      $(document).on(
+        "submit",
+        "form[name='deleteBookForm']",
+        function (event) {
+          event.preventDefault();
+
+          var $form = $(this);
+
+          $.ajax({
+            url: restServerUrl + $form.attr("action"),
+            type: "DELETE",
+            success: function (result) {
+              resetAddedBookForm();
+              updateAll();
+            },
+            error: function (xhr, resp, text) {
+              alert(xhr.responseJSON["errors"].toString());
+            },
+          });
+        }
+      );
+
       $("#addedBookForm").submit(function (event) {
         event.preventDefault();
         var $form = $(this);

@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -81,5 +82,12 @@ public class BookRestControllerTest {
                 .andDo(print()).andExpect(status().isCreated());
 
         then(bookService).should().save(any(BookDto.class));
+    }
+
+    @Test
+    void shouldRemoveBook() throws Exception {
+        final var bookId = "123";
+        mvc.perform(delete("/api/books/{id}", bookId)).andDo(print()).andExpect(status().isOk());
+        then(bookService).should().deleteBook(bookId);
     }
 }
