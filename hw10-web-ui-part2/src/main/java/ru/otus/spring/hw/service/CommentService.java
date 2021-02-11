@@ -6,7 +6,7 @@ import ru.otus.spring.hw.dto.CommentDto;
 
 public interface CommentService {
 
-    void addComment(CommentDto commentDto);
+    CommentDto addComment(CommentDto commentDto);
 
     List<CommentDto> findAll();
 

@@ -27,13 +27,16 @@
         padding: 5px;
       }
     </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
-    <div class="row">
-      <a th:href="@{/books}" href="books.html">Back</a>
+    <div id="headerRow" class="row">
+      <a href="books.html">Back</a>
     </div>
     <hr />
     <h3>Comments:</h3>
+
+    <input type="hidden" id="bookId" name="bookId" th::value="${bookId}" />
 
     <table class="comments">
       <thead>
@@ -43,41 +46,105 @@
           <th>Action</th>
         </tr>
       </thead>
-      <tbody>
-        <tr th:each="comment : ${comments}">
-          <td th:text="${comment.bookTitle}">book1</td>
-          <td th:text="${comment.text}">book1 comment</td>
-          <td>
-            <form
-              id="deleted-comment-form"
-              th:action="@{/comments(id=${comment.id},bookId=${bookId})}"
-              th:method="delete"
-              action="comments.html"
-            >
-              <button type="submit">Delete</button>
-            </form>
-          </td>
-        </tr>
-      </tbody>
+      <tbody id="commentsTable"></tbody>
     </table>
 
     <!-- Added comment -->
-    <form
-      id="added-comment-form"
-      th:action="@{/comments(bookId=${bookId})}"
-      th:method="post"
-      action="comments.html"
-    >
+    <form id="addedCommentForm" action="/api/comments">
       <h3>Add comment:</h3>
 
       <div class="row">
-        <label for="comment-text">Text:</label>
-        <input id="comment-text" name="text" type="text" value="" />
+        <label for="commentText">Text:</label>
+        <input id="commentText" name="text" type="text" value="" />
       </div>
 
       <div class="row">
-        <button type="submit">Save</button>
+        <button id="saveCommentButton" type="submit">Save</button>
       </div>
     </form>
+
+    <script>
+      var restServerUrl = "";
+
+      $(function () {
+        updateCommentsTable();
+      });
+
+      $(document).on(
+        "submit",
+        "form[name='deleteCommentForm']",
+        function (event) {
+          event.preventDefault();
+          var $form = $(this);
+          $.ajax({
+            url: restServerUrl + $form.attr("action"),
+            type: "DELETE",
+            success: function (result) {
+              resetCommentForm();
+              updateCommentsTable();
+            },
+            error: function (xhr, resp, text) {
+              alert(xhr.responseJSON["errors"].toString());
+            },
+          });
+        }
+      );
+
+      $("#addedCommentForm").submit(function (event) {
+        event.preventDefault();
+        var $form = $(this);
+        var bookId = $("#bookId").attr(":value");
+        var data = {};
+        data["bookId"] = bookId;
+        $.each(this.elements, function (i, v) {
+          var input = $(v);
+          data[input.attr("name")] = input.val();
+          delete data["undefined"];
+        });
+
+        $.ajax({
+          url: restServerUrl + $form.attr("action"),
+          type: "POST",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          success: function (result) {
+            resetCommentForm();
+            updateCommentsTable();
+          },
+          error: function (xhr, resp, text) {
+            alert(xhr.responseJSON["errors"].toString());
+          },
+        });
+      });
+
+      function resetCommentForm() {
+        $("#addedCommentForm")[0].reset();
+      }
+
+      function updateCommentsTable() {
+        $("#commentsTable")[0].innerHTML = "";
+        var bookId = $("#bookId").attr(":value");
+
+        $.get(restServerUrl + "/api/comments", { bookId: bookId }).done(
+          function (comments) {
+            comments.forEach(function (comment) {
+              $("#commentsTable").append(`
+                  <tr>
+                    <td>${comment.bookTitle}</td>
+                    <td>${comment.text}</td>
+                    <td>
+                      <form
+                        name="deleteCommentForm"
+                        action="/api/comments/${comment.id}">
+                        <button type="submit">Delete</button>
+                      </form>
+                  </tr>
+              `);
+            });
+          }
+        );
+      }
+    </script>
   </body>
 </html>

@@ -27,13 +27,13 @@
         padding: 5px;
       }
     </style>
-    <!-- <script src="/webjars/jquery/3.3.1/jquery.min.js"></script> -->
-    <script src="scripts/jquery-3.5.1.min.js"></script>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+    <!-- <script src="scripts/jquery-3.5.1.min.js"></script> -->
   </head>
 
   <body>
     <div class="row">
-      <a th:href="@{/books}" href="books.html">Back</a>
+      <a href="books.html">Back</a>
     </div>
     <hr />
 
@@ -64,7 +64,8 @@
     </form>
 
     <script>
-      var restServerUrl = "http://192.168.1.139:8081";
+      <!-- var restServerUrl = "http://192.168.1.139:8081"; -->
+      var restServerUrl = "";
 
       $(function () {
         updateAuthorTable();
@@ -134,14 +135,13 @@
                             <td>
                               <form
                                 name="deleteAuthorForm" action="/api/authors/${author.id}">
-                                <input type="hidden" name="id" value="${author.id}"/>
                                 <button type="submit"" >Delete</button>
-
-                              </form> </tr>
+                              </form>
+                          </tr>
                       `);
           });
         });
       }
     </script>
-  </body>l
+  </body>
 </html>

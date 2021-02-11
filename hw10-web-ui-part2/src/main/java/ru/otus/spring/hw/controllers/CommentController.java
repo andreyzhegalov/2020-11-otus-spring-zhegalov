@@ -23,10 +23,13 @@ public class CommentController {
 
     @GetMapping("/comments")
     public String getAll(@RequestParam("bookId") @NotBlank String bookId, Model model) {
-        final var bookComments = commentService.findAllByBookId(bookId);
-        model.addAttribute("comments", bookComments);
         model.addAttribute("bookId", bookId);
         return "comments";
+
+        // final var bookComments = commentService.findAllByBookId(bookId);
+        // model.addAttribute("comments", bookComments);
+        // model.addAttribute("bookId", bookId);
+        // return "comments";
     }
 
     @PostMapping("/comments")

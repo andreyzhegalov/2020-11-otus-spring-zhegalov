@@ -17,14 +17,15 @@ public class CommentServiceImpl implements CommentService {
     private final BookRepository bookRepository;
 
     @Override
-    public void addComment(CommentDto commentDto) {
+    public CommentDto addComment(CommentDto commentDto) {
         final var book = bookRepository.findById(commentDto.getBookId())
                 .orElseThrow(() -> new ServiceException("book with id " + commentDto.getBookId() + " not exist"));
         final var comment = new Comment();
         comment.setText(commentDto.getText());
         comment.setBook(book);
-        commentRepository.save(comment);
-    }
+        final var savedComment = commentRepository.save(comment);
+        return new CommentDto(savedComment);
+    } 
 
     @Override
     public List<CommentDto> findAll() {

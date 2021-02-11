@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>List of all books</title>
+    <style type="text/css">
+      body {
+        padding: 50px;
+      }
+
+      label {
+        display: inline-block;
+        width: 100px;
+      }
+
+      input:read-only {
+        background: lightgray;
+      }
+
+      .row {
+        margin-top: 10px;
+      }
+
+      .books,
+      .books td {
+        border: 1px solid lightgray;
+        padding: 5px;
+      }
+    </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+    <!-- <script src="scripts/jquery-3.5.1.min.js"></script> -->
+  </head>
+  <body>
+    <div id="pageBody">
+      <div class="row">
+        <label for="holder-input">Goto:</label>
+        <a href="authors.html">Authors</a>
+        <a href="genres.html">Genres</a>
+      </div>
+      <hr />
+
+      <h3>Books:</h3>
+      <table class="books">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Authors</th>
+            <th>Comments</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="booksTable"></tbody>
+      </table>
+
+      <!--  Added book -->
+      <form id="addedBookForm" action="/api/books">
+        <h3>Add book:</h3>
+
+        <div class="row">
+          <label for="bookTitle">Title:</label>
+          <input id="bookTitle" name="title" type="text" value="" />
+        </div>
+
+        <div class="row">
+          <label for="genresSelect">Genre:</label>
+          <select id="genresSelect" name="genreId">
+            <option disabled selected value>-- select an genre --</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <label for="authorsSelect">Authors:</label>
+          <select id="authorsSelect" name="authorsId" multiple></select>
+        </div>
+
+        <div class="row">
+          <button id="saveBookButton" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      var restServerUrl = "";
+      <!-- var restServerUrl = "http://192.168.1.139:8081"; -->
+
+      $(function () {
+        updateAll();
+      });
+
+      $(document).on("submit", "form[name='deleteBookForm']", function (event) {
+        event.preventDefault();
+
+        var $form = $(this);
+
+        $.ajax({
+          url: restServerUrl + $form.attr("action"),
+          type: "DELETE",
+          success: function (result) {
+            resetAddedBookForm();
+            updateAll();
+          },
+          error: function (xhr, resp, text) {
+            alert(xhr.responseJSON["errors"].toString());
+          },
+        });
+      });
+
+      $(document).on("click", "form[name='bookComments']", function (event) {
+        event.preventDefault();
+        var $form = $(this);
+
+        <!-- $.get(restServerUrl + $form.attr("action")); -->
+        <!-- var $form = $(this); -->
+        <!-- var $form = $(this); -->
+        <!-- var bookId = "123"; -->
+        <!-- $.ajax({ -->
+        <!--   url: restServerUrl + $form.attr("action"), -->
+        <!--   type: "GET", -->
+        <!--   success: function (result) { -->
+        <!--     resetAddedBookForm(); -->
+        <!--     updateAll(); -->
+        <!--   }, -->
+        <!--   error: function (xhr, resp, text) { -->
+        <!--     alert(xhr.responseJSON["errors"].toString()); -->
+        <!--   }, -->
+        <!-- }); -->
+          <!-- $("#pageBody").load("comments.html", function (responseText, textStatus,  request){ -->
+          $("#pageBody").load($form.attr("action"), function (responseText, textStatus,  request){
+        });
+
+      });
+
+      $("#addedBookForm").submit(function (event) {
+        event.preventDefault();
+        var $form = $(this);
+        var data = {};
+
+        $.each(this.elements, function (i, v) {
+          var input = $(v);
+          data[input.attr("name")] = input.val();
+          delete data["undefined"];
+        });
+
+        $.ajax({
+          url: restServerUrl + $form.attr("action"),
+          type: "POST",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          success: function (result) {
+            resetAddedBookForm();
+            updateAll();
+          },
+          error: function (xhr, resp, text) {
+            alert(xhr.responseJSON["errors"].toString());
+          },
+        });
+      });
+
+      function updateAll() {
+        updateBooks();
+        updateGenres();
+        updateAuthors();
+      }
+
+      function resetAddedBookForm() {
+        $("#booksTable")[0].innerHTML = "";
+        $("#genresSelect")[0].innerHTML = "";
+        $("#authorsSelect")[0].innerHTML = "";
+        $("#addedBookForm")[0].reset();
+      }
+
+      function updateGenres() {
+        $.get(restServerUrl + "/api/genres").done(function (genres) {
+          genres.forEach(function (genre) {
+            $("#genresSelect").append(`
+              <option value="${genre.id}"">${genre.name}</option>
+            `);
+          });
+        });
+      }
+
+      function updateAuthors() {
+        $.get(restServerUrl + "/api/authors").done(function (authors) {
+          authors.forEach(function (author) {
+            $("#authorsSelect").append(`
+              <option value="${author.id}"">${author.name}</option>
+            `);
+          });
+        });
+      }
+
+      function updateBooks() {
+        $.get(restServerUrl + "/api/books").done(function (books) {
+          books.forEach(function (book) {
+            $("#booksTable").append(`
+                <tr>
+                  <td>"${book.title}"</td>
+                  <td>"${book.genreName}"</td>
+                  <td>"${book.authorsName}"</td>
+                  <td>
+                    <a href="comments.html" >Comments</a >
+                  </td>
+                  <td>
+                    <form name="bookComments" action="/comments?bookId=${book.id}">
+                      <button type="submit">Comments</button>
+                    </form>
+                  </td>
+                  <td>
+                    <form name="deleteBookForm" action="/api/books/${book.id}">
+                      <button type="submit">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              `);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

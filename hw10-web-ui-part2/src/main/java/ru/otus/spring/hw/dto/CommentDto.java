@@ -14,7 +14,7 @@ import ru.otus.spring.hw.model.Comment;
 @NoArgsConstructor
 public class CommentDto {
     private String id;
-    @NotBlank
+    @NotBlank(message = "Please provide a comment text")
     private String text;
     @NotBlank
     private String bookId;
