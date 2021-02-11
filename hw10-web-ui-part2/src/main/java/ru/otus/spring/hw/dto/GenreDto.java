@@ -12,7 +12,7 @@ import ru.otus.spring.hw.model.Genre;
 @NoArgsConstructor
 public class GenreDto {
     private String id;
-    @NotBlank
+    @NotBlank(message = "Please provide a genre name")
     private String name;
 
     public GenreDto(Genre genre) {

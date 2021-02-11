@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>List of all authors</title>
+    <title>List of all genres</title>
     <style type="text/css">
       body {
         padding: 50px;
@@ -21,8 +21,8 @@
         margin-top: 10px;
       }
 
-      .authors,
-      .authors td {
+      .genres,
+      .genres td {
         border: 1px solid lightgray;
         padding: 5px;
       }
@@ -36,40 +36,39 @@
     </div>
     <hr />
 
-    <h3>Authors:</h3>
-    <table class="authors">
+    <h3>Genres:</h3>
+    <table class="genres">
       <thead>
         <tr>
           <th>Name</th>
-          <th>Books</th>
           <th>Action</th>
         </tr>
       </thead>
-      <tbody id="authorsTable"></tbody>
+      <tbody id="genresTable"></tbody>
     </table>
 
-    <!-- Added author -->
-    <form id="addedAuthorForm" action="/api/authors">
-      <h3>Add author:</h3>
+    <!-- Added genre -->
+    <form id="addedGenreForm" action="/api/genres">
+      <h3>Add genre:</h3>
 
       <div class="row">
-        <label for="authorName">Name:</label>
-        <input id="authorName" name="name" type="text" value="" />
+        <label for="genreName">Name:</label>
+        <input id="genreName" name="name" type="text" value="" />
       </div>
 
       <div class="row">
-        <button id="saveAuthorButton" type="submit">Save</button>
+        <button id="saveGenreButton" type="submit">Save</button>
       </div>
     </form>
 
     <script>
       $(function () {
-        updateAuthorTable();
+        updateGenreTable();
       });
 
       $(document).on(
         "submit",
-        "form[name='deleteAuthorForm']",
+        "form[name='deleteGenreForm']",
         function (event) {
           event.preventDefault();
 
@@ -79,8 +78,8 @@
             url: $form.attr("action"),
             type: "DELETE",
             success: function (result) {
-              resetAuthorForm();
-              updateAuthorTable();
+              resetGenreForm();
+              updateGenreTable();
             },
             error: function (xhr, resp, text) {
               alert(xhr.responseJSON["errors"].toString());
@@ -89,7 +88,7 @@
         }
       );
 
-      $("#addedAuthorForm").submit(function (event) {
+      $("#addedGenreForm").submit(function (event) {
         event.preventDefault();
         var $form = $(this);
         var data = {};
@@ -107,8 +106,8 @@
           contentType: "application/json; charset=utf-8",
           data: JSON.stringify(data),
           success: function (result) {
-            resetAuthorForm();
-            updateAuthorTable();
+            resetGenreForm();
+            updateGenreTable();
           },
           error: function (xhr, resp, text) {
             alert(xhr.responseJSON["errors"].toString());
@@ -116,21 +115,20 @@
         });
       });
 
-      function resetAuthorForm() {
-        $("#authorsTable")[0].innerHTML = "";
-        $("#addedAuthorForm")[0].reset();
+      function resetGenreForm() {
+        $("#genresTable")[0].innerHTML = "";
+        $("#addedGenreForm")[0].reset();
       }
 
-      function updateAuthorTable() {
-        $.get("/api/authors").done(function (authors) {
-          authors.forEach(function (author) {
-            $("#authorsTable").append(`
+      function updateGenreTable() {
+        $.get("/api/genres").done(function (genres) {
+          genres.forEach(function (genre) {
+            $("#genresTable").append(`
                           <tr>
-                            <td>${author.name}</td>
-                            <td>${author.booksTitle}</td>
+                            <td>${genre.name}</td>
                             <td>
                               <form
-                                name="deleteAuthorForm" action="/api/authors/${author.id}">
+                                name="deleteGenreForm" action="/api/genres/${genre.id}">
                                 <button type="submit"" >Delete</button>
                               </form>
                           </tr>
