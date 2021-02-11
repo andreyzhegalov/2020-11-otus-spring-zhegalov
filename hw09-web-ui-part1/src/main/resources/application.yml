@@ -1,11 +1,18 @@
 spring:
-  shell:
-    interactive:
-      enabled: true
   data:
     mongodb:
       database: library_zhegalov
       uri: mongodb://172.17.0.3
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+server:
+  port: 8081
+  error:
+    include-stacktrace: always
 
 mongock:
   runner-type: "InitializingBean"
@@ -15,3 +22,6 @@ mongock:
 logging:
   level:
     ROOT: INFO
+    org.springframework: INFO
+    ru.otus.spring.hw: INFO
+    org.mongodb.driver: INFO
