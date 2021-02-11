@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.rest;
+package ru.otus.spring.hw.controllers.rest;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
@@ -20,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import ru.otus.spring.hw.controllers.rest.CommentRestController;
 import ru.otus.spring.hw.service.CommentService;
 
 @WebMvcTest(controllers = CommentRestController.class)

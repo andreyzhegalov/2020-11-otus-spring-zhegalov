@@ -8,7 +8,7 @@ import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ru.otus.spring.hw.dto.CommentDto;
+import ru.otus.spring.hw.controllers.dto.CommentDto;
 
 public class CommentRepositoryTest extends AbstractRepositoryTest {
     private static final String BOOK_WITH_COMMENTS = "book1";

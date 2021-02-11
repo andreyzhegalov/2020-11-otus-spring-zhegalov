@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.dto;
+package ru.otus.spring.hw.controllers.dto;
 
 import java.util.ArrayList;
 import java.util.List;

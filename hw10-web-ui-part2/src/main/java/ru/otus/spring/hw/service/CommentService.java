@@ -2,7 +2,7 @@ package ru.otus.spring.hw.service;
 
 import java.util.List;
 
-import ru.otus.spring.hw.dto.CommentDto;
+import ru.otus.spring.hw.controllers.dto.CommentDto;
 
 public interface CommentService {
 

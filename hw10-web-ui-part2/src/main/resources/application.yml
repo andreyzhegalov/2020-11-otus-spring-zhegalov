@@ -2,7 +2,7 @@ spring:
   data:
     mongodb:
       database: library_zhegalov
-      uri: mongodb://172.17.0.3
+      uri: mongodb://localhost
 
 server:
   port: 8081
@@ -16,7 +16,7 @@ mongock:
 
 logging:
   level:
-    ROOT: DEBUG
-    org.springframework: DEBUG
-    ru.otus.spring.hw: DEBUG
+    ROOT: INFO
+    org.springframework: INFO
+    ru.otus.spring.hw: INFO
     org.mongodb.driver: INFO

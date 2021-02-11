@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.controllers;
+package ru.otus.spring.hw.controllers.page;
 
 import javax.validation.constraints.NotBlank;
 

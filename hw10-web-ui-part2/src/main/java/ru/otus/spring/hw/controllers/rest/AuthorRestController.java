@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.rest;
+package ru.otus.spring.hw.controllers.rest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.dto.AuthorDto;
+import ru.otus.spring.hw.controllers.dto.AuthorDto;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 
 @RequiredArgsConstructor

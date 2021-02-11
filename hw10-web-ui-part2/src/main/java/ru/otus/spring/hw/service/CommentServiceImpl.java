@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.dto.CommentDto;
+import ru.otus.spring.hw.controllers.dto.CommentDto;
 import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.repositories.BookRepository;
 import ru.otus.spring.hw.repositories.CommentRepository;

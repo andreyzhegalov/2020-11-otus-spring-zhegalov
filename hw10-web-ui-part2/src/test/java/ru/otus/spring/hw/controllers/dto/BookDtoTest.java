@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.dto;
+package ru.otus.spring.hw.controllers.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
+import ru.otus.spring.hw.controllers.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;

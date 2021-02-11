@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.rest;
+package ru.otus.spring.hw.controllers.rest;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
