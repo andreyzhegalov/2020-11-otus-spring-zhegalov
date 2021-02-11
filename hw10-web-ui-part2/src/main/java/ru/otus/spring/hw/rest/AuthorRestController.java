@@ -7,7 +7,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +30,6 @@ public class AuthorRestController {
         return authorRepository.findAll().stream().map(AuthorDto::new).collect(Collectors.toList());
     }
 
-    @CrossOrigin
     @PostMapping("/api/authors")
     @ResponseStatus(HttpStatus.CREATED)
     public AuthorDto saveAuthor(@Valid @RequestBody AuthorDto authorDto) {
@@ -39,7 +37,6 @@ public class AuthorRestController {
         return new AuthorDto(savedAuthor);
     }
 
-    @CrossOrigin
     @DeleteMapping("/api/authors/{id}")
     public void deleteAuthor(@PathVariable("id") @NotBlank String id) {
         authorRepository.deleteById(id);

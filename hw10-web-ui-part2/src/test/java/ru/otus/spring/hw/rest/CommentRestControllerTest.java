@@ -61,5 +61,4 @@ public class CommentRestControllerTest {
         mvc.perform(delete("/api/comments/{id}", commentId)).andDo(print()).andExpect(status().isOk());
         then(commentService).should().deleteById(commentId);
     }
-
 }

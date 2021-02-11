@@ -48,8 +48,8 @@
       <tbody id="authorsTable"></tbody>
     </table>
 
-    <!-- Added author -->
-    <form id="addedAuthorForm" action="/api/authors">
+    <!-- add author form -->
+    <form id="authorAddForm" action="/api/authors">
       <h3>Add author:</h3>
 
       <div class="row">
@@ -89,7 +89,7 @@
         }
       );
 
-      $("#addedAuthorForm").submit(function (event) {
+      $("#authorAddForm").submit(function (event) {
         event.preventDefault();
         var $form = $(this);
         var data = {};
@@ -118,23 +118,23 @@
 
       function resetAuthorForm() {
         $("#authorsTable")[0].innerHTML = "";
-        $("#addedAuthorForm")[0].reset();
+        $("#authorAddForm")[0].reset();
       }
 
       function updateAuthorTable() {
         $.get("/api/authors").done(function (authors) {
           authors.forEach(function (author) {
             $("#authorsTable").append(`
-                          <tr>
-                            <td>${author.name}</td>
-                            <td>${author.booksTitle}</td>
-                            <td>
-                              <form
-                                name="deleteAuthorForm" action="/api/authors/${author.id}">
-                                <button type="submit"" >Delete</button>
-                              </form>
-                          </tr>
-                      `);
+                  <tr>
+                    <td>${author.name}</td>
+                    <td>${author.booksTitle}</td>
+                    <td>
+                      <form
+                        name="deleteAuthorForm" action="/api/authors/${author.id}">
+                        <button type="submit"" >Delete</button>
+                      </form>
+                  </tr>
+              `);
           });
         });
       }

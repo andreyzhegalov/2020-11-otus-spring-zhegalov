@@ -47,8 +47,8 @@
       <tbody id="genresTable"></tbody>
     </table>
 
-    <!-- Added genre -->
-    <form id="addedGenreForm" action="/api/genres">
+    <!-- add genre form -->
+    <form id="addGenreForm" action="/api/genres">
       <h3>Add genre:</h3>
 
       <div class="row">
@@ -88,7 +88,7 @@
         }
       );
 
-      $("#addedGenreForm").submit(function (event) {
+      $("#addGenreForm").submit(function (event) {
         event.preventDefault();
         var $form = $(this);
         var data = {};
@@ -117,22 +117,22 @@
 
       function resetGenreForm() {
         $("#genresTable")[0].innerHTML = "";
-        $("#addedGenreForm")[0].reset();
+        $("#addGenreForm")[0].reset();
       }
 
       function updateGenreTable() {
         $.get("/api/genres").done(function (genres) {
           genres.forEach(function (genre) {
             $("#genresTable").append(`
-                          <tr>
-                            <td>${genre.name}</td>
-                            <td>
-                              <form
-                                name="deleteGenreForm" action="/api/genres/${genre.id}">
-                                <button type="submit"" >Delete</button>
-                              </form>
-                          </tr>
-                      `);
+                  <tr>
+                    <td>${genre.name}</td>
+                    <td>
+                      <form
+                        name="deleteGenreForm" action="/api/genres/${genre.id}">
+                        <button type="submit"" >Delete</button>
+                      </form>
+                  </tr>
+              `);
           });
         });
       }
