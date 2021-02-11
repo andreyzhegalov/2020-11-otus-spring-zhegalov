@@ -2,6 +2,7 @@ package ru.otus.spring.hw.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -28,7 +29,9 @@ public class BookDto {
     private String genreName;
 
     public BookDto(@NotNull Book book) {
-        this.id = book.getId();
+        if (Objects.nonNull(book.getId())) {
+            this.id = book.getId();
+        }
         this.title = book.getTitle();
         book.getAuthors().forEach(a -> {
             this.authorsId.add(a.getId());

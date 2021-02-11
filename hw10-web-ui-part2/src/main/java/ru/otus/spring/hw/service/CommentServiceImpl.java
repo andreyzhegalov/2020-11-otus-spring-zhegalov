@@ -25,7 +25,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setBook(book);
         final var savedComment = commentRepository.save(comment);
         return new CommentDto(savedComment);
-    } 
+    }
 
     @Override
     public List<CommentDto> findAll() {

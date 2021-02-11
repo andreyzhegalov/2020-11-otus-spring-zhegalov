@@ -26,7 +26,6 @@ public class AuthorRestController {
 
     private final AuthorRepository authorRepository;
 
-    @CrossOrigin
     @GetMapping("api/authors")
     public List<AuthorDto> getAllAuthors() {
         return authorRepository.findAll().stream().map(AuthorDto::new).collect(Collectors.toList());

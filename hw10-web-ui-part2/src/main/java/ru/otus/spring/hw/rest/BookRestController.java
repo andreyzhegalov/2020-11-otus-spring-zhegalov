@@ -7,7 +7,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,20 +24,17 @@ import ru.otus.spring.hw.service.BookService;
 public class BookRestController {
     private final BookService bookService;
 
-    @CrossOrigin
     @GetMapping("/api/books")
     public List<BookDto> findAll() {
         return bookService.findAll().stream().map(BookDto::new).collect(Collectors.toList());
     }
 
-    @CrossOrigin
     @PostMapping("/api/books")
     @ResponseStatus(HttpStatus.CREATED)
     public BookDto saveAuthor(@Valid @RequestBody BookDto bookDto) {
         return bookService.save(bookDto);
     }
 
-    @CrossOrigin
     @DeleteMapping("/api/books/{id}")
     public void deleteBook(@PathVariable("id") @NotBlank String id) {
         bookService.deleteBook(id);

@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,6 +32,7 @@ import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.service.BookService;
+import ru.otus.spring.hw.service.ServiceException;
 
 @WebMvcTest(controllers = BookRestController.class)
 public class BookRestControllerTest {
@@ -80,6 +82,17 @@ public class BookRestControllerTest {
 
         mvc.perform(post("/api/books").content(bookJson).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isCreated());
+
+        then(bookService).should().save(any(BookDto.class));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenSaveBookServiceThrowException() throws Exception {
+        String bookJson = "{\"title\":\"new book title\", \"genreId\":\"genre id\", \"authorsId\":[\"author id1\", \"author id2\"]}";
+        doThrow(new ServiceException("book service error message")).when(bookService).save(any(BookDto.class));
+
+        mvc.perform(post("/api/books").content(bookJson).contentType(MediaType.APPLICATION_JSON)).andDo(print())
+                .andExpect(status().isBadRequest());
 
         then(bookService).should().save(any(BookDto.class));
     }

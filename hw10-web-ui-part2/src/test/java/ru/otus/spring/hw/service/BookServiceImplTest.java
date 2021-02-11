@@ -2,6 +2,7 @@ package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -109,9 +110,14 @@ public class BookServiceImplTest {
         final var author1 = new Author("name1");
         final var author2 = new Author("name2");
 
+        final var book = new Book();
+        book.setId("123");
+        book.setGenre(new Genre());
+
         given(authorRepository.findById("id1")).willReturn(Optional.of(author1));
         given(authorRepository.findById("id2")).willReturn(Optional.of(author2));
         given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre("genre")));
+        given(bookRepository.save(any())).willReturn(book);
 
         bookService.save(newBookDto);
 
