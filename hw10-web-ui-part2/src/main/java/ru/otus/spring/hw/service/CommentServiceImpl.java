@@ -3,6 +3,7 @@ package ru.otus.spring.hw.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.controllers.dto.CommentDto;
@@ -16,6 +17,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final BookRepository bookRepository;
 
+    @Transactional
     @Override
     public CommentDto addComment(CommentDto commentDto) {
         final var book = bookRepository.findById(commentDto.getBookId())
@@ -27,16 +29,19 @@ public class CommentServiceImpl implements CommentService {
         return new CommentDto(savedComment);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CommentDto> findAll() {
         return commentRepository.findAllDto();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CommentDto> findAllByBookId(String bookId) {
         return commentRepository.findAllDtoByBookId(bookId);
     }
 
+    @Transactional
     @Override
     public void deleteById(String id) {
         commentRepository.deleteById(id);

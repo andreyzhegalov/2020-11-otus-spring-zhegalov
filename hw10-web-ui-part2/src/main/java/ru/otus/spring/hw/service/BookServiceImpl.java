@@ -3,6 +3,7 @@ package ru.otus.spring.hw.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.controllers.dto.BookDto;
@@ -19,11 +20,13 @@ public class BookServiceImpl implements BookService {
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
 
+    @Transactional
     @Override
     public void deleteBook(String id) {
         bookRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Book> findAll() {
         return bookRepository.findAll();
@@ -34,6 +37,7 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new ServiceException("Author with id " + authorId + " not exist"));
     }
 
+    @Transactional
     @Override
     public BookDto save(BookDto bookDto) {
         final var genre = genreRepository.findById(bookDto.getGenreId())
