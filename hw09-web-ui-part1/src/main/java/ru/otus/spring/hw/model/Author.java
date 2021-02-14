@@ -17,7 +17,9 @@ import lombok.NoArgsConstructor;
 public class Author {
     @Id
     private String id;
+
     private String name;
+
     private List<Book> books = new ArrayList<>();
 
     public Author(String name) {

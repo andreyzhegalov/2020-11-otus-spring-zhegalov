@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -63,59 +64,60 @@ public class BookServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfAuthorNotExistForUpdatedBook() {
-        final var genreName = "genre";
-        final var authorName = "name";
+        final var authorId = "authorId";
+        final var genreId = "genreId";
 
         final var newBookDto = new BookDto();
-        newBookDto.setGenreName(genreName);
-        newBookDto.setAuthorsName(authorName);
-        given(authorRepository.findByName(authorName)).willReturn(Optional.empty());
-        given(genreRepository.findByName(genreName)).willReturn(Optional.of(new Genre()));
+        newBookDto.setGenreId(genreId);
+        newBookDto.setAuthorsId(Collections.singletonList(authorId));
+        given(authorRepository.findById(authorId)).willReturn(Optional.empty());
+        given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre()));
 
         assertThatCode(() -> bookService.save(newBookDto)).isInstanceOf(ServiceException.class);
 
-        then(genreRepository).should().findByName(genreName);
-        then(authorRepository).should().findByName(authorName);
+        then(genreRepository).should().findById(genreId);
+        then(authorRepository).should().findById(authorId);
     }
 
     @Test
     void shouldThrowExceptionIfGenreNotExistForUpdatedBook() {
-        final var genreName = "genre";
-        final var authorName = "name";
+        final var genreId = "genreId";
+        final var authorId = "authorId";
 
         final var newBookDto = new BookDto();
-        newBookDto.setGenreName(genreName);
-        newBookDto.setAuthorsName(authorName);
-        given(authorRepository.findByName(authorName)).willReturn(Optional.of(new Author(authorName)));
-        given(genreRepository.findByName(genreName)).willReturn(Optional.empty());
+        newBookDto.setGenreId(genreId);
+        newBookDto.setAuthorsId(Collections.singletonList(authorId));
+
+        given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author()));
+        given(genreRepository.findById(genreId)).willReturn(Optional.empty());
 
         assertThatCode(() -> bookService.save(newBookDto)).isInstanceOf(ServiceException.class);
 
-        then(genreRepository).should().findByName(genreName);
+        then(genreRepository).should().findById(genreId);
     }
 
     @Test
     void shouldSaveNewBookFromDto() {
-        final var authorsName = Collections.singletonList("name1, name2");
-        final var genreName = "genre3";
+        final var authorsId = Arrays.asList("id1", "id2");
+        final var genreId = "genreId";
 
         final var newBookDto = new BookDto();
         newBookDto.setTitle("title");
-        newBookDto.setGenreName(genreName);
-        newBookDto.setAuthorsName(String.join(",", authorsName));
+        newBookDto.setGenreId(genreId);
+        newBookDto.setAuthorsId(authorsId);
 
         final var author1 = new Author("name1");
         final var author2 = new Author("name2");
 
-        given(authorRepository.findByName("name1")).willReturn(Optional.of(author1));
-        given(authorRepository.findByName("name2")).willReturn(Optional.of(author2));
-        given(genreRepository.findByName(genreName)).willReturn(Optional.of(new Genre("genre")));
+        given(authorRepository.findById("id1")).willReturn(Optional.of(author1));
+        given(authorRepository.findById("id2")).willReturn(Optional.of(author2));
+        given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre("genre")));
 
         bookService.save(newBookDto);
 
-        then(authorRepository).should().findByName("name1");
-        then(authorRepository).should().findByName("name2");
-        then(genreRepository).should().findByName(genreName);
+        then(authorRepository).should().findById("id1");
+        then(authorRepository).should().findById("id2");
+        then(genreRepository).should().findById(genreId);
         then(bookRepository).should().save(bookCaptor.capture());
 
         final var savedBook = bookCaptor.getValue();

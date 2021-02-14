@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
-import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.BookRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
@@ -30,21 +29,17 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll();
     }
 
-    private Author getAuthorByName(String authorName) {
-        return authorRepository.findByName(authorName)
-                .orElseThrow(() -> new ServiceException("Author with name " + authorName + " not exist"));
-    }
-
-    private Genre getGenreByName(String genreName) {
-        return genreRepository.findByName(genreName)
-                .orElseThrow(() -> new ServiceException("Genre with name " + genreName + " not exist"));
+    private Author getAuthorById(String authorId) {
+        return authorRepository.findById(authorId)
+                .orElseThrow(() -> new ServiceException("Author with id " + authorId + " not exist"));
     }
 
     @Override
     public void save(BookDto bookDto) {
-        final var genre = getGenreByName(bookDto.getGenreName());
+        final var genre = genreRepository.findById(bookDto.getGenreId())
+                .orElseThrow(() -> new ServiceException("Genre with id " + bookDto.getGenreId() + " not exist"));
         final var book = new Book(bookDto.getId(), bookDto.getTitle(), genre,
-                bookDto.getAuthorsNameList().stream().map(this::getAuthorByName).toArray(Author[]::new));
+                bookDto.getAuthorsId().stream().map(this::getAuthorById).toArray(Author[]::new));
         bookRepository.save(book);
     }
 }

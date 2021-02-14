@@ -1,6 +1,8 @@
-package ru.otus.spring.hw.rest;
+package ru.otus.spring.hw.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -8,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -51,8 +54,7 @@ public class CommentControllerTest {
     @Test
     void shouldNotSaveCommentWithEmptyText() throws Exception {
         mvc.perform(post("/comments").param("bookId", "123").param("text", "")).andDo(print())
-                .andExpect(status().isFound()).andExpect(view().name("redirect:/comments"));
-
+                .andExpect(status().isBadRequest()).andExpect(content().string(not(emptyString())));
         then(commentService).shouldHaveNoInteractions();
     }
 
@@ -71,7 +73,7 @@ public class CommentControllerTest {
     @Test
     void shouldNotRemoveCommentIfIdEmpty() throws Exception {
         mvc.perform(delete("/comments").param("id", "").param("bookId", "123")).andDo(print())
-                .andExpect(status().isFound()).andExpect(view().name("redirect:/comments"));
+                .andExpect(status().isBadRequest()).andExpect(content().string(not(emptyString())));
         then(commentService).shouldHaveNoInteractions();
     }
 

@@ -1,13 +1,16 @@
-package ru.otus.spring.hw.rest;
+package ru.otus.spring.hw.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -47,16 +50,15 @@ public class AuthorControllerTest {
 
     @Test
     void shouldNotSaveAuthorWithEmptyName() throws Exception {
-        mvc.perform(post("/authors").param("name", "")).andDo(print()).andExpect(status().isFound())
-                .andExpect(view().name("redirect:/authors"));
-
+        mvc.perform(post("/authors").param("name", "")).andDo(print()).andExpect(status().isBadRequest())
+                .andExpect(content().string(not(emptyString())));
         then(authorRepository).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldAddNewAuthor() throws Exception {
         final var authorName = "author name";
-        mvc.perform(post("/authors").param("name", "author name")).andDo(print()).andExpect(status().isFound())
+        mvc.perform(post("/authors").param("name", authorName)).andDo(print()).andExpect(status().isFound())
                 .andExpect(view().name("redirect:/authors"));
 
         then(authorRepository).should().save(authorCaptor.capture());
@@ -73,17 +75,18 @@ public class AuthorControllerTest {
 
     @Test
     void shouldNotRemoveAuthorIfIdEmpty() throws Exception {
-        mvc.perform(delete("/authors").param("id", "")).andDo(print()).andExpect(status().isFound())
-                .andExpect(view().name("redirect:/authors"));
+        mvc.perform(delete("/authors").param("id", "")).andDo(print()).andExpect(status().isBadRequest())
+                .andExpect(content().string(not(emptyString())));
         then(authorRepository).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldReturnErrorIfDeletedAuthorHasBook() throws Exception {
         final var authorId = "id_author_with_book";
-        doThrow(RepositoryException.class).when(authorRepository).deleteById(authorId);
+        doThrow(new RepositoryException("error")).when(authorRepository).deleteById(authorId);
 
-        mvc.perform(delete("/authors").param("id", authorId)).andDo(print()).andExpect(status().isBadRequest());
+        mvc.perform(delete("/authors").param("id", authorId)).andDo(print()).andExpect(status().isBadRequest())
+                .andExpect(content().string(not(emptyString())));
 
         then(authorRepository).should().deleteById(authorId);
     }

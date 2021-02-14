@@ -1,16 +1,22 @@
 package ru.otus.spring.hw.dto;
 
+import javax.validation.constraints.NotBlank;
+
 import org.jetbrains.annotations.NotNull;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.otus.spring.hw.model.Comment;
 
+@Setter
 @Getter
 @NoArgsConstructor
 public class CommentDto {
     private String id;
+    @NotBlank
     private String text;
+    @NotBlank
     private String bookId;
     private String bookTitle;
 
