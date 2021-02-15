@@ -1,17 +1,17 @@
 package ru.otus.spring.hw.mongock.testchangelog;
 
+import java.util.Optional;
+
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
+
+import org.springframework.data.mongodb.core.MongoOperations;
 
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
-import ru.otus.spring.hw.repositories.AuthorRepository;
-import ru.otus.spring.hw.repositories.BookRepository;
-import ru.otus.spring.hw.repositories.CommentRepository;
-import ru.otus.spring.hw.repositories.GenreRepository;
 
 @ChangeLog(order = "001")
 public class DataBaseChangeLog {
@@ -29,40 +29,40 @@ public class DataBaseChangeLog {
     }
 
     @ChangeSet(order = "002", id = "initGenre", author = "azhegalov", runAlways = true)
-    public void initGenre(GenreRepository repository) {
-        genre1 = repository.save(new Genre("genre1"));
-        genre2 = repository.save(new Genre("genre2"));
-        repository.save(new Genre("genre3"));
+    public void initGenre(MongoOperations mongoOperations) {
+        genre1 = mongoOperations.insert(new Genre("genre1"));
+        genre2 = mongoOperations.insert(new Genre("genre2"));
+        mongoOperations.insert(new Genre("genre3"));
     }
 
     @ChangeSet(order = "003", id = "initAuthors", author = "azhegalov", runAlways = true)
-    public void initAuthors(AuthorRepository repository) {
-        author1 = repository.save(new Author("name1"));
-        author2 = repository.save(new Author("name2"));
-        repository.save(new Author("name3"));
+    public void initAuthors(MongoOperations mongoOperations) {
+        author1 = mongoOperations.insert(new Author("name1"));
+        author2 = mongoOperations.insert(new Author("name2"));
+        mongoOperations.insert(new Author("name3"));
     }
 
     @ChangeSet(order = "004", id = "initBook", author = "azhegalov", runAlways = true)
-    public void initBook(BookRepository repository, AuthorRepository authorRepository) {
+    public void initBook(MongoOperations mongoOperations) {
         book1 = new Book("book1", genre2, author1, author2);
-        repository.save(book1);
+        mongoOperations.insert(book1);
 
         Book book2 = new Book("book2", genre1, author1);
-        repository.save(book2);
+        mongoOperations.insert(book2);
 
-        final var loadedAuthor1 = authorRepository.findById(author1.getId()).orElseThrow();
+        final var loadedAuthor1 = Optional.of(mongoOperations.findById(author1.getId(), Author.class)).orElseThrow();
         loadedAuthor1.addBook(book1);
         loadedAuthor1.addBook(book2);
-        authorRepository.save(loadedAuthor1);
+        mongoOperations.save(loadedAuthor1);
 
-        final var loadedAuthor2 = authorRepository.findById(author2.getId()).orElseThrow();
+        final var loadedAuthor2 = Optional.of(mongoOperations.findById(author2.getId(), Author.class)).orElseThrow();
         loadedAuthor2.addBook(book1);
-        authorRepository.save(loadedAuthor2);
+        mongoOperations.save(loadedAuthor2);
     }
 
     @ChangeSet(order = "005", id = "initComments", author = "azhegalov", runAlways = true)
-    public void initComments(CommentRepository commentRepository) {
+    public void initComments(MongoOperations mongoOperations) {
         final var comment1 = new Comment("comment for book1", book1);
-        commentRepository.save(comment1);
+        mongoOperations.insert(comment1);
     }
 }
