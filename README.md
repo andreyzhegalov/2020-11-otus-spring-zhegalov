@@ -20,6 +20,8 @@
 7. *hw07-library-service-part3* - Приложение хранящее информацию о книгах в библиотеке на базе Spring Data JPA.
 8. *hw08-library-service-part4* - Приложение хранящее информацию о книгах в библиотеке на базе Spring Data MongoDb.
 9. *hw09-web-ui-part1* - CRUD приложение с Web UI и хранением данных в БД.
+10. *hw10-web-ui-part2* - CRUD приложение с использованием AJAX и REST-контроллеров.
+11. *hw11-web-ui-part3* - CRUD приложение с использованием WebFlux.
 
 
 ##### License
