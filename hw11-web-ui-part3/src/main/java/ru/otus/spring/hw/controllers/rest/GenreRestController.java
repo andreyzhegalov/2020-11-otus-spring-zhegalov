@@ -29,15 +29,17 @@ public class GenreRestController {
     @GetMapping("/api/genres")
     @Transactional(readOnly = true)
     public List<GenreDto> findAll() {
-        return genreRepository.findAll().stream().map(GenreDto::new).collect(Collectors.toList());
+        return null;
+        // return genreRepository.findAll().stream().map(GenreDto::new).collect(Collectors.toList());
     }
 
     @PostMapping("/api/genres")
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     public GenreDto saveGenre(@Valid @RequestBody GenreDto genreDto) {
-        final var savedGenre = genreRepository.save(genreDto.toEntity());
-        return new GenreDto(savedGenre);
+        return null;
+        // final var savedGenre = genreRepository.save(genreDto.toEntity());
+        // return new GenreDto(savedGenre);
     }
 
     @DeleteMapping("/api/genres/{id}")

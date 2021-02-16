@@ -54,7 +54,7 @@ public class AuthorRestControllerTest {
         String authorJson = "{\"name\":\"author name\"}";
         final var savedAuthor = new Author(authorName);
         savedAuthor.setId("132");
-        given(authorRepository.save(any())).willReturn(savedAuthor);
+        // given(authorRepository.save(any())).willReturn(savedAuthor);
 
         mvc.perform(
                 post("/api/authors").content(authorJson).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))

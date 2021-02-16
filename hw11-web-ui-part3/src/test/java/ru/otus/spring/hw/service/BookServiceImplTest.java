@@ -8,7 +8,6 @@ import static org.mockito.BDDMockito.then;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -71,8 +70,9 @@ public class BookServiceImplTest {
         final var newBookDto = new BookDto();
         newBookDto.setGenreId(genreId);
         newBookDto.setAuthorsId(Collections.singletonList(authorId));
-        given(authorRepository.findById(authorId)).willReturn(Optional.empty());
-        given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre()));
+        // given(authorRepository.findById(authorId)).willReturn(Optional.empty());
+        // given(genreRepository.findById(genreId)).willReturn(Optional.of(new
+        // Genre()));
 
         assertThatCode(() -> bookService.save(newBookDto)).isInstanceOf(ServiceException.class);
 
@@ -89,8 +89,9 @@ public class BookServiceImplTest {
         newBookDto.setGenreId(genreId);
         newBookDto.setAuthorsId(Collections.singletonList(authorId));
 
-        given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author()));
-        given(genreRepository.findById(genreId)).willReturn(Optional.empty());
+        // given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author()));
+        // given(authorRepository.findById(authorId)).willReturn(Optional.of(new
+        // Author()));
 
         assertThatCode(() -> bookService.save(newBookDto)).isInstanceOf(ServiceException.class);
 
@@ -114,9 +115,10 @@ public class BookServiceImplTest {
         book.setId("123");
         book.setGenre(new Genre());
 
-        given(authorRepository.findById("id1")).willReturn(Optional.of(author1));
-        given(authorRepository.findById("id2")).willReturn(Optional.of(author2));
-        given(genreRepository.findById(genreId)).willReturn(Optional.of(new Genre("genre")));
+        // given(authorRepository.findById("id1")).willReturn(Optional.of(author1));
+        // given(authorRepository.findById("id2")).willReturn(Optional.of(author2));
+        // given(genreRepository.findById(genreId)).willReturn(Optional.of(new
+        // Genre("genre")));
         given(bookRepository.save(any())).willReturn(book);
 
         bookService.save(newBookDto);

@@ -15,7 +15,6 @@ import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.CommentRepository;
-import ru.otus.spring.hw.repositories.RepositoryException;
 
 @Component
 @RequiredArgsConstructor
@@ -36,9 +35,9 @@ public class BookMongoEventListener extends AbstractMongoEventListener<Book> {
         super.onBeforeConvert(event);
         final var book = event.getSource();
         book.getAuthors().forEach(a -> {
-            if (!authorRepository.existsById(a.getId())) {
-                throw new RepositoryException("author with id " + a.getId() + " not exist");
-            }
+            // if (!authorRepository.existsById(a.getId())) {
+            // throw new RepositoryException("author with id " + a.getId() + " not exist");
+            // throw new RepositoryException("author with id " + a.getId() + " not exist");
         });
     }
 
@@ -47,10 +46,10 @@ public class BookMongoEventListener extends AbstractMongoEventListener<Book> {
         super.onAfterSave(event);
         final var book = event.getSource();
         book.getAuthors().forEach(a -> {
-            authorRepository.findById(a.getId()).ifPresent(author -> {
-                updateAuthorBooks(author, book);
-                authorRepository.save(author);
-            });
+            // authorRepository.findById(a.getId()).ifPresent(author -> {
+            // updateAuthorBooks(author, book);
+            // authorRepository.save(author);
+            // });
         });
     }
 

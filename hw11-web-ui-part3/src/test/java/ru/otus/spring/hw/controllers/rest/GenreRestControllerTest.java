@@ -53,7 +53,7 @@ public class GenreRestControllerTest {
         String genreJson = "{\"name\":\"genre name\"}";
         final var savedGenre = new Genre(genreName);
         savedGenre.setId("132");
-        given(genreRepository.save(any())).willReturn(savedGenre);
+        // given(genreRepository.save(any())).willReturn(savedGenre);
 
         mvc.perform(post("/api/genres").content(genreJson).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isCreated());

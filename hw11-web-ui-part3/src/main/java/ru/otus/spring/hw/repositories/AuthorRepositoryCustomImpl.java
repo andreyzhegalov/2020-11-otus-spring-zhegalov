@@ -1,7 +1,7 @@
 package ru.otus.spring.hw.repositories;
 
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -12,7 +12,7 @@ import ru.otus.spring.hw.model.Author;
 @RequiredArgsConstructor
 public class AuthorRepositoryCustomImpl implements AuthorRepositoryCustom {
 
-    private final MongoTemplate mongoTemplate;
+    private final ReactiveMongoTemplate mongoTemplate;
 
     @Override
     public void removeBookArrayElementsById(String id) {
