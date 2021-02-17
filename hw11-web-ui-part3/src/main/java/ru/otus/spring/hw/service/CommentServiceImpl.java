@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.controllers.dto.CommentDto;
-import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.repositories.BookRepository;
 import ru.otus.spring.hw.repositories.CommentRepository;
 
@@ -20,13 +19,15 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public CommentDto addComment(CommentDto commentDto) {
-        final var book = bookRepository.findById(commentDto.getBookId())
-                .orElseThrow(() -> new ServiceException("book with id " + commentDto.getBookId() + " not exist"));
-        final var comment = new Comment();
-        comment.setText(commentDto.getText());
-        comment.setBook(book);
-        final var savedComment = commentRepository.save(comment);
-        return new CommentDto(savedComment);
+        return null;
+        // final var book = bookRepository.findById(commentDto.getBookId())
+        // .orElseThrow(() -> new ServiceException("book with id " +
+        // commentDto.getBookId() + " not exist"));
+        // final var comment = new Comment();
+        // comment.setText(commentDto.getText());
+        // comment.setBook(book);
+        // final var savedComment = commentRepository.save(comment);
+        // return new CommentDto(savedComment);
     }
 
     @Transactional(readOnly = true)

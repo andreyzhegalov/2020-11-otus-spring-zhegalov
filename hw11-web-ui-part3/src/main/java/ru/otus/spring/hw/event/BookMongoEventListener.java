@@ -11,10 +11,12 @@ import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.CommentRepository;
+import ru.otus.spring.hw.repositories.RepositoryException;
 
 @Component
 @RequiredArgsConstructor
@@ -24,20 +26,22 @@ public class BookMongoEventListener extends AbstractMongoEventListener<Book> {
 
     private final CommentRepository commentRepository;
 
-    private void updateAuthorBooks(Author author, Book book) {
+    private Author updateAuthorBooks(Author author, Book book) {
         final var bookSet = Sets.newSet(author.getBooks().toArray(new Book[0]));
         bookSet.add(book);
         author.setBooks(Arrays.asList(bookSet.toArray(new Book[0])));
+        return author;
     }
 
     @Override
     public void onBeforeConvert(@NotNull BeforeConvertEvent<Book> event) {
         super.onBeforeConvert(event);
         final var book = event.getSource();
+
         book.getAuthors().forEach(a -> {
-            // if (!authorRepository.existsById(a.getId())) {
-            // throw new RepositoryException("author with id " + a.getId() + " not exist");
-            // throw new RepositoryException("author with id " + a.getId() + " not exist");
+            if (!authorRepository.existsById(a.getId()).block()) {
+                throw new RepositoryException("author with id " + a.getId() + " not exist");
+            }
         });
     }
 
@@ -45,12 +49,8 @@ public class BookMongoEventListener extends AbstractMongoEventListener<Book> {
     public void onAfterSave(@NotNull AfterSaveEvent<Book> event) {
         super.onAfterSave(event);
         final var book = event.getSource();
-        book.getAuthors().forEach(a -> {
-            // authorRepository.findById(a.getId()).ifPresent(author -> {
-            // updateAuthorBooks(author, book);
-            // authorRepository.save(author);
-            // });
-        });
+        Flux.fromIterable(book.getAuthors()).flatMap(a -> authorRepository.findById(a.getId()))
+                .map(a -> updateAuthorBooks(a, book)).flatMap(authorRepository::save).subscribe();
     }
 
     @Override

@@ -119,7 +119,7 @@ public class BookServiceImplTest {
         // given(authorRepository.findById("id2")).willReturn(Optional.of(author2));
         // given(genreRepository.findById(genreId)).willReturn(Optional.of(new
         // Genre("genre")));
-        given(bookRepository.save(any())).willReturn(book);
+        // given(bookRepository.save(any())).willReturn(book);
 
         bookService.save(newBookDto);
 

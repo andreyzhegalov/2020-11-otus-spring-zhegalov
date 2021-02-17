@@ -7,8 +7,6 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,13 +46,13 @@ public class CommentServiceImplTest {
     @Test
     void shouldSaveNewCommentForExistedBook() {
         final var bookId = "1";
-        final var book =  new Book();
+        final var book = new Book();
         book.setId(bookId);
         final var commentDto = new CommentDto("new text", bookId);
         final var comment = new Comment();
         comment.setId("123");
         comment.setBook(book);
-        given(bookRepository.findById(bookId)).willReturn(Optional.of(new Book()));
+        // given(bookRepository.findById(bookId)).willReturn(Optional.of(new Book()));
         given(commentRepository.save(any())).willReturn(comment);
 
         commentService.addComment(commentDto);
@@ -67,7 +65,7 @@ public class CommentServiceImplTest {
     void shouldNotSaveNewCommentIfBookNotExist() {
         final var notExistedBookId = "1";
         final var commentDto = new CommentDto("new text", notExistedBookId);
-        given(bookRepository.findById(notExistedBookId)).willReturn(Optional.empty());
+        // given(bookRepository.findById(notExistedBookId)).willReturn(Optional.empty());
 
         assertThatCode(() -> commentService.addComment(commentDto)).isInstanceOf(ServiceException.class);
 
