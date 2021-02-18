@@ -1,13 +1,12 @@
 package ru.otus.spring.hw.repositories;
 
-import java.util.List;
-
+import reactor.core.publisher.Flux;
 import ru.otus.spring.hw.controllers.dto.CommentDto;
 
 public interface CommentRepositoryCustom {
 
-    List<CommentDto> findAllDto();
+    Flux<CommentDto> findAllDto();
 
-    List<CommentDto> findAllDtoByBookId(String bookId);
+    Flux<CommentDto> findAllDtoByBookId(String bookId);
 
 }

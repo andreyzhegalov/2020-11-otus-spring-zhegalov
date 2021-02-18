@@ -1,5 +1,7 @@
 package ru.otus.spring.hw.event;
 
+import java.time.Duration;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeDeleteEvent;
@@ -22,7 +24,7 @@ public class AuthorMongoEventListener extends AbstractMongoEventListener<Author>
         final var source = event.getSource();
         final var authorId = source.get("_id").toString();
 
-        if (bookRepository.existsBookByAuthors_id(authorId)) {
+        if (bookRepository.existsBookByAuthors_id(authorId).block(Duration.ofMillis(500))) {
             throw new RepositoryException("author can't deleted with existed book");
         }
     }

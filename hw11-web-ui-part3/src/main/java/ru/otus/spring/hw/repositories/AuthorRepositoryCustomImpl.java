@@ -18,6 +18,6 @@ public class AuthorRepositoryCustomImpl implements AuthorRepositoryCustom {
     public void removeBookArrayElementsById(String id) {
         final var query = Query.query(Criteria.where("_id").is(new ObjectId(id)));
         final var update = new Update().pull("books", query);
-        mongoTemplate.updateMulti(new Query(), update, Author.class);
+        mongoTemplate.updateMulti(new Query(), update, Author.class).subscribe();
     }
 }

@@ -42,13 +42,15 @@ public class BookRepositoryTest extends AbstractRepositoryTest {
     void deletingBookShouldDeleteBookFromAuthors() {
         final Function<String, Flux<Author>> getAuthorsWithBook = bookId -> mongoOperations
                 .find(query(where("books.id").is(bookId)), Author.class);
-        final var bookWithManyAuthors = bookRepository.findAll().filter(b -> b.getAuthors().size() > 1).blockFirst();
+        final var bookWithManyAuthors = bookRepository.findAll().filter(b -> b.getAuthors().size() > 1)
+                .blockFirst(TIMEOUT);
         assertThat(bookWithManyAuthors).isNotNull();
-        assertThat(getAuthorsWithBook.apply(bookWithManyAuthors.getId()).blockFirst(TIMEOUT)).isNotNull();
+
+        assertThat(getAuthorsWithBook.apply(bookWithManyAuthors.getId()).buffer().blockFirst()).isNotEmpty();
 
         StepVerifier.create(bookRepository.delete(bookWithManyAuthors)).expectComplete().verify(TIMEOUT);
 
-        assertThat(getAuthorsWithBook.apply(bookWithManyAuthors.getId()).blockFirst(TIMEOUT)).isNotNull();
+        assertThat(getAuthorsWithBook.apply(bookWithManyAuthors.getId()).blockFirst()).isNull();
     }
 
     @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)

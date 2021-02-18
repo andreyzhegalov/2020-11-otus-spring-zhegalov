@@ -40,6 +40,7 @@ public class AuthorRepositoryTest extends AbstractRepositoryTest {
         assertThat(author.getBooks()).isEmpty();
 
         StepVerifier.create(authorRepository.delete(author)).expectComplete().verify(TIMEOUT);
+
         assertThat(authorRepository.findByName(AUTHOR_WITHOUT_BOOK).block(TIMEOUT)).isNull();
     }
 }

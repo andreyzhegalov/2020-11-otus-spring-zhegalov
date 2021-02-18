@@ -1,16 +1,16 @@
 package ru.otus.spring.hw.repositories;
 
-import java.util.List;
-
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.spring.hw.model.Comment;
 
 @Repository
-public interface CommentRepository extends MongoRepository<Comment, String>, CommentRepositoryCustom {
+public interface CommentRepository extends ReactiveMongoRepository<Comment, String>, CommentRepositoryCustom {
 
-    List<Comment> findAllByBook_id(String bookId);
+    Flux<Comment> findAllByBook_id(String bookId);
 
-    void removeAllByBook_id(String bookId);
+    Mono<Void> removeAllByBook_id(String bookId);
 }

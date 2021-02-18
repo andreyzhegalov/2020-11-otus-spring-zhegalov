@@ -9,9 +9,9 @@ import ru.otus.spring.hw.model.Book;
 @Repository
 public interface BookRepository extends ReactiveMongoRepository<Book, String> {
 
-    boolean existsBookByAuthors_id(String authorId);
+    Mono<Boolean> existsBookByAuthors_id(String authorId);
 
-    boolean existsBookByGenre_id(String genreId);
+    Mono<Boolean> existsBookByGenre_id(String genreId);
 
     Mono<Book> findByTitle(String name);
 }

@@ -33,13 +33,15 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     @Override
     public List<CommentDto> findAll() {
-        return commentRepository.findAllDto();
+        return null;
+        // return commentRepository.findAllDto();
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<CommentDto> findAllByBookId(String bookId) {
-        return commentRepository.findAllDtoByBookId(bookId);
+        return null;
+        // return commentRepository.findAllDtoByBookId(bookId);
     }
 
     @Transactional

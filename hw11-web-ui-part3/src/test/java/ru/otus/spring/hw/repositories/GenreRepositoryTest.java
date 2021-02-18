@@ -28,7 +28,7 @@ public class GenreRepositoryTest extends AbstractRepositoryTest {
     public void removalOfTheGenreWithTheBookShouldThrowException() {
         final var genre = genreRepository.findByName(USAGE_GENRE).blockOptional(TIMEOUT)
                 .orElseGet(() -> fail("genre not exist"));
-        StepVerifier.create(genreRepository.delete(genre)).expectError(RepositoryException.class).verify(TIMEOUT);
+        StepVerifier.create(genreRepository.delete(genre).log()).expectError(RepositoryException.class).verify(TIMEOUT);
     }
 
     @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)

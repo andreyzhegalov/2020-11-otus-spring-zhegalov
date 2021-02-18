@@ -1,10 +1,8 @@
 package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import org.junit.jupiter.api.Test;
@@ -53,7 +51,7 @@ public class CommentServiceImplTest {
         comment.setId("123");
         comment.setBook(book);
         // given(bookRepository.findById(bookId)).willReturn(Optional.of(new Book()));
-        given(commentRepository.save(any())).willReturn(comment);
+        // given(commentRepository.save(any())).willReturn(comment);
 
         commentService.addComment(commentDto);
 
