@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
-import com.mongodb.reactivestreams.client.MongoDatabase;
+import com.mongodb.client.MongoDatabase;
 
 import org.springframework.data.mongodb.core.MongoOperations;
 

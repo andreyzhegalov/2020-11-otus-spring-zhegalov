@@ -2,8 +2,6 @@ package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import java.util.Arrays;
@@ -89,7 +87,8 @@ public class BookServiceImplTest {
         newBookDto.setGenreId(genreId);
         newBookDto.setAuthorsId(Collections.singletonList(authorId));
 
-        // given(authorRepository.findById(authorId)).willReturn(Optional.of(new Author()));
+        // given(authorRepository.findById(authorId)).willReturn(Optional.of(new
+        // Author()));
         // given(authorRepository.findById(authorId)).willReturn(Optional.of(new
         // Author()));
 

@@ -2,7 +2,8 @@ spring:
   data:
     mongodb:
       database: library_zhegalov
-      uri: mongodb://localhost
+      uri: mongodb://172.17.0.3
+
 
 server:
   port: 8081
