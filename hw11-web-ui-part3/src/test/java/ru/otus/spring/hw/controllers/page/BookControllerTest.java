@@ -1,20 +1,26 @@
 package ru.otus.spring.hw.controllers.page;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-@WebMvcTest(controllers = BookController.class)
+import ru.otus.spring.hw.controllers.router.GlobalErrorAttributes;
+
+@WebFluxTest
+@Import(GlobalErrorAttributes.class)
 public class BookControllerTest {
+
     @Autowired
-    private MockMvc mvc;
+    private BookController bookController;
 
     @Test
-    void shouldRedirectFromRootToBooks() throws Exception {
-        mvc.perform(get("/")).andExpect(view().name("redirect:/books.html"));
+    void shouldRedirectFromRootToBooks() {
+        // final var client = WebTestClient.bindToController(bookController).build();
+        // client.get().uri("/").accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk();
+        //
+        // // mvc.perform(get("/")).andExpect(view().name("redirect:/books.html"));
     }
 }

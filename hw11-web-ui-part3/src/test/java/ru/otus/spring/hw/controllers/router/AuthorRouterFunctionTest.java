@@ -1,7 +1,6 @@
 package ru.otus.spring.hw.controllers.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.reactive.function.server.RouterFunction;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,13 +23,10 @@ import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.RepositoryException;
 
 @WebFluxTest({ AuthorRouter.class })
-@ComponentScan("ru.otus.spring.hw.controllers.reactive")
+@ComponentScan("ru.otus.spring.hw.controllers.router")
 public class AuthorRouterFunctionTest {
     @Autowired
     private WebTestClient client;
-
-    @Autowired
-    private RouterFunction<?> route;
 
     @MockBean
     private AuthorRepository authorRepository;
