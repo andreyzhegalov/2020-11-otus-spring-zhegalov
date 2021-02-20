@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doThrow;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -21,6 +22,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.repositories.AuthorRepository;
+import ru.otus.spring.hw.repositories.RepositoryException;
 
 @WebFluxTest({ AuthorRouter.class })
 @ComponentScan("ru.otus.spring.hw.controllers.reactive")
@@ -68,10 +70,10 @@ public class AuthorRouterFunctionTest {
     @Test
     void shouldNotSaveAuthorWithEmptyName(){
         final var savedAuthor = new Author();
-
         client.post().uri("/api/authors").accept(MediaType.APPLICATION_JSON).bodyValue(savedAuthor).exchange()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isBadRequest().expectBody()
-                .jsonPath("$.timestamp").isNotEmpty();
+                .jsonPath("$.timestamp").isNotEmpty()
+                .jsonPath("$.errors").isEqualTo("Please provide a author name");
 
         then(authorRepository).shouldHaveNoInteractions();
     }
@@ -85,28 +87,14 @@ public class AuthorRouterFunctionTest {
     }
 
     @Test
-    void shouldReturnAuthorById() {
-        final var authorName = "author2";
-        final var author = new Author(authorName);
-        given(authorRepository.findByName(any())).willReturn(Mono.just(author));
-        final var client = WebTestClient.bindToRouterFunction(route).build();
+    void shouldReturnErrorIfDeletedAuthorHasBook() {
+        final var authorId = "id_author_with_book";
+        final var errorMessage = "error message";
+        doThrow(new RepositoryException(errorMessage)).when(authorRepository).deleteById(authorId);
 
-        client.get().uri("/func/person?name=" + authorName).exchange().expectStatus().isOk().expectBody(Author.class)
-                .isEqualTo(author);
-
-        then(authorRepository).should().findByName(authorName);
-    }
-
-    @Test
-    void shouldReturnBadRequestStatusIfAuthorNotExist() {
-        final var authorName = "author2";
-        given(authorRepository.findByName(any())).willReturn(Mono.empty());
-        final var client = WebTestClient.bindToRouterFunction(route).build();
-
-        client.get().uri("/func/person?name=" + authorName).exchange().expectStatus().isBadRequest().expectBody()
-                .jsonPath("$.timestamp").isNotEmpty().jsonPath("$.errors")
-                .value(hasItem("Please provide a author name"));
-
-        then(authorRepository).should().findByName(authorName);
+        client.delete().uri("/api/authors/{id}", authorId).accept(MediaType.APPLICATION_JSON).exchange()
+            .expectStatus().isBadRequest().expectBody().consumeWith(System.out::println)
+                .jsonPath("$.errors").isEqualTo(errorMessage);
+        then(authorRepository).should().deleteById(authorId);
     }
 }
