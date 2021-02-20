@@ -24,7 +24,7 @@ import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.repositories.RepositoryException;
 
 @WebFluxTest({ GenreRouter.class })
-@Import({ GenreHandler.class, GlobalErrorAttributes.class })
+@Import({ GenreHandler.class, GlobalErrorAttributes.class, CustomValidator.class })
 public class GenreRouterFunctionTest {
     @Autowired
     private WebTestClient client;
@@ -39,13 +39,13 @@ public class GenreRouterFunctionTest {
     void shouldReturnGenreList() {
         final var genre1 = new Genre("genre1");
         final var genre2 = new Genre("genre2");
-        Flux<Genre> genreFlux = Flux.just(genre1, genre2);
+        final var genreFlux = Flux.just(genre1, genre2);
 
         given(genreRepository.findAll()).willReturn(genreFlux);
 
         client.get().uri("/api/genres").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON).expectBodyList(Genre.class)
-                .contains(genre1, genre2);
+                .expectHeader().contentType(MediaType.APPLICATION_JSON).expectBodyList(GenreDto.class)
+                .contains(new GenreDto(genre1), new GenreDto(genre2));
         then(genreRepository).should().findAll();
     }
 
@@ -65,7 +65,6 @@ public class GenreRouterFunctionTest {
 
     @Test
     void shouldNotSaveGenreWithEmptyName() {
-
         final var savedGenre = new GenreDto();
 
         client.post().uri("/api/genres").accept(MediaType.APPLICATION_JSON).bodyValue(savedGenre).exchange()

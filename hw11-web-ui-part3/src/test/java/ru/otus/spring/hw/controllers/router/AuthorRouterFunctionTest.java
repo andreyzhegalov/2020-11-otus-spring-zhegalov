@@ -18,12 +18,13 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import ru.otus.spring.hw.controllers.dto.AuthorDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.RepositoryException;
 
 @WebFluxTest({ AuthorRouter.class })
-@Import({GlobalErrorAttributes.class, AuthorHandler.class})
+@Import({ GlobalErrorAttributes.class, AuthorHandler.class, CustomValidator.class })
 public class AuthorRouterFunctionTest {
     @Autowired
     private WebTestClient client;
@@ -35,16 +36,17 @@ public class AuthorRouterFunctionTest {
     private ArgumentCaptor<Author> authorCaptor;
 
     @Test
-    void shouldReturnAuthorList(){
+    void shouldReturnAuthorList() {
         final var author1 = new Author("author1");
         final var author2 = new Author("author2");
-        Flux<Author> authorsFlux = Flux.just(author1, author2);
+        final var authorsFlux = Flux.just(author1, author2);
 
         given(authorRepository.findAll()).willReturn(authorsFlux);
 
         client.get().uri("/api/authors").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON).expectBodyList(Author.class)
-                .contains(author1, author2);
+                .expectHeader().contentType(MediaType.APPLICATION_JSON).expectBodyList(AuthorDto.class)
+                .contains(new AuthorDto(author1), new AuthorDto(author2));
+
         then(authorRepository).should().findAll();
     }
 
@@ -63,12 +65,11 @@ public class AuthorRouterFunctionTest {
     }
 
     @Test
-    void shouldNotSaveAuthorWithEmptyName(){
+    void shouldNotSaveAuthorWithEmptyName() {
         final var savedAuthor = new Author();
         client.post().uri("/api/authors").accept(MediaType.APPLICATION_JSON).bodyValue(savedAuthor).exchange()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isBadRequest().expectBody()
-                .jsonPath("$.timestamp").isNotEmpty()
-                .jsonPath("$.errors").isEqualTo("Please provide a author name");
+                .jsonPath("$.timestamp").isNotEmpty().jsonPath("$.errors").isEqualTo("Please provide a author name");
 
         then(authorRepository).shouldHaveNoInteractions();
     }
@@ -76,8 +77,8 @@ public class AuthorRouterFunctionTest {
     @Test
     void shouldRemoveAuthor() {
         final var authorId = "123";
-        client.delete().uri("/api/authors/{id}", authorId).accept(MediaType.APPLICATION_JSON).exchange()
-            .expectStatus().isOk();
+        client.delete().uri("/api/authors/{id}", authorId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
+                .isOk();
         then(authorRepository).should().deleteById(authorId);
     }
 
@@ -87,9 +88,9 @@ public class AuthorRouterFunctionTest {
         final var errorMessage = "error message";
         doThrow(new RepositoryException(errorMessage)).when(authorRepository).deleteById(authorId);
 
-        client.delete().uri("/api/authors/{id}", authorId).accept(MediaType.APPLICATION_JSON).exchange()
-            .expectStatus().isBadRequest().expectBody().consumeWith(System.out::println)
-                .jsonPath("$.errors").isEqualTo(errorMessage);
+        client.delete().uri("/api/authors/{id}", authorId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
+                .isBadRequest().expectBody().consumeWith(System.out::println).jsonPath("$.errors")
+                .isEqualTo(errorMessage);
         then(authorRepository).should().deleteById(authorId);
     }
 }

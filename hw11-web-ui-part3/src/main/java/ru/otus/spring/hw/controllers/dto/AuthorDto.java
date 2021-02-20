@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotBlank;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import ru.otus.spring.hw.model.Book;
 @NoArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode
 public class AuthorDto {
     private String id;
     @NotBlank(message = "Please provide a author name")

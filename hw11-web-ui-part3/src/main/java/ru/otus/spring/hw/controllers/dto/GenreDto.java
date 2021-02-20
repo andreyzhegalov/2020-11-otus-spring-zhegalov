@@ -2,6 +2,7 @@ package ru.otus.spring.hw.controllers.dto;
 
 import javax.validation.constraints.NotBlank;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import ru.otus.spring.hw.model.Genre;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode
 public class GenreDto {
     private String id;
     @NotBlank(message = "Please provide a genre name")
