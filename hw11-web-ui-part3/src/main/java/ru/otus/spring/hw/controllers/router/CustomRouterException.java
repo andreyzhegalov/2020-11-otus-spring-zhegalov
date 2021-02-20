@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.controllers.reactive;
+package ru.otus.spring.hw.controllers.router;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

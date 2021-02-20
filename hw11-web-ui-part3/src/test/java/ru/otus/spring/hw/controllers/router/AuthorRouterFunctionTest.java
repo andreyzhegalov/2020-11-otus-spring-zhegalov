@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.controllers.reactive;
+package ru.otus.spring.hw.controllers.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;

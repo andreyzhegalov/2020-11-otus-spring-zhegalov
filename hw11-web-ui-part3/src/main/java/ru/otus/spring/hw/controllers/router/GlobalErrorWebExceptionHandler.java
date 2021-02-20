@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.controllers.reactive;
+package ru.otus.spring.hw.controllers.router;
 
 import java.util.Map;
 
