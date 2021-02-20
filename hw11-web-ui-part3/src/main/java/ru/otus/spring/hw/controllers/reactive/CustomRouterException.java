@@ -7,6 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class CustomRouterException extends ResponseStatusException {
+    private static final long serialVersionUID = -3175505751677491423L;
     private final String message;
 
     public CustomRouterException(HttpStatus status, String message) {
