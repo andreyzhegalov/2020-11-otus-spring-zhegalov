@@ -14,7 +14,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 import ru.otus.spring.hw.controllers.dto.AuthorDto;
-import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 
 @RequiredArgsConstructor
@@ -24,8 +23,8 @@ class AuthorHandler {
     private final Validator validator;
 
     public Mono<ServerResponse> getAllAuthors(ServerRequest request) {
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(authorRepository.findAll(),
-                Author.class);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(authorRepository.findAll().map(AuthorDto::new), AuthorDto.class);
     }
 
     private void validate(AuthorDto author) {

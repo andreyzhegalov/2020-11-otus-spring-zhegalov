@@ -1,22 +1,22 @@
 package ru.otus.spring.hw.controllers.router;
 
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Configuration
-public class AuthorRouter {
+public class GenreRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> authorComposedRoutes(AuthorHandler handler) {
+    public RouterFunction<ServerResponse> genreComposedRoutes(GenreHandler handler) {
         return route()
-            .GET("/api/authors", handler::getAllAuthors)
-            .POST("/api/authors", handler::saveAuthor)
-            .DELETE("/api/authors/{id}", handler::deleteAuthor)
+            .GET("/api/genres", handler::findAll)
+            .POST("/api/genres", handler::saveGenre)
+            .DELETE("/api/genres/{id}", handler::deleteGenre)
             .build();
     }
 
 }
+

@@ -12,7 +12,7 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -23,7 +23,7 @@ import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.RepositoryException;
 
 @WebFluxTest({ AuthorRouter.class })
-@ComponentScan("ru.otus.spring.hw.controllers.router")
+@Import({GlobalErrorAttributes.class, AuthorHandler.class})
 public class AuthorRouterFunctionTest {
     @Autowired
     private WebTestClient client;

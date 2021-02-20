@@ -26,7 +26,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import ru.otus.spring.hw.controllers.rest.GenreRestController;
 import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.repositories.RepositoryException;
