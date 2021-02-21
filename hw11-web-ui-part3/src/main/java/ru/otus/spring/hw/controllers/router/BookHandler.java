@@ -14,12 +14,23 @@ import ru.otus.spring.hw.repositories.BookRepository;
 @Component
 public class BookHandler {
     private final BookRepository bookRepository;
-    private final CustomValidator validator;
+    private final CustomValidator<BookDto> validator;
 
     public Mono<ServerResponse> findAll(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(bookRepository.findAll().map(book -> {
                     return new BookDto(book);
                 }), BookDto.class);
+    }
+
+    public Mono<ServerResponse> saveBook(ServerRequest request) {
+        Mono<BookDto> newBook = request.bodyToMono(BookDto.class);
+
+        // Mono<AuthorDto> savedAuthorDto = newAuthor.doOnNext(validator::validate).map(AuthorDto::toEntity)
+        //         .flatMap(authorRepository::save).map(AuthorDto::new);
+
+        Mono<BookDto> savedBookDto = newBook.doOnNext(validator::validate);
+        return ServerResponse.created(null).contentType(MediaType.APPLICATION_JSON).body(savedBookDto,
+                BookDto.class);
     }
 }

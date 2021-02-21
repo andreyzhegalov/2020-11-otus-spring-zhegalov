@@ -30,7 +30,7 @@ public class BookRouter {
     public RouterFunction<ServerResponse> bookComposedRoutes(BookHandler handler) {
         return route()
             .GET("/api/books", handler::findAll)
-            // .POST("/api/authors", handler::saveAuthor)
+            .POST("/api/books", handler::saveBook)
             // .DELETE("/api/authors/{id}", handler::deleteAuthor)
             .build();
     }

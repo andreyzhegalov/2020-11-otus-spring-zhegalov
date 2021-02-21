@@ -5,6 +5,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
+
+import org.hamcrest.Matchers;
+
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -47,7 +50,7 @@ public class BookRouterTest {
 
         final var book1 = new Book();
         book1.setId("1");
-        book1.setTitle ("book1");
+        book1.setTitle("book1");
         book1.setGenre(genre);
         final var book2 = new Book();
         book2.setId("2");
@@ -57,8 +60,7 @@ public class BookRouterTest {
         given(bookRepository.findAll()).willReturn(Flux.just(book1, book2));
 
         client.get().uri("/api/books").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBodyList(BookDto.class)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON).expectBodyList(BookDto.class)
                 .contains(new BookDto(book1), new BookDto(book2));
 
         then(bookRepository).should().findAll();
@@ -69,18 +71,12 @@ public class BookRouterTest {
         final var bookDto = new BookDto();
         bookDto.setTitle(" ");
         assertThat(bookDto.getTitle()).isBlank();
-        client.post().uri("/api/books").accept(MediaType.APPLICATION_JSON)
-            .bodyValue(bookDto)
-            .exchange()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isBadRequest().expectBody()
-                .jsonPath("$.timestamp").isNotEmpty().jsonPath("$.errors").isEqualTo("Please provide a author name");
-
-
-        // mvc.perform(post("/api/books").content(bookJson).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
-        //         .andDo(print()).andExpect(status().isBadRequest())
-        //         .andExpect(jsonPath("$.timestamp", is(notNullValue()))).andExpect(jsonPath("$.status", is(400)))
-        //         .andExpect(jsonPath("$.errors").isArray()).andExpect(jsonPath("$.errors", hasSize(3)))
-        //         .andExpect(jsonPath("$.errors", hasItem("Please provide a book title")));
+        final var body = client.post().uri("/api/books").accept(MediaType.APPLICATION_JSON).bodyValue(bookDto)
+                .exchange().expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isBadRequest()
+                .expectBody().jsonPath("$.timestamp").isNotEmpty().jsonPath("$.errors");
+        body.value(Matchers.containsString("provide a book title"));
+        body.value(Matchers.containsString("provide a genre"));
+        body.value(Matchers.containsString("provide a authors"));
 
         then(bookRepository).shouldHaveNoInteractions();
     }
