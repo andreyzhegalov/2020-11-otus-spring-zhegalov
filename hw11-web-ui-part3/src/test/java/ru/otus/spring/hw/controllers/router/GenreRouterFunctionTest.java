@@ -77,8 +77,8 @@ public class GenreRouterFunctionTest {
     @Test
     void shouldRemoveGenre() {
         final var genreId = "123";
-        client.delete().uri("/api/genres/{id}", genreId).accept(MediaType.APPLICATION_JSON).exchange()
-            .expectStatus().isOk();
+        client.delete().uri("/api/genres/{id}", genreId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
+                .isOk();
         then(genreRepository).should().deleteById(genreId);
     }
 

@@ -9,13 +9,11 @@ import javax.validation.constraints.NotEmpty;
 
 import org.jetbrains.annotations.NotNull;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import ru.otus.spring.hw.model.Book;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class BookDto {
     private String id;

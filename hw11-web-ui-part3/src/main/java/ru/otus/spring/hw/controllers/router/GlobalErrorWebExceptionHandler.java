@@ -41,11 +41,14 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     private @NotNull Mono<ServerResponse> renderErrorResponse(final ServerRequest request) {
         final var error = getError(request);
         final Map<String, Object> errorPropertiesMap = getErrorAttributes(request, ErrorAttributeOptions.defaults());
+        if(HttpStatus.INTERNAL_SERVER_ERROR.equals(errorPropertiesMap.get("status")) ){
+            errorPropertiesMap.put("status", HttpStatus.BAD_REQUEST);
+        }
         if (error instanceof CustomRouterException) {
             errorPropertiesMap.put("errors", error.getMessage());
         }
-        return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
+        final var status = (Integer)errorPropertiesMap.get("status");
+        return ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(errorPropertiesMap));
     }
-
 }
