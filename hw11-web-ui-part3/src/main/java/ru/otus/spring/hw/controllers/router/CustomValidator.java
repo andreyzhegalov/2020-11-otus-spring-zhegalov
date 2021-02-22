@@ -3,13 +3,14 @@ package ru.otus.spring.hw.controllers.router;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class CustomValidator<T> {
@@ -23,9 +24,9 @@ public class CustomValidator<T> {
                 .collect(Collectors.joining(","));
 
         if (Objects.nonNull(errors) && !errors.getAllErrors().isEmpty()) {
-            throw new CustomRouterException(HttpStatus.BAD_REQUEST, errorMessages);
+            log.error(errorMessages);
+            throw new CustomRouterException(errorMessages);
         }
     }
 
 }
-

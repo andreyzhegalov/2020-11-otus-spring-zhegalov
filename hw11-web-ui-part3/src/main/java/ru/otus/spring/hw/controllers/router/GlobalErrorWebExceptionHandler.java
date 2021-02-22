@@ -20,8 +20,11 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
+import ru.otus.spring.hw.repositories.RepositoryException;
 
+@Slf4j
 @Component
 @Order(-2)
 public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler {
@@ -41,14 +44,16 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     private @NotNull Mono<ServerResponse> renderErrorResponse(final ServerRequest request) {
         final var error = getError(request);
         final Map<String, Object> errorPropertiesMap = getErrorAttributes(request, ErrorAttributeOptions.defaults());
-        if(HttpStatus.valueOf((Integer)errorPropertiesMap.get("status")).is5xxServerError() ){
+        if (HttpStatus.valueOf((Integer) errorPropertiesMap.get("status")).is5xxServerError()) {
+            log.error("internal server error: " + error.getMessage());
             errorPropertiesMap.put("status", HttpStatus.BAD_REQUEST);
         }
-        if (error instanceof CustomRouterException) {
+        if (error instanceof CustomRouterException || error instanceof RepositoryException) {
             errorPropertiesMap.put("errors", error.getMessage());
         }
-        final var status = (Integer)errorPropertiesMap.get("status");
+        final var status = (HttpStatus) errorPropertiesMap.get("status");
         return ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(errorPropertiesMap));
     }
+
 }

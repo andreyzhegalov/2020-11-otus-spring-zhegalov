@@ -1,6 +1,5 @@
 package ru.otus.spring.hw.controllers.router;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -31,9 +30,7 @@ public class GenreHandler {
 
     public Mono<ServerResponse> deleteGenre(ServerRequest request) {
         final Mono<String> id = Mono.just(request.pathVariable("id"));
-        final var result = id.doOnNext(genreRepository::deleteById).onErrorMap(e -> {
-            throw new CustomRouterException(HttpStatus.BAD_REQUEST, e.getMessage());
-        });
+        final var result = id.doOnNext(genreRepository::deleteById);
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(result, Void.class);
     }
 }

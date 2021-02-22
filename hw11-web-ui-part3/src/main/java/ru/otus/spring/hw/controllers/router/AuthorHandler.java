@@ -1,6 +1,5 @@
 package ru.otus.spring.hw.controllers.router;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -32,9 +31,7 @@ class AuthorHandler {
 
     public Mono<ServerResponse> deleteAuthor(ServerRequest request) {
         final Mono<String> id = Mono.just(request.pathVariable("id"));
-        final var result = id.doOnNext(authorRepository::deleteById).onErrorMap(e -> {
-            throw new CustomRouterException(HttpStatus.BAD_REQUEST, e.getMessage());
-        });
+        final var result = id.doOnNext(authorRepository::deleteById);
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(result, Void.class);
     }
 }
