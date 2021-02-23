@@ -17,7 +17,7 @@ mongock:
 
 logging:
   level:
-    ROOT: INFO
-    org.springframework: INFO
-    ru.otus.spring.hw: INFO
-    org.mongodb.driver: INFO
+    ROOT: DEBUG
+    org.springframework: DEBUG
+    ru.otus.spring.hw: DEBUG
+    org.mongodb.driver: DEBUG

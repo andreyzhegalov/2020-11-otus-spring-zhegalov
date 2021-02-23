@@ -37,12 +37,11 @@ public class BookMongoEventListener extends AbstractMongoEventListener<Book> {
     public void onBeforeConvert(@NotNull BeforeConvertEvent<Book> event) {
         super.onBeforeConvert(event);
         final var book = event.getSource();
-
-        book.getAuthors().forEach(a -> {
-            if (!authorRepository.existsById(a.getId()).block()) {
-                throw new RepositoryException("author with id " + a.getId() + " not exist");
+        Flux.fromIterable(book.getAuthors()).flatMap(a -> authorRepository.existsById(a.getId())).doOnNext(isExist -> {
+            if (!isExist) {
+                throw new RepositoryException("author with not exist");
             }
-        });
+        }).subscribe();
     }
 
     @Override
