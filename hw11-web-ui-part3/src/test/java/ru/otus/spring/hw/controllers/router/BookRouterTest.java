@@ -5,9 +5,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
 
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -46,16 +49,43 @@ public class BookRouterTest {
     @Captor
     private ArgumentCaptor<Book> captor;
 
+    private String genreId;
+    private Genre genre;
+    private String author1Id;
+    private Author author1;
+    private String author2Id;
+    private Author author2;
+    private List<Author> authorList;
+    private Book savedBook;
+
+    @BeforeEach
+    void setUp() {
+        genreId = "genreId";
+        genre = new Genre("genre1");
+        genre.setId(genreId);
+
+        author1Id = new String("authorId1");
+        author1 = new Author("name1");
+        author1.setId(author1Id);
+        author2Id = new String("authorId2");
+        author2 = new Author("name2");
+        author2.setId(author2Id);
+        authorList = ImmutableList.of(author1, author2);
+
+        savedBook = new Book();
+        savedBook.setTitle("new book title");
+        savedBook.setId("123");
+        savedBook.setGenre(genre);
+        savedBook.setAuthors(authorList);
+    }
+
     @Test
     void shouldReturnBooksList() {
-        final var genre = new Genre();
-        genre.setId("genreId");
-        genre.setName("genreName");
-
         final var book1 = new Book();
         book1.setId("1");
         book1.setTitle("book1");
         book1.setGenre(genre);
+
         final var book2 = new Book();
         book2.setId("2");
         book2.setTitle("book2");
@@ -87,24 +117,6 @@ public class BookRouterTest {
 
     @Test
     void shouldAddNewBookForExistedAuthorAndGenre() throws Exception {
-        final var genreId = "genreId";
-        final var genre = new Genre("genre1");
-        genre.setId(genreId);
-
-        final var author1Id = new String("authorId1");
-        final var author1 = new Author("name1");
-        author1.setId(author1Id);
-        final var author2Id = new String("authorId2");
-        final var author2 = new Author("name2");
-        author2.setId(author2Id);
-        final var authorList = ImmutableList.of(author1, author2);
-
-        final var savedBook = new Book();
-        savedBook.setTitle("new book title");
-        savedBook.setId("123");
-        savedBook.setGenre(genre);
-        savedBook.setAuthors(authorList);
-
         given(genreRepository.findById(genreId)).willReturn(Mono.just(genre));
         given(bookRepository.save(any())).willReturn(Mono.just(savedBook));
         given(authorRepository.findById(author1Id)).willReturn(Mono.just(author1));
@@ -124,24 +136,6 @@ public class BookRouterTest {
 
     @Test
     void shouldReturnBadRequestWhenGenreNotExistForTheSavedBook() throws Exception {
-        final var genreId = "genreId";
-        final var genre = new Genre("genre1");
-        genre.setId(genreId);
-
-        final var author1Id = new String("authorId1");
-        final var author1 = new Author("name1");
-        author1.setId(author1Id);
-        final var author2Id = new String("authorId2");
-        final var author2 = new Author("name2");
-        author2.setId(author2Id);
-        final var authorList = ImmutableList.of(author1, author2);
-
-        final var savedBook = new Book();
-        savedBook.setTitle("new book title");
-        savedBook.setId("123");
-        savedBook.setGenre(genre);
-        savedBook.setAuthors(authorList);
-
         given(genreRepository.findById(genreId)).willReturn(Mono.empty());
         given(authorRepository.findById(author1Id)).willReturn(Mono.just(author1));
         given(authorRepository.findById(author2Id)).willReturn(Mono.just(author2));
@@ -154,26 +148,8 @@ public class BookRouterTest {
 
     @Test
     void shouldReturnBadRequestWhenAuthorNotExistForTheSavedBook() throws Exception {
-        final var genreId = "genreId";
-        final var genre = new Genre("genre1");
-        genre.setId(genreId);
-
-        final var author1Id = new String("authorId1");
-        final var author1 = new Author("name1");
-        author1.setId(author1Id);
-        final var author2Id = new String("authorId2");
-        final var author2 = new Author("name2");
-        author2.setId(author2Id);
-        final var authorList = ImmutableList.of(author1, author2);
-
-        final var savedBook = new Book();
-        savedBook.setTitle("new book title");
-        savedBook.setId("123");
-        savedBook.setGenre(genre);
-        savedBook.setAuthors(authorList);
-
-        given(genreRepository.findById(genreId)).willReturn(Mono.just(genre));
-        given(authorRepository.findById(author1Id)).willReturn(Mono.just(author1));
+        given(genreRepository.findById(savedBook.getGenre().getId())).willReturn(Mono.just(savedBook.getGenre()));
+        given(authorRepository.findById(author1Id)).willReturn(Mono.just(savedBook.getAuthors().get(0)));
         given(authorRepository.findById(author2Id)).willReturn(Mono.empty());
 
         client.post().uri("/api/books").accept(MediaType.APPLICATION_JSON).bodyValue(new BookDto(savedBook)).exchange()

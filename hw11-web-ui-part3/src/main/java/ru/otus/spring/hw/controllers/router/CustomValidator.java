@@ -1,6 +1,5 @@
 package ru.otus.spring.hw.controllers.router;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -29,5 +28,4 @@ public class CustomValidator<T> {
             throw new CustomRouterException(errorMessages);
         }
     }
-
 }

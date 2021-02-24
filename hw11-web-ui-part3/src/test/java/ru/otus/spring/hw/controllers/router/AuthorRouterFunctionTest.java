@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.doThrow;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -22,7 +21,6 @@ import ru.otus.spring.hw.controllers.dto.AuthorDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.BookRepository;
-import ru.otus.spring.hw.repositories.RepositoryException;
 
 @WebFluxTest({ AuthorRouter.class })
 @Import({ GlobalErrorAttributes.class, AuthorHandler.class, CustomValidator.class })

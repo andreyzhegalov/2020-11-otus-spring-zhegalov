@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.doThrow;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,8 +19,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.spring.hw.controllers.dto.GenreDto;
 import ru.otus.spring.hw.model.Genre;
+import ru.otus.spring.hw.repositories.BookRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
-import ru.otus.spring.hw.repositories.RepositoryException;
 
 @WebFluxTest({ GenreRouter.class })
 @Import({ GenreHandler.class, GlobalErrorAttributes.class, CustomValidator.class })
@@ -31,6 +30,9 @@ public class GenreRouterFunctionTest {
 
     @MockBean
     private GenreRepository genreRepository;
+
+    @MockBean
+    private BookRepository bookRepository;
 
     @Captor
     private ArgumentCaptor<Genre> genreCaptor;
@@ -77,6 +79,9 @@ public class GenreRouterFunctionTest {
     @Test
     void shouldRemoveGenre() {
         final var genreId = "123";
+        given(bookRepository.existsBookByGenre_id(genreId)).willReturn(Mono.just(false));
+        given(genreRepository.deleteById(genreId)).willReturn(Mono.empty());
+
         client.delete().uri("/api/genres/{id}", genreId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
                 .isOk();
         then(genreRepository).should().deleteById(genreId);
@@ -85,12 +90,11 @@ public class GenreRouterFunctionTest {
     @Test
     void shouldReturnErrorIfDeletedGenreHasBook() {
         final var genreId = "id_genre_with_book";
-        final var errorMessage = "error";
-        doThrow(new RepositoryException(errorMessage)).when(genreRepository).deleteById(genreId);
+        given(bookRepository.existsBookByGenre_id(genreId)).willReturn(Mono.just(true));
 
         client.delete().uri("/api/genres/{id}", genreId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
-                .isBadRequest().expectBody().jsonPath("$.errors").isEqualTo(errorMessage);
+                .isBadRequest().expectBody().jsonPath("$.errors").isEqualTo("genre can't deleted with existed book");
 
-        then(genreRepository).should().deleteById(genreId);
+        then(genreRepository).shouldHaveNoInteractions();
     }
 }
