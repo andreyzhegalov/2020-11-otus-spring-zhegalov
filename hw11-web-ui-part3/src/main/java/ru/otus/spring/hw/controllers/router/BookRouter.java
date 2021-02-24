@@ -10,28 +10,12 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @Configuration
 public class BookRouter {
 
-    // @GetMapping("/api/books")
-    // public List<BookDto> findAll() {
-    //     return bookService.findAll().stream().map(BookDto::new).collect(Collectors.toList());
-    // }
-    //
-    // @PostMapping("/api/books")
-    // @ResponseStatus(HttpStatus.CREATED)
-    // public BookDto saveAuthor(@Valid @RequestBody BookDto bookDto) {
-    //     return bookService.save(bookDto);
-    // }
-    //
-    // @DeleteMapping("/api/books/{id}")
-    // public void deleteBook(@PathVariable("id") @NotBlank String id) {
-    //     bookService.deleteBook(id);
-    // }
-
     @Bean
     public RouterFunction<ServerResponse> bookComposedRoutes(BookHandler handler) {
         return route()
             .GET("/api/books", handler::findAll)
             .POST("/api/books", handler::saveBook)
-            // .DELETE("/api/authors/{id}", handler::deleteAuthor)
+            .DELETE("/api/books/{id}", handler::deleteBook)
             .build();
     }
 }

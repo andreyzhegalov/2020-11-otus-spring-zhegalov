@@ -46,12 +46,12 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
         final Map<String, Object> errorPropertiesMap = getErrorAttributes(request, ErrorAttributeOptions.defaults());
         if (HttpStatus.valueOf((Integer) errorPropertiesMap.get("status")).is5xxServerError()) {
             log.error("internal server error: " + error.getMessage());
-            errorPropertiesMap.put("status", HttpStatus.BAD_REQUEST);
+            errorPropertiesMap.put("status", HttpStatus.BAD_REQUEST.value());
         }
         if (error instanceof CustomRouterException || error instanceof RepositoryException) {
             errorPropertiesMap.put("errors", error.getMessage());
         }
-        final var status = (HttpStatus) errorPropertiesMap.get("status");
+        final var status = (int)errorPropertiesMap.get("status");
         return ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(errorPropertiesMap));
     }

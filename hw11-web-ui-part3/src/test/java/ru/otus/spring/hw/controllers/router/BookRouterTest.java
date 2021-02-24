@@ -101,7 +101,7 @@ public class BookRouterTest {
     }
 
     @Test
-    void shouldNotSaveBookWithOutTitle() throws Exception {
+    void shouldNotSaveBookWithOutTitle() {
         final var bookDto = new BookDto();
         bookDto.setTitle(" ");
         assertThat(bookDto.getTitle()).isBlank();
@@ -116,7 +116,7 @@ public class BookRouterTest {
     }
 
     @Test
-    void shouldAddNewBookForExistedAuthorAndGenre() throws Exception {
+    void shouldAddNewBookForExistedAuthorAndGenre() {
         given(genreRepository.findById(genreId)).willReturn(Mono.just(genre));
         given(bookRepository.save(any())).willReturn(Mono.just(savedBook));
         given(authorRepository.findById(author1Id)).willReturn(Mono.just(author1));
@@ -135,7 +135,7 @@ public class BookRouterTest {
     }
 
     @Test
-    void shouldReturnBadRequestWhenGenreNotExistForTheSavedBook() throws Exception {
+    void shouldReturnBadRequestWhenGenreNotExistForTheSavedBook() {
         given(genreRepository.findById(genreId)).willReturn(Mono.empty());
         given(authorRepository.findById(author1Id)).willReturn(Mono.just(author1));
         given(authorRepository.findById(author2Id)).willReturn(Mono.just(author2));
@@ -147,7 +147,7 @@ public class BookRouterTest {
     }
 
     @Test
-    void shouldReturnBadRequestWhenAuthorNotExistForTheSavedBook() throws Exception {
+    void shouldReturnBadRequestWhenAuthorNotExistForTheSavedBook() {
         given(genreRepository.findById(savedBook.getGenre().getId())).willReturn(Mono.just(savedBook.getGenre()));
         given(authorRepository.findById(author1Id)).willReturn(Mono.just(savedBook.getAuthors().get(0)));
         given(authorRepository.findById(author2Id)).willReturn(Mono.empty());
@@ -156,5 +156,16 @@ public class BookRouterTest {
                 .expectStatus().isBadRequest();
 
         then(bookRepository).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldRemoveBook() {
+        final var bookId = "123";
+        given(bookRepository.deleteById(bookId)).willReturn(Mono.empty());
+
+        client.delete().uri("/api/books/{id}", bookId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
+                .isOk();
+
+        then(bookRepository).should().deleteById(bookId);
     }
 }

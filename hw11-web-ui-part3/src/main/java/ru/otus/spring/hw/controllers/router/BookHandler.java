@@ -72,4 +72,9 @@ public class BookHandler {
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(savedBookDto, BookDto.class);
     }
+
+    public @NotNull Mono<ServerResponse> deleteBook(ServerRequest request) {
+        return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN)
+                .body(bookRepository.deleteById(request.pathVariable("id")).log(), String.class);
+    }
 }
