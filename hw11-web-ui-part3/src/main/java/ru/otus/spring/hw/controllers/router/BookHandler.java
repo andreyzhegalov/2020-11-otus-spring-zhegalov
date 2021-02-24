@@ -54,11 +54,13 @@ public class BookHandler {
                     return tuple.book.getAuthorsId();
                 })
                 // take authors
-                .flatMap(authorRepository::findById).defaultIfEmpty(new Author()).doOnNext(author -> {
-                    if (Objects.isNull(author.getId())) {
+                .flatMap(id -> {
+                    final var author = authorRepository.findById(id);
+                    return author;
+                }).buffer(100).last().map(authorList -> {
+                    if (tuple.book.getAuthorsId().size() != authorList.size()) {
                         throw new RepositoryException("author not exist ");
                     }
-                }).buffer(100).last().map(authorList -> {
                     tuple.authorList = authorList;
                     return tuple;
                 })

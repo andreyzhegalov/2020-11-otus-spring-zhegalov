@@ -111,7 +111,7 @@ public class BookRouterTest {
         given(authorRepository.findById(author2Id)).willReturn(Mono.just(author2));
 
         client.post().uri("/api/books").accept(MediaType.APPLICATION_JSON).bodyValue(new BookDto(savedBook)).exchange()
-                .expectStatus().isCreated().expectBody(BookDto.class)
+                .expectStatus().isOk().expectBody(BookDto.class)
                 .value(bookDto -> assertThat(bookDto.getId()).isNotNull().isNotBlank());
 
         then(genreRepository).should().findById(genreId);
@@ -173,8 +173,8 @@ public class BookRouterTest {
         savedBook.setAuthors(authorList);
 
         given(genreRepository.findById(genreId)).willReturn(Mono.just(genre));
-        given(authorRepository.findById(author1Id)).willReturn(Mono.empty());
-        given(authorRepository.findById(author2Id)).willReturn(Mono.just(author2));
+        given(authorRepository.findById(author1Id)).willReturn(Mono.just(author1));
+        given(authorRepository.findById(author2Id)).willReturn(Mono.empty());
 
         client.post().uri("/api/books").accept(MediaType.APPLICATION_JSON).bodyValue(new BookDto(savedBook)).exchange()
                 .expectStatus().isBadRequest();

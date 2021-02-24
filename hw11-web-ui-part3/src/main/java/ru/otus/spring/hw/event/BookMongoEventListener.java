@@ -7,7 +7,6 @@ import org.mockito.internal.util.collections.Sets;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.AfterDeleteEvent;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
-import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.CommentRepository;
-import ru.otus.spring.hw.repositories.RepositoryException;
 
 @Component
 @RequiredArgsConstructor
@@ -31,17 +29,6 @@ public class BookMongoEventListener extends AbstractMongoEventListener<Book> {
         bookSet.add(book);
         author.setBooks(Arrays.asList(bookSet.toArray(new Book[0])));
         return author;
-    }
-
-    @Override
-    public void onBeforeConvert(@NotNull BeforeConvertEvent<Book> event) {
-        super.onBeforeConvert(event);
-        final var book = event.getSource();
-        Flux.fromIterable(book.getAuthors()).flatMap(a -> authorRepository.existsById(a.getId())).doOnNext(isExist -> {
-            if (!isExist) {
-                throw new RepositoryException("author with not exist");
-            }
-        }).subscribe();
     }
 
     @Override

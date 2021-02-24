@@ -6,7 +6,6 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.time.Duration;
-import java.util.Collections;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
@@ -70,16 +69,6 @@ public class BookRepositoryTest extends AbstractRepositoryTest {
     private Genre getExistedGenre() {
         return mongoOperations.findOne(query(where("name").is(EXISTED_GENRE_NAME)), Genre.class).blockOptional(TIMEOUT)
                 .orElseGet(() -> fail("author not exist"));
-    }
-
-    @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
-    @Test
-    void savedNewBookShouldThrowExceptionIfAuthorNotExist() {
-        final var notExistedAuthor = new Author("not existed id", "unknown author", Collections.emptyList());
-        assertThat(mongoOperations.findById(notExistedAuthor.getId(), Author.class).block(TIMEOUT)).isNull();
-        final var newBook = new Book("new book", getExistedGenre(), notExistedAuthor);
-
-        StepVerifier.create(bookRepository.save(newBook).log()).expectError(RepositoryException.class).verify(TIMEOUT);
     }
 
     @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
