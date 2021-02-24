@@ -3,6 +3,7 @@ package ru.otus.spring.hw.controllers.router;
 import java.util.List;
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -33,12 +34,12 @@ public class BookHandler {
         List<Author> authorList;
     }
 
-    public Mono<ServerResponse> findAll(ServerRequest request) {
+    public @NotNull Mono<ServerResponse> findAll(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(bookRepository.findAll().map(BookDto::new), BookDto.class);
     }
 
-    public Mono<ServerResponse> saveBook(ServerRequest request) {
+    public @NotNull Mono<ServerResponse> saveBook(ServerRequest request) {
         final Mono<BookDto> newBook = request.bodyToMono(BookDto.class);
         final Mono<BookDto> validBookDto = newBook.doOnNext(validator::validate);
 

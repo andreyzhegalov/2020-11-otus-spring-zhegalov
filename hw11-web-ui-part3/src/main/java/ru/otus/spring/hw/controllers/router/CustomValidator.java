@@ -3,6 +3,7 @@ package ru.otus.spring.hw.controllers.router;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
@@ -20,10 +21,10 @@ public class CustomValidator<T> {
         final var errors = new BeanPropertyBindingResult(entity, "");
         validator.validate(entity, errors);
 
-        String errorMessages = errors.getFieldErrors().stream().map(x -> x.getDefaultMessage())
+        String errorMessages = errors.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(","));
 
-        if (Objects.nonNull(errors) && !errors.getAllErrors().isEmpty()) {
+        if (!errors.getAllErrors().isEmpty()) {
             log.error(errorMessages);
             throw new CustomRouterException(errorMessages);
         }

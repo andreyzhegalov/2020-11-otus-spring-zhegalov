@@ -21,6 +21,7 @@ import reactor.core.publisher.Mono;
 import ru.otus.spring.hw.controllers.dto.AuthorDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.repositories.AuthorRepository;
+import ru.otus.spring.hw.repositories.BookRepository;
 import ru.otus.spring.hw.repositories.RepositoryException;
 
 @WebFluxTest({ AuthorRouter.class })
@@ -31,6 +32,9 @@ public class AuthorRouterFunctionTest {
 
     @MockBean
     private AuthorRepository authorRepository;
+
+    @MockBean
+    private BookRepository bookRepository;
 
     @Captor
     private ArgumentCaptor<Author> authorCaptor;
@@ -58,7 +62,7 @@ public class AuthorRouterFunctionTest {
         given(authorRepository.save(any())).willReturn(Mono.just(savedAuthor));
 
         client.post().uri("/api/authors").accept(MediaType.APPLICATION_JSON).bodyValue(new Author(authorName))
-                .exchange().expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isCreated();
+                .exchange().expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isOk();
 
         then(authorRepository).should().save(authorCaptor.capture());
         assertThat(authorCaptor.getValue().getName()).isEqualTo(authorName);
@@ -77,6 +81,8 @@ public class AuthorRouterFunctionTest {
     @Test
     void shouldRemoveAuthor() {
         final var authorId = "123";
+        given(bookRepository.existsBookByAuthors_id(authorId)).willReturn(Mono.just(false));
+        given(authorRepository.deleteById(authorId)).willReturn(Mono.empty());
         client.delete().uri("/api/authors/{id}", authorId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
                 .isOk();
         then(authorRepository).should().deleteById(authorId);
@@ -85,12 +91,11 @@ public class AuthorRouterFunctionTest {
     @Test
     void shouldReturnErrorIfDeletedAuthorHasBook() {
         final var authorId = "id_author_with_book";
-        final var errorMessage = "error message";
-        doThrow(new RepositoryException(errorMessage)).when(authorRepository).deleteById(authorId);
+        given(bookRepository.existsBookByAuthors_id(authorId)).willReturn(Mono.just(true));
 
         client.delete().uri("/api/authors/{id}", authorId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
                 .isBadRequest().expectBody().consumeWith(System.out::println).jsonPath("$.errors")
-                .isEqualTo(errorMessage);
-        then(authorRepository).should().deleteById(authorId);
+                .isEqualTo("author can't deleted with existed book");
+        then(authorRepository).shouldHaveNoInteractions();
     }
 }

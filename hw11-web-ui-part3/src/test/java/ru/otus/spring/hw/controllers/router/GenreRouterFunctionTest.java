@@ -57,7 +57,7 @@ public class GenreRouterFunctionTest {
         given(genreRepository.save(any())).willReturn(Mono.just(savedGenre));
 
         client.post().uri("/api/genres").accept(MediaType.APPLICATION_JSON).bodyValue(new GenreDto(savedGenre))
-                .exchange().expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isCreated();
+                .exchange().expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isOk();
 
         then(genreRepository).should().save(genreCaptor.capture());
         assertThat(genreCaptor.getValue().getName()).isEqualTo(genreName);
