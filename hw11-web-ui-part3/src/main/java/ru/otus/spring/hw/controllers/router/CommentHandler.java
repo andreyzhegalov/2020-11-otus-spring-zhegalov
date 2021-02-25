@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -25,6 +26,7 @@ public class CommentHandler {
     private final BookRepository bookRepository;
     private final CustomValidator<CommentDto> validator;
 
+    @Transactional(readOnly = true)
     public @NotNull Mono<ServerResponse> findAll(ServerRequest request) {
         final var bookId = request.queryParam("bookId")
                 .orElseThrow(() -> new CustomRouterException("bookId not defined"));
@@ -34,10 +36,11 @@ public class CommentHandler {
     }
 
     @NoArgsConstructor
-    private final static class Holder {
+    private static final class Holder {
         CommentDto commentDto;
     }
 
+    @Transactional
     public @NotNull Mono<ServerResponse> saveComment(ServerRequest request) {
         final var holder = new Holder();
         final Mono<CommentDto> commentDtoMono = request.bodyToMono(CommentDto.class);
@@ -58,8 +61,9 @@ public class CommentHandler {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(handler, CommentDto.class);
     }
 
+    @Transactional
     public @NotNull Mono<ServerResponse> deleteComment(ServerRequest request) {
-        final var handler = Mono.just(request.pathVariable("id")).log().flatMap(commentRepository::deleteById);
+        final var handler = Mono.just(request.pathVariable("id")).flatMap(commentRepository::deleteById);
         return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).body(handler, String.class);
     }
 }

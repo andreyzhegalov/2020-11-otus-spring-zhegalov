@@ -48,6 +48,7 @@ public class GenreRouterTest {
         client.get().uri("/api/genres").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON).expectBodyList(GenreDto.class)
                 .contains(new GenreDto(genre1), new GenreDto(genre2));
+
         then(genreRepository).should().findAll();
     }
 
@@ -71,7 +72,7 @@ public class GenreRouterTest {
 
         client.post().uri("/api/genres").accept(MediaType.APPLICATION_JSON).bodyValue(savedGenre).exchange()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isBadRequest().expectBody()
-                .jsonPath("$.timestamp").isNotEmpty().jsonPath("$.errors").isEqualTo("Please provide a genre name");
+                .jsonPath("$.timestamp").isNotEmpty().jsonPath("$.errors").isNotEmpty();
 
         then(genreRepository).shouldHaveNoInteractions();
     }
@@ -84,6 +85,7 @@ public class GenreRouterTest {
 
         client.delete().uri("/api/genres/{id}", genreId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
                 .isOk();
+
         then(genreRepository).should().deleteById(genreId);
     }
 
@@ -93,7 +95,7 @@ public class GenreRouterTest {
         given(bookRepository.existsBookByGenre_id(genreId)).willReturn(Mono.just(true));
 
         client.delete().uri("/api/genres/{id}", genreId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
-                .isBadRequest().expectBody().jsonPath("$.errors").isEqualTo("genre can't deleted with existed book");
+                .isBadRequest().expectBody().jsonPath("$.errors").isNotEmpty();
 
         then(genreRepository).shouldHaveNoInteractions();
     }

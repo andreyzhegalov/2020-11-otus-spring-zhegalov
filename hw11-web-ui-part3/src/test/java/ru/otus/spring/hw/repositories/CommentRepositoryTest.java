@@ -22,13 +22,13 @@ public class CommentRepositoryTest extends AbstractRepositoryTest {
 
     @Test
     void shouldReturnAllCommentDto() {
-        StepVerifier.create(commentRepository.findAllDto().log())
+        StepVerifier.create(commentRepository.findAllDto())
                 .assertNext(c -> assertThat(c).isNotNull().isInstanceOf(CommentDto.class)).verifyComplete();
     }
 
     @Test
     void allCommentDtoShouldHaveCorrectIdToTheBook() {
-        final var commentDto = commentRepository.findAllDto().log().blockFirst(TIMEOUT);
+        final var commentDto = commentRepository.findAllDto().blockFirst(TIMEOUT);
         assertThat(commentDto).isNotNull();
         final var book = bookRepository.findById(commentDto.getBookId()).block(TIMEOUT);
         assertThat(book).isNotNull();
@@ -40,7 +40,7 @@ public class CommentRepositoryTest extends AbstractRepositoryTest {
                 .orElseGet(() -> fail("book not found"));
         assertThat(commentRepository.findAllByBook_id(bookWithComments.getId()).buffer().blockFirst(TIMEOUT))
                 .isNotEmpty();
-        StepVerifier.create(commentRepository.findAllDtoByBookId(bookWithComments.getId()).log().buffer())
+        StepVerifier.create(commentRepository.findAllDtoByBookId(bookWithComments.getId()).buffer())
                 .assertNext(commentDtoList -> assertThat(commentDtoList).isNotEmpty().doesNotContainNull()
                         .allMatch(c -> c.getClass() == CommentDto.class).allMatch(c -> Objects.nonNull(c.getBookId()))
                         .allMatch(c -> Objects.nonNull(c.getId())))
@@ -49,7 +49,7 @@ public class CommentRepositoryTest extends AbstractRepositoryTest {
 
     @Test
     void shouldReturnEmptyListCommentsForNotExistedBook() {
-        StepVerifier.create(commentRepository.findAllDtoByBookId("not_existed_book_id").log())
-                .expectComplete().verify(TIMEOUT);
+        StepVerifier.create(commentRepository.findAllDtoByBookId("not_existed_book_id")).expectComplete()
+                .verify(TIMEOUT);
     }
 }

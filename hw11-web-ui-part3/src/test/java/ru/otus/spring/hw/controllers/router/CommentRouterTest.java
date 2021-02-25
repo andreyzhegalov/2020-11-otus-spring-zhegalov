@@ -36,6 +36,7 @@ public class CommentRouterTest {
     void shouldReturnBadRequestIfBookIdNotSet() {
         client.get().uri(uriBuilder -> uriBuilder.path("/api/comments").queryParam("notBookId", "123").build())
                 .accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isBadRequest();
+
         then(commentRepository).shouldHaveNoInteractions();
     }
 
@@ -55,15 +56,15 @@ public class CommentRouterTest {
     @Test
     void shouldSaveNewComment() {
         final var bookId = "123";
-        final var commentDto = new CommentDto("Comment1", bookId);
-        final var commentBook = new Book();
-        commentBook.setId("321");
-        final var savedComment = new Comment("commentId", "comment1", commentBook);
+        final var book = new Book();
+        book.setId(bookId);
+        final var newCommentDto = new CommentDto("comment1", bookId);
+        final var savedComment = new Comment("commentId", newCommentDto.getText(), book);
 
-        given(bookRepository.findById(bookId)).willReturn(Mono.just(commentBook));
+        given(bookRepository.findById(bookId)).willReturn(Mono.just(book));
         given(commentRepository.save(any())).willReturn(Mono.just(savedComment));
 
-        client.post().uri("/api/comments").accept(MediaType.APPLICATION_JSON).bodyValue(commentDto).exchange()
+        client.post().uri("/api/comments").accept(MediaType.APPLICATION_JSON).bodyValue(newCommentDto).exchange()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isOk();
 
         then(bookRepository).should().findById(bookId);
@@ -78,7 +79,8 @@ public class CommentRouterTest {
         given(bookRepository.findById(bookId)).willReturn(Mono.empty());
 
         client.post().uri("/api/comments").accept(MediaType.APPLICATION_JSON).bodyValue(commentDto).exchange()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isBadRequest();
+                .expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isBadRequest().expectBody()
+                .jsonPath("$.errors").isNotEmpty();
 
         then(bookRepository).should().findById(bookId);
         then(commentRepository).shouldHaveNoInteractions();

@@ -8,5 +8,4 @@ import org.springframework.test.context.ActiveProfiles;
 @DataMongoTest
 @ComponentScan({ "ru.otus.spring.hw.repositories" })
 public abstract class AbstractRepositoryTest {
-
 }

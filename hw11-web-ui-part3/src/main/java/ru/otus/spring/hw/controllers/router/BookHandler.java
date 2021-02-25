@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -34,44 +35,47 @@ public class BookHandler {
         List<Author> authorList;
     }
 
+    @Transactional(readOnly = true)
     public @NotNull Mono<ServerResponse> findAll(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(bookRepository.findAll().map(BookDto::new), BookDto.class);
     }
 
+    @Transactional
     public @NotNull Mono<ServerResponse> saveBook(ServerRequest request) {
         final Mono<BookDto> newBook = request.bodyToMono(BookDto.class);
         final Mono<BookDto> validBookDto = newBook.doOnNext(validator::validate);
 
-        final var tuple = new Holder();
-        final var savedBookDto = validBookDto.doOnNext(bookDto -> tuple.book = bookDto)
-                .flatMap(bookDto -> genreRepository.findById(bookDto.getGenreId())).defaultIfEmpty(new Genre())
+        final var holder = new Holder();
+        final Mono<BookDto> savedBookDto = validBookDto.doOnNext(bookDto -> holder.book = bookDto)
                 // take genre
-                .flatMapIterable(genre -> {
+                .flatMap(bookDto -> genreRepository.findById(bookDto.getGenreId())).defaultIfEmpty(new Genre())
+                .doOnNext(genre -> {
                     if (Objects.isNull(genre.getId())) {
                         throw new RepositoryException("genre not exist ");
                     }
-                    tuple.genre = genre;
-                    return tuple.book.getAuthorsId();
+                    holder.genre = genre;
                 })
                 // take authors
-                .flatMap(authorRepository::findById).buffer(100).last().map(authorList -> {
-                    if (tuple.book.getAuthorsId().size() != authorList.size()) {
+                .flatMapIterable(unused -> holder.book.getAuthorsId()).flatMap(authorRepository::findById).buffer(100)
+                .last().map(authorList -> {
+                    if (holder.book.getAuthorsId().size() != authorList.size()) {
                         throw new RepositoryException("author not exist ");
                     }
-                    tuple.authorList = authorList;
-                    return tuple;
+                    holder.authorList = authorList;
+                    return holder;
                 })
                 // make book
                 .map(t -> {
                     return new Book(t.book.getId(), t.book.getTitle(), t.genre, t.authorList.toArray(Author[]::new));
-                }).flatMap(bookRepository::save).defaultIfEmpty(new Book()).map(BookDto::new).log();
+                }).flatMap(bookRepository::save).defaultIfEmpty(new Book()).map(BookDto::new);
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(savedBookDto, BookDto.class);
     }
 
+    @Transactional
     public @NotNull Mono<ServerResponse> deleteBook(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN)
-                .body(bookRepository.deleteById(request.pathVariable("id")).log(), String.class);
+                .body(bookRepository.deleteById(request.pathVariable("id")), String.class);
     }
 }

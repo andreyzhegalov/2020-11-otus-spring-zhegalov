@@ -101,13 +101,15 @@ public class BookRouterTest {
     }
 
     @Test
-    void shouldNotSaveBookWithOutTitle() {
+    void shouldNotSaveEmptyBook() {
         final var bookDto = new BookDto();
         bookDto.setTitle(" ");
         assertThat(bookDto.getTitle()).isBlank();
+
         final var body = client.post().uri("/api/books").accept(MediaType.APPLICATION_JSON).bodyValue(bookDto)
                 .exchange().expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isBadRequest()
                 .expectBody().jsonPath("$.timestamp").isNotEmpty().jsonPath("$.errors");
+
         body.value(Matchers.containsString("provide a book title"));
         body.value(Matchers.containsString("provide a genre"));
         body.value(Matchers.containsString("provide a authors"));
@@ -149,7 +151,7 @@ public class BookRouterTest {
     @Test
     void shouldReturnBadRequestWhenAuthorNotExistForTheSavedBook() {
         given(genreRepository.findById(savedBook.getGenre().getId())).willReturn(Mono.just(savedBook.getGenre()));
-        given(authorRepository.findById(author1Id)).willReturn(Mono.just(savedBook.getAuthors().get(0)));
+        given(authorRepository.findById(author1Id)).willReturn(Mono.just(author1));
         given(authorRepository.findById(author2Id)).willReturn(Mono.empty());
 
         client.post().uri("/api/books").accept(MediaType.APPLICATION_JSON).bodyValue(new BookDto(savedBook)).exchange()

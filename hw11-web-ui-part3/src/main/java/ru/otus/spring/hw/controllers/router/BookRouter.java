@@ -12,11 +12,7 @@ public class BookRouter {
 
     @Bean
     public RouterFunction<ServerResponse> bookComposedRoutes(BookHandler handler) {
-        return route()
-            .GET("/api/books", handler::findAll)
-            .POST("/api/books", handler::saveBook)
-            .DELETE("/api/books/{id}", handler::deleteBook)
-            .build();
+        return route().GET("/api/books", handler::findAll).POST("/api/books", handler::saveBook)
+                .DELETE("/api/books/{id}", handler::deleteBook).build();
     }
 }
-

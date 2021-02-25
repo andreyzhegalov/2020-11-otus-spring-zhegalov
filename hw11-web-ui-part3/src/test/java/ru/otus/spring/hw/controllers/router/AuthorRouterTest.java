@@ -56,11 +56,13 @@ public class AuthorRouterTest {
     void shouldAddNewAuthor() {
         final var authorName = "author name";
         final var savedAuthor = new Author(authorName);
-        savedAuthor.setId("132");
+        final var authorId = "123";
+        savedAuthor.setId(authorId);
         given(authorRepository.save(any())).willReturn(Mono.just(savedAuthor));
 
         client.post().uri("/api/authors").accept(MediaType.APPLICATION_JSON).bodyValue(new Author(authorName))
-                .exchange().expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isOk();
+                .exchange().expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isOk()
+                .expectBody(AuthorDto.class).value(author -> assertThat(author.getId()).isEqualTo(authorId));
 
         then(authorRepository).should().save(authorCaptor.capture());
         assertThat(authorCaptor.getValue().getName()).isEqualTo(authorName);
@@ -71,7 +73,7 @@ public class AuthorRouterTest {
         final var savedAuthor = new Author();
         client.post().uri("/api/authors").accept(MediaType.APPLICATION_JSON).bodyValue(savedAuthor).exchange()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON).expectStatus().isBadRequest().expectBody()
-                .jsonPath("$.timestamp").isNotEmpty().jsonPath("$.errors").isEqualTo("Please provide a author name");
+                .jsonPath("$.errors").isEqualTo("Please provide a author name");
 
         then(authorRepository).shouldHaveNoInteractions();
     }
@@ -83,6 +85,7 @@ public class AuthorRouterTest {
         given(authorRepository.deleteById(authorId)).willReturn(Mono.empty());
         client.delete().uri("/api/authors/{id}", authorId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
                 .isOk();
+
         then(authorRepository).should().deleteById(authorId);
     }
 
@@ -92,8 +95,8 @@ public class AuthorRouterTest {
         given(bookRepository.existsBookByAuthors_id(authorId)).willReturn(Mono.just(true));
 
         client.delete().uri("/api/authors/{id}", authorId).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
-                .isBadRequest().expectBody().consumeWith(System.out::println).jsonPath("$.errors")
-                .isEqualTo("author can't deleted with existed book");
+                .isBadRequest().expectBody().jsonPath("$.errors").isEqualTo("author can't deleted with existed book");
+
         then(authorRepository).shouldHaveNoInteractions();
     }
 }

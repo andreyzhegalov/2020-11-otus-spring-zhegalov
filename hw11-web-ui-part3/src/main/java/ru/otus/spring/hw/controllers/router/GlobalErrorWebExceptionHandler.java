@@ -50,9 +50,8 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
         if (error instanceof CustomRouterException) {
             errorPropertiesMap.put("errors", error.getMessage());
         }
-        final var status = (int)errorPropertiesMap.get("status");
+        final var status = (int) errorPropertiesMap.get("status");
         return ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(errorPropertiesMap));
     }
-
 }

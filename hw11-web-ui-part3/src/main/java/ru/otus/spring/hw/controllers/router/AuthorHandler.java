@@ -3,6 +3,7 @@ package ru.otus.spring.hw.controllers.router;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -19,11 +20,13 @@ class AuthorHandler {
     private final BookRepository bookRepository;
     private final CustomValidator<AuthorDto> validator;
 
+    @Transactional(readOnly = true)
     public @NotNull Mono<ServerResponse> findAll(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(authorRepository.findAll().map(AuthorDto::new), AuthorDto.class);
     }
 
+    @Transactional
     public @NotNull Mono<ServerResponse> saveAuthor(ServerRequest request) {
         Mono<AuthorDto> newAuthor = request.bodyToMono(AuthorDto.class);
         Mono<AuthorDto> savedAuthorDto = newAuthor.doOnNext(validator::validate).map(AuthorDto::toEntity)
@@ -31,6 +34,7 @@ class AuthorHandler {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(savedAuthorDto, AuthorDto.class);
     }
 
+    @Transactional
     public @NotNull Mono<ServerResponse> deleteAuthor(ServerRequest request) {
         final var handler = Mono.just(request.pathVariable("id")).log().flatMap(bookRepository::existsBookByAuthors_id)
                 .doOnNext(authorHasBook -> {
