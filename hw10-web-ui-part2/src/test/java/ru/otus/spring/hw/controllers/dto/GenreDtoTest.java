@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import ru.otus.spring.hw.controllers.dto.GenreDto;
 import ru.otus.spring.hw.model.Genre;
 
 public class GenreDtoTest {

@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import ru.otus.spring.hw.controllers.dto.AuthorDto;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 
