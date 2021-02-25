@@ -4,6 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 import org.jetbrains.annotations.NotNull;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import ru.otus.spring.hw.model.Comment;
 
 @Setter
 @Getter
+@EqualsAndHashCode
 @NoArgsConstructor
 public class CommentDto {
     private String id;
