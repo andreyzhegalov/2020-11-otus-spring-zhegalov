@@ -19,7 +19,7 @@ class AuthorHandler {
     private final BookRepository bookRepository;
     private final CustomValidator<AuthorDto> validator;
 
-    public @NotNull Mono<ServerResponse> getAllAuthors(ServerRequest request) {
+    public @NotNull Mono<ServerResponse> findAll(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(authorRepository.findAll().map(AuthorDto::new), AuthorDto.class);
     }

@@ -29,6 +29,7 @@ public class CommentRepositoryTest extends AbstractRepositoryTest {
     @Test
     void allCommentDtoShouldHaveCorrectIdToTheBook() {
         final var commentDto = commentRepository.findAllDto().log().blockFirst(TIMEOUT);
+        assertThat(commentDto).isNotNull();
         final var book = bookRepository.findById(commentDto.getBookId()).block(TIMEOUT);
         assertThat(book).isNotNull();
     }

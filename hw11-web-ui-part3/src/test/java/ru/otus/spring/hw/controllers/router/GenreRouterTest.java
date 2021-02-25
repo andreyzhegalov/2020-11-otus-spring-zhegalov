@@ -24,7 +24,7 @@ import ru.otus.spring.hw.repositories.GenreRepository;
 
 @WebFluxTest({ GenreRouter.class })
 @Import({ GenreHandler.class, GlobalErrorAttributes.class, CustomValidator.class })
-public class GenreRouterFunctionTest {
+public class GenreRouterTest {
     @Autowired
     private WebTestClient client;
 

@@ -1,5 +1,6 @@
 package ru.otus.spring.hw.repositories;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 import reactor.core.publisher.Mono;
@@ -9,5 +10,5 @@ public interface AuthorRepository extends ReactiveMongoRepository<Author, String
 
     Mono<Author> findByName(String name);
 
-    Mono<Author> findById(String id);
+    @NotNull Mono<Author> findById(@NotNull String id);
 }

@@ -28,7 +28,7 @@ public class BookHandler {
     private final GenreRepository genreRepository;
     private final CustomValidator<BookDto> validator;
 
-    private static class Tuple {
+    private static class Holder {
         BookDto book;
         Genre genre;
         List<Author> authorList;
@@ -43,7 +43,7 @@ public class BookHandler {
         final Mono<BookDto> newBook = request.bodyToMono(BookDto.class);
         final Mono<BookDto> validBookDto = newBook.doOnNext(validator::validate);
 
-        final var tuple = new Tuple();
+        final var tuple = new Holder();
         final var savedBookDto = validBookDto.doOnNext(bookDto -> tuple.book = bookDto)
                 .flatMap(bookDto -> genreRepository.findById(bookDto.getGenreId())).defaultIfEmpty(new Genre())
                 // take genre
@@ -55,10 +55,7 @@ public class BookHandler {
                     return tuple.book.getAuthorsId();
                 })
                 // take authors
-                .flatMap(id -> {
-                    final var author = authorRepository.findById(id);
-                    return author;
-                }).buffer(100).last().map(authorList -> {
+                .flatMap(authorRepository::findById).buffer(100).last().map(authorList -> {
                     if (tuple.book.getAuthorsId().size() != authorList.size()) {
                         throw new RepositoryException("author not exist ");
                     }

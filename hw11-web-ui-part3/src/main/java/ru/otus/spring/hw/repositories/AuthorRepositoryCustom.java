@@ -1,6 +1,8 @@
 package ru.otus.spring.hw.repositories;
 
+import reactor.core.publisher.Mono;
+
 public interface AuthorRepositoryCustom {
 
-    void removeBookArrayElementsById(String id);
+    Mono<Void> removeBookArrayElementsById(String id);
 }

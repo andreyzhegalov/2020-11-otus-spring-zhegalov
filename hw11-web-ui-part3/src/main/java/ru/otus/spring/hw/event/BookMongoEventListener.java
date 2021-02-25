@@ -44,7 +44,7 @@ public class BookMongoEventListener extends AbstractMongoEventListener<Book> {
         super.onAfterDelete(event);
         final var source = event.getSource();
         final var id = source.get("_id").toString();
-        authorRepository.removeBookArrayElementsById(id);
-        commentRepository.removeAllByBook_id(id).log().subscribe();
+        authorRepository.removeBookArrayElementsById(id).subscribe();
+        commentRepository.removeAllByBook_id(id).subscribe();
     }
 }

@@ -22,7 +22,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
-import ru.otus.spring.hw.repositories.RepositoryException;
 
 @Slf4j
 @Component
@@ -37,18 +36,18 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     }
 
     @Override
-    protected RouterFunction<ServerResponse> getRoutingFunction(final ErrorAttributes errorAttributes) {
+    protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
         return RouterFunctions.route(RequestPredicates.all(), this::renderErrorResponse);
     }
 
-    private @NotNull Mono<ServerResponse> renderErrorResponse(final ServerRequest request) {
+    private @NotNull Mono<ServerResponse> renderErrorResponse(ServerRequest request) {
         final var error = getError(request);
         final Map<String, Object> errorPropertiesMap = getErrorAttributes(request, ErrorAttributeOptions.defaults());
         if (HttpStatus.valueOf((Integer) errorPropertiesMap.get("status")).is5xxServerError()) {
             log.error("internal server error: " + error.getMessage());
             errorPropertiesMap.put("status", HttpStatus.BAD_REQUEST.value());
         }
-        if (error instanceof CustomRouterException || error instanceof RepositoryException) {
+        if (error instanceof CustomRouterException) {
             errorPropertiesMap.put("errors", error.getMessage());
         }
         final var status = (int)errorPropertiesMap.get("status");

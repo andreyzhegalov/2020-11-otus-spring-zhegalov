@@ -12,11 +12,8 @@ public class AuthorRouter {
 
     @Bean
     public RouterFunction<ServerResponse> authorComposedRoutes(AuthorHandler handler) {
-        return route()
-            .GET("/api/authors", handler::getAllAuthors)
-            .POST("/api/authors", handler::saveAuthor)
-            .DELETE("/api/authors/{id}", handler::deleteAuthor)
-            .build();
+        return route().GET("/api/authors", handler::findAll).POST("/api/authors", handler::saveAuthor)
+                .DELETE("/api/authors/{id}", handler::deleteAuthor).build();
     }
 
 }

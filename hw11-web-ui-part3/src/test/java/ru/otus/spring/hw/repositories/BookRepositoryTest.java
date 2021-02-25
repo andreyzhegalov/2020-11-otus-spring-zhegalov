@@ -85,6 +85,7 @@ public class BookRepositoryTest extends AbstractRepositoryTest {
         Thread.sleep(100);
 
         var updatedAuthor = mongoOperations.findById(existedAuthor.getId(), Author.class).block(TIMEOUT);
+        assertThat(updatedAuthor).isNotNull();
         assertThat(updatedAuthor.getBooks()).containsOnlyOnce(savedBook);
     }
 }

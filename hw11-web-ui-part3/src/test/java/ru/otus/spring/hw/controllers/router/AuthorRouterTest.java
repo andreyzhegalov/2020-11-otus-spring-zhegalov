@@ -24,7 +24,7 @@ import ru.otus.spring.hw.repositories.BookRepository;
 
 @WebFluxTest({ AuthorRouter.class })
 @Import({ GlobalErrorAttributes.class, AuthorHandler.class, CustomValidator.class })
-public class AuthorRouterFunctionTest {
+public class AuthorRouterTest {
     @Autowired
     private WebTestClient client;
 
