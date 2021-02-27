@@ -39,6 +39,7 @@
         <module>hw08-library-service-part4</module>
         <module>hw09-web-ui-part1</module>
         <module>hw10-web-ui-part2</module>
+        <module>hw12-spring-security-part1</module>
     </modules>
 
     <build>
