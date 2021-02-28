@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.controllers.dto;
+package ru.otus.spring.hw.dto;
 
 import javax.validation.constraints.NotBlank;
 
@@ -12,7 +12,7 @@ import ru.otus.spring.hw.model.Genre;
 @NoArgsConstructor
 public class GenreDto {
     private String id;
-    @NotBlank(message = "Please provide a genre name")
+    @NotBlank
     private String name;
 
     public GenreDto(Genre genre) {

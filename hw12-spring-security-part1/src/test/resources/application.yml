@@ -9,12 +9,6 @@ logging:
 ---
 spring:
   profiles: withMongo
-
-  data:
-    mongodb:
-      database: library_zhegalov
-      uri: mongodb://172.17.0.3
-
 mongock:
   enabled: true
   runner-type: "ApplicationRunner" # default

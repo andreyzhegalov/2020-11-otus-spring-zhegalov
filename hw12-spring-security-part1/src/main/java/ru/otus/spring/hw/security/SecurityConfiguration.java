@@ -21,19 +21,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                // По умолчанию SecurityContext хранится в сессии
-                // Это необходимо, чтобы он нигде не хранился
-                // и данные приходили каждый раз с запросом
-                // .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                // .and()
-                .authorizeRequests()
-                // .antMatchers("/public").anonymous()
+                .authorizeRequests().antMatchers("/**").authenticated()
                 .and()
-                .authorizeRequests().antMatchers("/books", "/success")
-                .authenticated()
-                .and()
-                // Включает Form-based аутентификацию
-                //
                 .formLogin();
 
         // ;

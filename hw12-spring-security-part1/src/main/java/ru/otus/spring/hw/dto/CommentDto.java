@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.controllers.dto;
+package ru.otus.spring.hw.dto;
 
 import javax.validation.constraints.NotBlank;
 
@@ -14,7 +14,7 @@ import ru.otus.spring.hw.model.Comment;
 @NoArgsConstructor
 public class CommentDto {
     private String id;
-    @NotBlank(message = "Please provide a comment text")
+    @NotBlank
     private String text;
     @NotBlank
     private String bookId;

@@ -1,8 +1,7 @@
-package ru.otus.spring.hw.controllers.dto;
+package ru.otus.spring.hw.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -19,19 +18,17 @@ import ru.otus.spring.hw.model.Book;
 @NoArgsConstructor
 public class BookDto {
     private String id;
-    @NotBlank(message = "Please provide a book title")
+    @NotBlank
     private String title;
     private List<String> authorsName = new ArrayList<>();
-    @NotEmpty(message = "Please provide a authors")
+    @NotEmpty
     private List<String> authorsId = new ArrayList<>();
-    @NotBlank(message = "Please provide a genre")
+    @NotBlank
     private String genreId;
     private String genreName;
 
     public BookDto(@NotNull Book book) {
-        if (Objects.nonNull(book.getId())) {
-            this.id = book.getId();
-        }
+        this.id = book.getId();
         this.title = book.getTitle();
         book.getAuthors().forEach(a -> {
             this.authorsId.add(a.getId());

@@ -1,7 +1,6 @@
 package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
@@ -16,7 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import ru.otus.spring.hw.controllers.dto.CommentDto;
+import ru.otus.spring.hw.dto.CommentDto;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.repositories.BookRepository;
@@ -48,14 +47,8 @@ public class CommentServiceImplTest {
     @Test
     void shouldSaveNewCommentForExistedBook() {
         final var bookId = "1";
-        final var book =  new Book();
-        book.setId(bookId);
         final var commentDto = new CommentDto("new text", bookId);
-        final var comment = new Comment();
-        comment.setId("123");
-        comment.setBook(book);
         given(bookRepository.findById(bookId)).willReturn(Optional.of(new Book()));
-        given(commentRepository.save(any())).willReturn(comment);
 
         commentService.addComment(commentDto);
 

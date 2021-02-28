@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.controllers.dto;
+package ru.otus.spring.hw.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import ru.otus.spring.hw.model.Book;
 @Getter
 public class AuthorDto {
     private String id;
-    @NotBlank(message = "Please provide a author name")
+    @NotBlank
     private String name;
     private List<String> booksTitle = new ArrayList<>();
 

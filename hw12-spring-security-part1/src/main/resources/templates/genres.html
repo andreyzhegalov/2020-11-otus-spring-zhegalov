@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
-    <title>List of all comments</title>
+    <title>List of all genres</title>
     <style type="text/css">
       body {
         padding: 50px;
@@ -21,8 +21,8 @@
         margin-top: 10px;
       }
 
-      .comments,
-      .comments td {
+      .genres,
+      .genres td {
         border: 1px solid lightgray;
         padding: 5px;
       }
@@ -33,26 +33,24 @@
       <a th:href="@{/books}" href="books.html">Back</a>
     </div>
     <hr />
-    <h3>Comments:</h3>
+    <h3>Genres:</h3>
 
-    <table class="comments">
+    <table class="genres">
       <thead>
         <tr>
-          <th>Book</th>
-          <th>Text</th>
+          <th>Name</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr th:each="comment : ${comments}">
-          <td th:text="${comment.bookTitle}">book1</td>
-          <td th:text="${comment.text}">book1 comment</td>
+        <tr th:each="genre : ${genres}">
+          <td th:text="${genre.name}">Detective</td>
           <td>
             <form
-              id="deleted-comment-form"
-              th:action="@{/comments(id=${comment.id},bookId=${bookId})}"
+              id="deleted-genre-form"
+              th:action="@{/genres(id=${genre.id})}"
               th:method="delete"
-              action="comments.html"
+              action="genres.html"
             >
               <button type="submit">Delete</button>
             </form>
@@ -61,18 +59,18 @@
       </tbody>
     </table>
 
-    <!-- Added comment -->
+    <!-- Added genre -->
     <form
-      id="added-comment-form"
-      th:action="@{/comments(bookId=${bookId})}"
+      id="added-genre-form"
+      th:action="@{/genres}"
       th:method="post"
-      action="comments.html"
+      action="genres.html"
     >
-      <h3>Add comment:</h3>
+      <h3>Add genre:</h3>
 
       <div class="row">
-        <label for="comment-text">Text:</label>
-        <input id="comment-text" name="text" type="text" value="" />
+        <label for="genre-name">Name:</label>
+        <input id="genre-name" name="name" type="text" value="" />
       </div>
 
       <div class="row">

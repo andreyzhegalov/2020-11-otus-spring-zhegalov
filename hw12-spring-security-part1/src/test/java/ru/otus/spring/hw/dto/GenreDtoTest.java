@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.controllers.dto;
+package ru.otus.spring.hw.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

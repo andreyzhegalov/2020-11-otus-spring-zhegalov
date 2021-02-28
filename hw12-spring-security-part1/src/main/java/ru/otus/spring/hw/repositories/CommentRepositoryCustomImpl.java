@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.controllers.dto.CommentDto;
+import ru.otus.spring.hw.dto.CommentDto;
 import ru.otus.spring.hw.model.Comment;
 
 @RequiredArgsConstructor
