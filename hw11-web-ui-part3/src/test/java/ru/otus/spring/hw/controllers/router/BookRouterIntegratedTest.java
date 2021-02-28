@@ -48,14 +48,18 @@ public class BookRouterIntegratedTest {
 
     @Test
     void shouldAddNewBookForExistedAuthorAndGenre() {
+        final var authorsId = existedAuthors.stream().map(Author::getId).collect(Collectors.toList())
+                .toArray(new String[0]);
         final var newBookDto = new BookDto();
         newBookDto.setTitle("new book");
         newBookDto.setGenreId(existedGenre.getId());
         newBookDto.setAuthorsId(existedAuthors.stream().map(Author::getId).collect(Collectors.toList()));
 
         client.post().uri("/api/books").accept(MediaType.APPLICATION_JSON).bodyValue(newBookDto).exchange()
-                .expectStatus().isOk().expectBody(BookDto.class)
-                .value(bookDto -> assertThat(bookDto.getId()).isNotNull().isNotBlank());
+                .expectStatus().isOk().expectBody(BookDto.class).value(bookDto -> {
+                    assertThat(bookDto.getId()).isNotNull().isNotBlank();
+                    assertThat(bookDto.getGenreId()).isNotNull().isEqualTo(existedGenre.getId());
+                    assertThat(bookDto.getAuthorsId()).isNotNull().containsExactlyInAnyOrder(authorsId);
+                });
     }
-
 }

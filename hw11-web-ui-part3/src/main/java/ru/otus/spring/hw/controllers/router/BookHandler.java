@@ -29,12 +29,6 @@ public class BookHandler {
     private final GenreRepository genreRepository;
     private final CustomValidator<BookDto> validator;
 
-    private static class Holder {
-        BookDto book;
-        Genre genre;
-        List<Author> authorList;
-    }
-
     @Transactional(readOnly = true)
     public @NotNull Mono<ServerResponse> findAll(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
@@ -46,31 +40,34 @@ public class BookHandler {
         final Mono<BookDto> newBook = request.bodyToMono(BookDto.class);
         final Mono<BookDto> validBookDto = newBook.doOnNext(validator::validate);
 
-        final var holder = new Holder();
-        final Mono<BookDto> savedBookDto = validBookDto.doOnNext(bookDto -> holder.book = bookDto)
-                // take genre
-                .flatMap(bookDto -> genreRepository.findById(bookDto.getGenreId())).defaultIfEmpty(new Genre())
-                .doOnNext(genre -> {
-                    if (Objects.isNull(genre.getId())) {
-                        throw new RepositoryException("genre not exist ");
-                    }
-                    holder.genre = genre;
-                })
-                // take authors
-                .flatMapIterable(unused -> holder.book.getAuthorsId()).flatMap(authorRepository::findById).buffer(100)
-                .last().map(authorList -> {
-                    if (holder.book.getAuthorsId().size() != authorList.size()) {
-                        throw new RepositoryException("author not exist ");
-                    }
-                    holder.authorList = authorList;
-                    return holder;
-                })
-                // make book
-                .map(t -> {
-                    return new Book(t.book.getId(), t.book.getTitle(), t.genre, t.authorList.toArray(Author[]::new));
-                }).flatMap(bookRepository::save).defaultIfEmpty(new Book()).map(BookDto::new);
+        final Mono<Book> book = validBookDto.flatMap(dto -> {
+            final var monoBookDto = Mono.just(dto);
 
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(savedBookDto, BookDto.class);
+            final var monoGenre = monoBookDto.flatMap(bookDto -> genreRepository.findById(bookDto.getGenreId()))
+                    .defaultIfEmpty(new Genre()).doOnNext(genre -> {
+                        if (Objects.isNull(genre.getId())) {
+                            throw new RepositoryException("genre not exist ");
+                        }
+                    });
+
+            final Mono<List<Author>> monoAuthorList = monoBookDto.flatMapIterable(BookDto::getAuthorsId)
+                    .flatMap(authorId -> {
+                        return authorRepository.findById(authorId).defaultIfEmpty(new Author()).doOnNext(author -> {
+                            if (Objects.isNull(author.getId())) {
+                                throw new RepositoryException("author not exist ");
+                            }
+                        });
+                    }).buffer(100).last();
+
+            return Mono.zip(monoBookDto, monoGenre, monoAuthorList).map(tuple -> {
+                final var bookDto = tuple.getT1();
+                final var genre = tuple.getT2();
+                final var authors = tuple.getT3();
+                return new Book(bookDto.getId(), bookDto.getTitle(), genre, authors.toArray(Author[]::new));
+            }).flatMap(bookRepository::save);
+        });
+
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(book.map(BookDto::new), BookDto.class);
     }
 
     @Transactional
