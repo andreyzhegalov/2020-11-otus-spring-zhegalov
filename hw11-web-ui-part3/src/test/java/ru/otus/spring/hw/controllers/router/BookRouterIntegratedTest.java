@@ -42,7 +42,7 @@ public class BookRouterIntegratedTest {
     @BeforeEach
     void setUp() {
         existedGenre = genreRepository.findAll().blockFirst(TIMEOUT);
-        existedAuthors = authorRepository.findAll().buffer().blockFirst(TIMEOUT);
+        existedAuthors = authorRepository.findAll().collectList().block(TIMEOUT);
     }
 
     @Test

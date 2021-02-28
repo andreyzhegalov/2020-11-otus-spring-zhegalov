@@ -43,7 +43,7 @@ public class BookHandler {
         final Mono<Book> book = validBookDto.flatMap(dto -> {
             final var monoBookDto = Mono.just(dto);
 
-            final var monoGenre = monoBookDto.flatMap(bookDto -> genreRepository.findById(bookDto.getGenreId()))
+            final Mono<Genre> monoGenre = monoBookDto.flatMap(bookDto -> genreRepository.findById(bookDto.getGenreId()))
                     .defaultIfEmpty(new Genre()).doOnNext(genre -> {
                         if (Objects.isNull(genre.getId())) {
                             throw new RepositoryException("genre not exist ");
@@ -57,7 +57,7 @@ public class BookHandler {
                                 throw new RepositoryException("author not exist ");
                             }
                         });
-                    }).buffer(100).last();
+                    }).collectList();
 
             return Mono.zip(monoBookDto, monoGenre, monoAuthorList).map(tuple -> {
                 final var bookDto = tuple.getT1();

@@ -38,9 +38,9 @@ public class CommentRepositoryTest extends AbstractRepositoryTest {
     void shouldReturnCommentDtoByBookId() {
         final var bookWithComments = bookRepository.findByTitle(BOOK_WITH_COMMENTS).blockOptional(TIMEOUT)
                 .orElseGet(() -> fail("book not found"));
-        assertThat(commentRepository.findAllByBook_id(bookWithComments.getId()).buffer().blockFirst(TIMEOUT))
+        assertThat(commentRepository.findAllByBook_id(bookWithComments.getId()).collectList().block(TIMEOUT))
                 .isNotEmpty();
-        StepVerifier.create(commentRepository.findAllDtoByBookId(bookWithComments.getId()).buffer())
+        StepVerifier.create(commentRepository.findAllDtoByBookId(bookWithComments.getId()).collectList())
                 .assertNext(commentDtoList -> assertThat(commentDtoList).isNotEmpty().doesNotContainNull()
                         .allMatch(c -> c.getClass() == CommentDto.class).allMatch(c -> Objects.nonNull(c.getBookId()))
                         .allMatch(c -> Objects.nonNull(c.getId())))

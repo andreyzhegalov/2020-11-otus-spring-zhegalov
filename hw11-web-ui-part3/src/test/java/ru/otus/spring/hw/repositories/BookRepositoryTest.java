@@ -44,7 +44,7 @@ public class BookRepositoryTest extends AbstractRepositoryTest {
         final var bookWithManyAuthors = bookRepository.findAll().filter(b -> b.getAuthors().size() > 1)
                 .blockFirst(TIMEOUT);
         assertThat(bookWithManyAuthors).isNotNull();
-        assertThat(getAuthorsWithBook.apply(bookWithManyAuthors.getId()).buffer().blockFirst()).isNotEmpty();
+        assertThat(getAuthorsWithBook.apply(bookWithManyAuthors.getId()).collectList().block(TIMEOUT)).isNotEmpty();
 
         StepVerifier.create(bookRepository.delete(bookWithManyAuthors)).expectComplete().verify(TIMEOUT);
 
@@ -62,7 +62,7 @@ public class BookRepositoryTest extends AbstractRepositoryTest {
 
         StepVerifier.create(bookRepository.delete(bookWithComments)).expectComplete().verify(TIMEOUT);
 
-        assertThat(getCommentsByBookId.apply(bookWithComments.getId()).blockFirst()).isNull();
+        assertThat(getCommentsByBookId.apply(bookWithComments.getId()).blockFirst(TIMEOUT)).isNull();
     }
 
     private Genre getExistedGenre() {
