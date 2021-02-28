@@ -27,7 +27,6 @@ import ru.otus.spring.hw.repositories.GenreRepository;
 public class BookRouterIntegratedTest {
 
     private static final Duration TIMEOUT = Duration.ofMillis(500);
-
     private Genre existedGenre;
     private List<Author> existedAuthors;
 

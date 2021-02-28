@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 import ru.otus.spring.hw.controllers.dto.CommentDto;
@@ -35,30 +34,27 @@ public class CommentHandler {
                 .body(commentRepository.findAllDtoByBookId(bookId), CommentDto.class);
     }
 
-    @NoArgsConstructor
-    private static final class Holder {
-        CommentDto commentDto;
-    }
-
     @Transactional
     public @NotNull Mono<ServerResponse> saveComment(ServerRequest request) {
-        final var holder = new Holder();
         final Mono<CommentDto> commentDtoMono = request.bodyToMono(CommentDto.class);
-        final Mono<CommentDto> handler = commentDtoMono.doOnNext(validator::validate)
-                .doOnNext(dto -> holder.commentDto = dto).flatMap(dto -> bookRepository.findById(dto.getBookId()))
-                .defaultIfEmpty(new Book()).doOnNext(book -> {
-                    if (Objects.isNull(book.getId())) {
-                        throw new CustomRouterException(
-                                "book with id " + holder.commentDto.getBookId() + " not  exist");
-                    }
-                }).map(book -> {
-                    final var comment = new Comment();
-                    comment.setText(holder.commentDto.getText());
-                    comment.setBook(book);
-                    return comment;
-                }).flatMap(commentRepository::save).map(CommentDto::new);
+        final Mono<CommentDto> validCommentDto = commentDtoMono.doOnNext(validator::validate);
 
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(handler, CommentDto.class);
+        final Mono<Comment> monoComment = validCommentDto.flatMap(dto -> {
+            return Mono.just(dto).zipWith(bookRepository.findById(dto.getBookId()).defaultIfEmpty(new Book()))
+                    .map(tuple -> {
+                        final var commentDto = tuple.getT1();
+                        final var book = tuple.getT2();
+                        if (Objects.isNull(book.getId())) {
+                            throw new CustomRouterException("book with id " + commentDto.getBookId() + " not  exist");
+                        }
+                        final var comment = new Comment();
+                        comment.setText(commentDto.getText());
+                        comment.setBook(book);
+                        return comment;
+                    }).flatMap(commentRepository::save);
+        });
+
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(monoComment.map(CommentDto::new), CommentDto.class);
     }
 
     @Transactional
