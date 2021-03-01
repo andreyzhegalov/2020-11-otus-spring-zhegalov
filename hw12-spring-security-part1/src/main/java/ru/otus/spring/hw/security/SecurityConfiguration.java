@@ -14,13 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/");
-    }
-
-    @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
+                .authorizeRequests().antMatchers("/**").hasRole("ADMIN")
+                .and()
                 .authorizeRequests().antMatchers("/**").authenticated()
                 .and()
                 .formLogin();
@@ -36,7 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("admin").password("password").roles("ADMIN");
+        auth.inMemoryAuthentication().withUser("user").password("password").roles("ADMIN");
     }
 
 }
