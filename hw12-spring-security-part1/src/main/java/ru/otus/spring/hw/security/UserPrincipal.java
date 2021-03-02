@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class MyUserPrincipal implements UserDetails {
+public class UserPrincipal implements UserDetails {
 
     private static final long serialVersionUID = -7063789171603056827L;
     private final User user;
@@ -26,11 +26,6 @@ public class MyUserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // final List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        // for (final Privilege privilege : user.getPrivileges()) {
-        //     authorities.add(new SimpleGrantedAuthority(privilege.getName()));
-        // }
-        // return authorities;
         return Collections.emptyList();
     }
 
