@@ -1,21 +1,25 @@
 package ru.otus.spring.hw.controllers;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
-
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import javax.imageio.plugins.tiff.ExifGPSTagSet;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
@@ -24,7 +28,7 @@ import ru.otus.spring.hw.service.BookService;
 
 @WebMvcTest(controllers = BookController.class)
 public class SecurityControllerTest {
-    @Autowired
+
     private MockMvc mvc;
 
     @MockBean
@@ -35,6 +39,16 @@ public class SecurityControllerTest {
 
     @MockBean
     private GenreRepository genreRepository;
+
+    @BeforeEach
+    @Autowired
+    void setUp(WebApplicationContext context){
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+    }
+
 
     @Test
     void shouldRedirectToLoginForAllRequest() throws Exception {
@@ -55,7 +69,9 @@ public class SecurityControllerTest {
         mvc.perform(formLogin().user("user").password("password"))
             .andDo(print())
             .andExpect(status().isFound())
-            .andExpect(redirectedUrl("/"));
+            .andExpect(redirectedUrl("/"))
+            .andExpect(authenticated());
+
     }
 
     @Test
