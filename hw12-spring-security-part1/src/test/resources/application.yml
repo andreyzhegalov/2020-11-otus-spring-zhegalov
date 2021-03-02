@@ -6,11 +6,23 @@ logging:
     ROOT: DEBUG
     org.springframework: DEBUG
     ru.otus.spring.hw: DEBUG
+
 ---
 spring:
   profiles: withMongo
+  data:
+    mongodb:
+      database: library_zhegalov
+      uri: mongodb://172.17.0.3
+
 mongock:
   enabled: true
   runner-type: "ApplicationRunner" # default
   change-logs-scan-package:
     - ru.otus.spring.hw.mongock.testchangelog
+
+logging:
+  level:
+    ROOT: DEBUG
+    org.springframework: DEBUG
+    ru.otus.spring.hw: DEBUG

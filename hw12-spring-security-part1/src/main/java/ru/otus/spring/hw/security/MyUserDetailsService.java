@@ -6,8 +6,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ru.otus.spring.hw.repositories.UserRepository;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MyUserDetailsService implements UserDetailsService {
@@ -15,6 +17,8 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
+        log.debug("get information for user {}", username);
+        log.debug("!!!!!!!  {}", userRepository.findByName(username));
         final User user = userRepository.findByName(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
         return new MyUserPrincipal(user);
