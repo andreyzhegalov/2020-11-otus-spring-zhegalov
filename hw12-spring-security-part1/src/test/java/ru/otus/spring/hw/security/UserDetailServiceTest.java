@@ -1,7 +1,9 @@
 package ru.otus.spring.hw.security;
+
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.*;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.otus.spring.hw.controllers.AuthorController;
@@ -24,6 +27,9 @@ public class UserDetailServiceTest {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private PasswordEncoder encoder;
+
     @MockBean
     private UserRepository userRepository;
 
@@ -32,33 +38,29 @@ public class UserDetailServiceTest {
 
     @Test
     void shouldAuthenticatedForCorrectUserCredential() throws Exception {
-        given(userRepository.findByName("admin")).willReturn(Optional.of(new User("admin", "123")));
+        final var password = "123";
+        final var encodePassword = encoder.encode(password);
+        given(userRepository.findByName("admin"))
+                .willReturn(Optional.of(new User("admin", "{bcrypt}" + encodePassword)));
 
-        mvc.perform(formLogin().user("admin").password("123"))
-            .andDo(print())
-            .andExpect(status().isFound())
-            .andExpect(authenticated());
+        mvc.perform(formLogin().user("admin").password(password)).andDo(print()).andExpect(status().isFound())
+                .andExpect(authenticated());
     }
 
     @Test
-    void shouldUnauthenticatedForIncorrectRassword() throws Exception{
-        given(userRepository.findByName("admin")).willReturn(Optional.of(new User("admin", "123")));
+    void shouldUnauthenticatedForIncorrectRassword() throws Exception {
+        given(userRepository.findByName("admin")).willReturn(Optional.of(new User("admin", "{bcrypt}123")));
 
-        mvc.perform(formLogin().user("admin").password("incorrect_password"))
-            .andDo(print())
-            .andExpect(status().isFound())
-            .andExpect(unauthenticated());
+        mvc.perform(formLogin().user("admin").password("incorrect_password")).andDo(print())
+                .andExpect(status().isFound()).andExpect(unauthenticated());
     }
 
     @Test
-    void shouldUnauthenticatedForNotExistedUser() throws Exception{
+    void shouldUnauthenticatedForNotExistedUser() throws Exception {
         given(userRepository.findByName("admin")).willReturn(Optional.empty());
 
-        mvc.perform(formLogin().user("admin").password("incorrect_password"))
-            .andDo(print())
-            .andExpect(status().isFound())
-            .andExpect(unauthenticated());
+        mvc.perform(formLogin().user("admin").password("incorrect_password")).andDo(print())
+                .andExpect(status().isFound()).andExpect(unauthenticated());
     }
 
 }
-
