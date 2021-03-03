@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.RequiredArgsConstructor;
+import ru.otus.spring.hw.model.User;
 
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {

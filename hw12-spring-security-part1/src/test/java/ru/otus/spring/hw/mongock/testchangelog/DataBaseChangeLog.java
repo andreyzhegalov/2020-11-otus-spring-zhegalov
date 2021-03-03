@@ -13,7 +13,7 @@ import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
-import ru.otus.spring.hw.security.User;
+import ru.otus.spring.hw.model.User;
 
 @RequiredArgsConstructor
 @ChangeLog(order = "001")

@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.otus.spring.hw.controllers.AuthorController;
+import ru.otus.spring.hw.model.User;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.UserRepository;
 

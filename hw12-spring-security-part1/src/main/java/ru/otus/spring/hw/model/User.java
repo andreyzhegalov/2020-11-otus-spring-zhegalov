@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.security;
+package ru.otus.spring.hw.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

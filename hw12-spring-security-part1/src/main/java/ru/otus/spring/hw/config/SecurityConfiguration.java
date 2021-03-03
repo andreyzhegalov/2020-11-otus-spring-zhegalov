@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.security;
+package ru.otus.spring.hw.config;
 
 import java.util.HashMap;
 import java.util.Map;

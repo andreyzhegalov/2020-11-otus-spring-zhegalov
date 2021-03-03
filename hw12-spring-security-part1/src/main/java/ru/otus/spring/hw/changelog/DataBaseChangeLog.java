@@ -15,7 +15,7 @@ import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Comment;
 import ru.otus.spring.hw.model.Genre;
-import ru.otus.spring.hw.security.User;
+import ru.otus.spring.hw.model.User;
 
 @ChangeLog(order = "001")
 @Import(PasswordEncoder.class)
@@ -73,8 +73,8 @@ public class DataBaseChangeLog {
         mongoOperations.insert(comment1);
     }
 
-    private String encodePassword(String password){
-        final var  encoder = new BCryptPasswordEncoder(11);
+    private String encodePassword(String password) {
+        final var encoder = new BCryptPasswordEncoder(11);
         return "{bcrypt}" + encoder.encode(password);
     }
 
