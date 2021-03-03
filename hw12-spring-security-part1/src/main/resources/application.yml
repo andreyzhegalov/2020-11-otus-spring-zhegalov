@@ -2,7 +2,7 @@ spring:
   data:
     mongodb:
       database: library_zhegalov
-      uri: mongodb://172.17.0.3
+      uri: mongodb://localhost
 
   mvc:
     hiddenmethod:

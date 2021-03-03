@@ -23,7 +23,9 @@ import ru.otus.spring.hw.repositories.UserRepository;
 
 @WebMvcTest(controllers = AuthorController.class)
 @ComponentScan({ "ru.otus.spring.hw.security" })
-public class UserDetailServiceTest {
+public class MyUserDetailServiceTest {
+    private static final String USER_INPUT = "custom_name";
+    private static final String PASSWORD_INPUT = "custom_password";
     @Autowired
     private MockMvc mvc;
 
@@ -42,15 +44,15 @@ public class UserDetailServiceTest {
         final var encodePassword = encoder.encode(password);
         given(userRepository.findByName("admin")).willReturn(Optional.of(new User("admin", encodePassword)));
 
-        mvc.perform(formLogin().user("admin").password(password)).andDo(print()).andExpect(status().isFound())
-                .andExpect(authenticated());
+        mvc.perform(formLogin().user(USER_INPUT, "admin").password(PASSWORD_INPUT, password)).andDo(print())
+                .andExpect(status().isFound()).andExpect(authenticated());
     }
 
     @Test
     void shouldUnauthenticatedForIncorrectRassword() throws Exception {
         given(userRepository.findByName("admin")).willReturn(Optional.of(new User("admin", "{bcrypt}123")));
 
-        mvc.perform(formLogin().user("admin").password("incorrect_password")).andDo(print())
+        mvc.perform(formLogin().user(USER_INPUT, "admin").password(PASSWORD_INPUT, "incorrect_password")).andDo(print())
                 .andExpect(status().isFound()).andExpect(unauthenticated());
     }
 
@@ -58,7 +60,7 @@ public class UserDetailServiceTest {
     void shouldUnauthenticatedForNotExistedUser() throws Exception {
         given(userRepository.findByName("admin")).willReturn(Optional.empty());
 
-        mvc.perform(formLogin().user("admin").password("incorrect_password")).andDo(print())
+        mvc.perform(formLogin().user(USER_INPUT, "admin").password(PASSWORD_INPUT, "incorrect_password")).andDo(print())
                 .andExpect(status().isFound()).andExpect(unauthenticated());
     }
 
