@@ -40,8 +40,7 @@ public class UserDetailServiceTest {
     void shouldAuthenticatedForCorrectUserCredential() throws Exception {
         final var password = "123";
         final var encodePassword = encoder.encode(password);
-        given(userRepository.findByName("admin"))
-                .willReturn(Optional.of(new User("admin", "{bcrypt}" + encodePassword)));
+        given(userRepository.findByName("admin")).willReturn(Optional.of(new User("admin", encodePassword)));
 
         mvc.perform(formLogin().user("admin").password(password)).andDo(print()).andExpect(status().isFound())
                 .andExpect(authenticated());
