@@ -1,7 +1,5 @@
 package ru.otus.spring.hw.controllers.router;
 
-import java.util.Objects;
-
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -40,21 +38,21 @@ public class CommentHandler {
         final Mono<CommentDto> validCommentDto = commentDtoMono.doOnNext(validator::validate);
 
         final Mono<Comment> monoComment = validCommentDto.flatMap(dto -> {
-            return Mono.just(dto).zipWith(bookRepository.findById(dto.getBookId()).defaultIfEmpty(new Book()))
-                    .map(tuple -> {
-                        final var commentDto = tuple.getT1();
-                        final var book = tuple.getT2();
-                        if (Objects.isNull(book.getId())) {
-                            throw new CustomRouterException("book with id " + commentDto.getBookId() + " not  exist");
-                        }
-                        final var comment = new Comment();
-                        comment.setText(commentDto.getText());
-                        comment.setBook(book);
-                        return comment;
-                    }).flatMap(commentRepository::save);
+            return Mono.just(dto).zipWith(bookRepository.findById(dto.getBookId()).switchIfEmpty(Mono.error(() -> {
+                throw new CustomRouterException("book with id " + dto.getBookId() + " not  exist");
+            })))
+            .map(tuple -> {
+                final var commentDto = tuple.getT1();
+                final Book book = tuple.getT2();
+                final var comment = new Comment();
+                comment.setText(commentDto.getText());
+                comment.setBook(book);
+                return comment;
+            }).flatMap(commentRepository::save);
         });
 
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(monoComment.map(CommentDto::new), CommentDto.class);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(monoComment.map(CommentDto::new),
+                CommentDto.class);
     }
 
     @Transactional

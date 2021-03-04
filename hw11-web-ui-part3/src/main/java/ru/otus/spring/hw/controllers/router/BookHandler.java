@@ -1,7 +1,6 @@
 package ru.otus.spring.hw.controllers.router;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
@@ -11,6 +10,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.spring.hw.controllers.dto.BookDto;
 import ru.otus.spring.hw.model.Author;
@@ -43,21 +43,15 @@ public class BookHandler {
         final Mono<Book> book = validBookDto.flatMap(dto -> {
             final var monoBookDto = Mono.just(dto);
 
-            final Mono<Genre> monoGenre = monoBookDto.flatMap(bookDto -> genreRepository.findById(bookDto.getGenreId()))
-                    .defaultIfEmpty(new Genre()).doOnNext(genre -> {
-                        if (Objects.isNull(genre.getId())) {
-                            throw new RepositoryException("genre not exist ");
-                        }
-                    });
+            final Mono<Genre> monoGenre = genreRepository.findById(dto.getGenreId()).switchIfEmpty(Mono.error(() -> {
+                throw new RepositoryException("genre not exist ");
+            }));
 
-            final Mono<List<Author>> monoAuthorList = monoBookDto.flatMapIterable(BookDto::getAuthorsId)
-                    .flatMap(authorId -> {
-                        return authorRepository.findById(authorId).defaultIfEmpty(new Author()).doOnNext(author -> {
-                            if (Objects.isNull(author.getId())) {
-                                throw new RepositoryException("author not exist ");
-                            }
-                        });
-                    }).collectList();
+            final Mono<List<Author>> monoAuthorList = Flux.fromIterable(dto.getAuthorsId()).flatMap(authorId -> {
+                return authorRepository.findById(authorId).switchIfEmpty(Mono.error(() -> {
+                    throw new RepositoryException("author not exist ");
+                }));
+            }).collectList();
 
             return Mono.zip(monoBookDto, monoGenre, monoAuthorList).map(tuple -> {
                 final var bookDto = tuple.getT1();
@@ -68,6 +62,7 @@ public class BookHandler {
         });
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(book.map(BookDto::new), BookDto.class);
+
     }
 
     @Transactional
