@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>List of all books</title>
+    <style type="text/css">
+      body {
+        padding: 50px;
+      }
+
+      label {
+        display: inline-block;
+        width: 100px;
+      }
+
+      input:read-only {
+        background: lightgray;
+      }
+
+      .row {
+        margin-top: 10px;
+      }
+
+      .books,
+      .books td {
+        border: 1px solid lightgray;
+        padding: 5px;
+      }
+    </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="pageBody">
+      <div class="row">
+        <label for="holder-input">Goto:</label>
+        <a href="authors.html">Authors</a>
+        <a href="genres.html">Genres</a>
+      </div>
+      <hr />
+
+      <h3>Books:</h3>
+      <table class="books">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Authors</th>
+            <th>Comments</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="booksTable"></tbody>
+      </table>
+
+      <!--  add book form -->
+      <form id="addBookForm" action="/api/books">
+        <h3>Add book:</h3>
+
+        <div class="row">
+          <label for="bookTitle">Title:</label>
+          <input id="bookTitle" name="title" type="text" value="" />
+        </div>
+
+        <div class="row">
+          <label for="genresSelect">Genre:</label>
+          <select id="genresSelect" name="genreId">
+            <option disabled selected value>-- select an genre --</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <label for="authorsSelect">Authors:</label>
+          <select id="authorsSelect" name="authorsId" multiple></select>
+        </div>
+
+        <div class="row">
+          <button id="saveBookButton" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      $(function () {
+        updateAll();
+      });
+
+      $(document).on("submit", "form[name='deleteBookForm']", function (event) {
+        event.preventDefault();
+
+        var $form = $(this);
+
+        $.ajax({
+          url: $form.attr("action"),
+          type: "DELETE",
+          success: function (result) {
+            resetAddedBookForm();
+            updateAll();
+          },
+          error: function (xhr, resp, text) {
+            alert(xhr.responseJSON["errors"].toString());
+          },
+        });
+      });
+
+      $(document).on("click", "form[name='bookComments']", function (event) {
+        event.preventDefault();
+        var $form = $(this);
+        $("#pageBody").load(
+          $form.attr("action"),
+          function (responseText, textStatus, request) {}
+        );
+      });
+
+      $("#addBookForm").submit(function (event) {
+        event.preventDefault();
+        var $form = $(this);
+        var data = {};
+
+        $.each(this.elements, function (i, v) {
+          var input = $(v);
+          data[input.attr("name")] = input.val();
+          delete data["undefined"];
+        });
+
+        $.ajax({
+          url: $form.attr("action"),
+          type: "POST",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          success: function (result) {
+            resetAddedBookForm();
+            updateAll();
+          },
+          error: function (xhr, resp, text) {
+            alert(xhr.responseJSON["errors"].toString());
+          },
+        });
+      });
+
+      function updateAll() {
+        updateBooks();
+        updateGenres();
+        updateAuthors();
+      }
+
+      function resetAddedBookForm() {
+        $("#booksTable")[0].innerHTML = "";
+        $("#genresSelect")[0].innerHTML = "";
+        $("#authorsSelect")[0].innerHTML = "";
+        $("#addBookForm")[0].reset();
+      }
+
+      function updateGenres() {
+        $.get("/api/genres").done(function (genres) {
+          genres.forEach(function (genre) {
+            $("#genresSelect").append(`
+              <option value="${genre.id}"">${genre.name}</option>
+            `);
+          });
+        });
+      }
+
+      function updateAuthors() {
+        $.get("/api/authors").done(function (authors) {
+          authors.forEach(function (author) {
+            $("#authorsSelect").append(`
+              <option value="${author.id}"">${author.name}</option>
+            `);
+          });
+        });
+      }
+
+      function updateBooks() {
+        $.get("/api/books").done(function (books) {
+          books.forEach(function (book) {
+            $("#booksTable").append(`
+                <tr>
+                  <td>"${book.title}"</td>
+                  <td>"${book.genreName}"</td>
+                  <td>"${book.authorsName}"</td>
+                  <td>
+                    <form name="bookComments" action="/comments?bookId=${book.id}">
+                      <button type="submit">Comments</button>
+                    </form>
+                  </td>
+                  <td>
+                    <form name="deleteBookForm" action="/api/books/${book.id}">
+                      <button type="submit">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              `);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

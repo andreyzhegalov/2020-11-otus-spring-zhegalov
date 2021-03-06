@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.mongock.testchangelog;
+package ru.otus.spring.hw.changelog;
 
 import java.util.Optional;
 
@@ -50,12 +50,12 @@ public class DataBaseChangeLog {
         Book book2 = new Book("book2", genre1, author1);
         mongoOperations.insert(book2);
 
-        final var loadedAuthor1 = Optional.of(mongoOperations.findById(author1.getId(), Author.class)).orElseThrow();
+        final var loadedAuthor1 = Optional.ofNullable(mongoOperations.findById(author1.getId(), Author.class)).orElseThrow();
         loadedAuthor1.addBook(book1);
         loadedAuthor1.addBook(book2);
         mongoOperations.save(loadedAuthor1);
 
-        final var loadedAuthor2 = Optional.of(mongoOperations.findById(author2.getId(), Author.class)).orElseThrow();
+        final var loadedAuthor2 = Optional.ofNullable(mongoOperations.findById(author2.getId(), Author.class)).orElseThrow();
         loadedAuthor2.addBook(book1);
         mongoOperations.save(loadedAuthor2);
     }
