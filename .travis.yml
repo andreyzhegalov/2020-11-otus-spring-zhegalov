@@ -3,7 +3,7 @@ jdk:
   - openjdk13
 
 before_install:
-    mvn test -B
+    mvn test -B |grep ERROR
 
 install: skip
 

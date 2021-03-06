@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>List of all authors</title>
+    <style type="text/css">
+      body {
+        padding: 50px;
+      }
+
+      label {
+        display: inline-block;
+        width: 100px;
+      }
+
+      input:read-only {
+        background: lightgray;
+      }
+
+      .row {
+        margin-top: 10px;
+      }
+
+      .authors,
+      .authors td {
+        border: 1px solid lightgray;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row">
+      <a th:href="@{/books}" href="books.html">Back</a>
+    </div>
+    <hr />
+    <h3>Authors:</h3>
+
+    <table class="authors">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Books</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="author : ${authors}">
+          <td th:text="${author.name}">Pushkin</td>
+          <td
+              th:text="${#strings.arrayJoin( author.booksTitle, ', ')}">
+              book1, book2
+          </td>
+          <td>
+            <form
+              id="deleted-author-form"
+              th:action="@{/authors(id=${author.id})}"
+              th:method="delete"
+              action="authors.html"
+            >
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Added author -->
+    <form
+      id="added-author-form"
+      th:action="@{/authors}"
+      th:method="post"
+      action="authors.html"
+    >
+      <h3>Add author:</h3>
+
+      <div class="row">
+        <label for="author-name">Name:</label>
+        <input id="author-name" name="name" type="text" value="" />
+      </div>
+
+      <div class="row">
+        <button type="submit">Save</button>
+      </div>
+    </form>
+  </body>
+</html>
