@@ -12,7 +12,7 @@ import ru.otus.spring.hw.repositories.UserRepository;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class MyUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
