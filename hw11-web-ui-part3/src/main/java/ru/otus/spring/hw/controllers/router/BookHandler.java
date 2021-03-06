@@ -41,8 +41,6 @@ public class BookHandler {
         final Mono<BookDto> validBookDto = newBook.doOnNext(validator::validate);
 
         final Mono<Book> book = validBookDto.flatMap(dto -> {
-            final var monoBookDto = Mono.just(dto);
-
             final Mono<Genre> monoGenre = genreRepository.findById(dto.getGenreId()).switchIfEmpty(Mono.error(() -> {
                 throw new RepositoryException("genre not exist ");
             }));
@@ -53,11 +51,10 @@ public class BookHandler {
                 }));
             }).collectList();
 
-            return Mono.zip(monoBookDto, monoGenre, monoAuthorList).map(tuple -> {
-                final var bookDto = tuple.getT1();
-                final var genre = tuple.getT2();
-                final var authors = tuple.getT3();
-                return new Book(bookDto.getId(), bookDto.getTitle(), genre, authors.toArray(Author[]::new));
+            return Mono.zip(monoGenre, monoAuthorList).map(tuple -> {
+                final var genre = tuple.getT1();
+                final var authors = tuple.getT2();
+                return new Book(dto.getId(), dto.getTitle(), genre, authors.toArray(Author[]::new));
             }).flatMap(bookRepository::save);
         });
 
