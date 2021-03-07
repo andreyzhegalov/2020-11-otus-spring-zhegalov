@@ -24,7 +24,7 @@ import ru.otus.spring.hw.repositories.UserRepository;
 
 @WebMvcTest(controllers = AuthorController.class)
 @ComponentScan({ "ru.otus.spring.hw.security" })
-public class MyUserDetailServiceTest {
+public class CustomUserDetailServiceTest {
     private static final String USER_INPUT = "custom_name";
     private static final String PASSWORD_INPUT = "custom_password";
     @Autowired
