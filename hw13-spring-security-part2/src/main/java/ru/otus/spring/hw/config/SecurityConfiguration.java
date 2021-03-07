@@ -16,8 +16,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().anyRequest().authenticated().and().formLogin()
-                .usernameParameter("custom_name").passwordParameter("custom_password").permitAll();
+        http.csrf().disable()
+            .authorizeRequests().antMatchers("/books").hasAnyRole( "ADMIN", "USER" )
+            .and()
+            .authorizeRequests().antMatchers("/comments").hasAnyRole( "ADMIN", "USER" )
+            .and()
+            .authorizeRequests().antMatchers("/*").hasRole( "ADMIN" )
+            .and()
+            .authorizeRequests().antMatchers("/**").denyAll()
+            .and()
+            .authorizeRequests().anyRequest().authenticated()
+            .and()
+            .formLogin()
+            .usernameParameter("custom_name").passwordParameter("custom_password").permitAll();
     }
 
     @Bean

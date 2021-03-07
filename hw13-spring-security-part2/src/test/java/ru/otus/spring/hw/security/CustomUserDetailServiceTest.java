@@ -43,15 +43,17 @@ public class CustomUserDetailServiceTest {
     void shouldAuthenticatedForCorrectUserCredential() throws Exception {
         final var password = "123";
         final var encodePassword = encoder.encode(password);
-        given(userRepository.findByName("admin")).willReturn(Optional.of(new User("admin", encodePassword)));
+        given(userRepository.findByName("admin"))
+                .willReturn(Optional.of(new User("admin", encodePassword, "ROLE_ADMIN")));
 
         mvc.perform(formLogin().user(USER_INPUT, "admin").password(PASSWORD_INPUT, password)).andDo(print())
                 .andExpect(status().isFound()).andExpect(authenticated());
     }
 
     @Test
-    void shouldUnauthenticatedForIncorrectRassword() throws Exception {
-        given(userRepository.findByName("admin")).willReturn(Optional.of(new User("admin", "{bcrypt}123")));
+    void shouldUnauthenticatedForIncorrectPassword() throws Exception {
+        given(userRepository.findByName("admin"))
+                .willReturn(Optional.of(new User("admin", "{bcrypt}123", "ROLE_ADMIN")));
 
         mvc.perform(formLogin().user(USER_INPUT, "admin").password(PASSWORD_INPUT, "incorrect_password")).andDo(print())
                 .andExpect(status().isFound()).andExpect(unauthenticated());

@@ -7,6 +7,7 @@ import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
 
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.model.Author;
@@ -71,10 +72,15 @@ public class DataBaseChangeLog {
         mongoOperations.insert(comment1);
     }
 
+    private String encodePassword(String password) {
+        final var encoder = new BCryptPasswordEncoder(11);
+        return "{bcrypt}" + encoder.encode(password);
+    }
+
     @ChangeSet(order = "006", id = "initUsers", author = "azhegalov", runAlways = true)
     public void initUsers(MongoOperations mongoOperations) {
-        final var admin = new User("admin", "password");
-        final var notAdmin = new User("notadmin", "123");
+        final var admin = new User("admin", encodePassword("password"), "ROLE_ADMIN");
+        final var notAdmin = new User("notadmin", encodePassword("123"), "ROLE_USER");
 
         mongoOperations.insert(notAdmin);
         mongoOperations.insert(admin);

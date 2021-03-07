@@ -30,7 +30,7 @@ import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.RepositoryException;
 
-@WithMockUser
+@WithMockUser(roles = "ADMIN")
 @WebMvcTest(controllers = AuthorController.class)
 public class AuthorControllerTest {
     @Autowired

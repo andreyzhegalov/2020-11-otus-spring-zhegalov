@@ -80,9 +80,8 @@ public class DataBaseChangeLog {
 
     @ChangeSet(order = "006", id = "initUsers", author = "azhegalov", runAlways = true)
     public void initUsers(MongoOperations mongoOperations) {
-
-        final var admin = new User("admin", encodePassword("password"));
-        final var notAdmin = new User("notadmin", encodePassword("123"));
+        final var admin = new User("admin", encodePassword("password"), "ROLE_ADMIN");
+        final var notAdmin = new User("notadmin", encodePassword("123"), "ROLE_USER");
 
         mongoOperations.insert(notAdmin);
         mongoOperations.insert(admin);

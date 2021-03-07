@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.hw.dto.CommentDto;
 import ru.otus.spring.hw.service.CommentService;
 
-@WithMockUser
+@WithMockUser(roles = "ADMIN")
 @WebMvcTest(controllers = CommentController.class)
 public class CommentControllerTest {
 

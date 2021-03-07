@@ -27,7 +27,7 @@ import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.repositories.RepositoryException;
 
-@WithMockUser
+@WithMockUser(roles = "ADMIN")
 @WebMvcTest(controllers = GenreController.class)
 public class GenreControllerTest {
     @Autowired

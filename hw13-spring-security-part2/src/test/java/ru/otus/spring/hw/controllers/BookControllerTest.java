@@ -27,7 +27,7 @@ import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.service.BookService;
 import ru.otus.spring.hw.service.ServiceException;
 
-@WithMockUser
+@WithMockUser(roles = "ADMIN")
 @WebMvcTest(controllers = BookController.class)
 public class BookControllerTest {
     @Autowired
