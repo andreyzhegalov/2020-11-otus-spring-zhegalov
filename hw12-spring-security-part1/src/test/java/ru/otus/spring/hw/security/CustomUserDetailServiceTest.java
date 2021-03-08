@@ -24,7 +24,7 @@ import ru.otus.spring.hw.repositories.UserRepository;
 
 @WebMvcTest(controllers = AuthorController.class)
 @ComponentScan({ "ru.otus.spring.hw.security" })
-public class MyUserDetailServiceTest {
+public class CustomUserDetailServiceTest {
     private static final String USER_INPUT = "custom_name";
     private static final String PASSWORD_INPUT = "custom_password";
     @Autowired
@@ -50,7 +50,7 @@ public class MyUserDetailServiceTest {
     }
 
     @Test
-    void shouldUnauthenticatedForIncorrectRassword() throws Exception {
+    void shouldUnauthenticatedForIncorrectPassword() throws Exception {
         given(userRepository.findByName("admin")).willReturn(Optional.of(new User("admin", "{bcrypt}123")));
 
         mvc.perform(formLogin().user(USER_INPUT, "admin").password(PASSWORD_INPUT, "incorrect_password")).andDo(print())
