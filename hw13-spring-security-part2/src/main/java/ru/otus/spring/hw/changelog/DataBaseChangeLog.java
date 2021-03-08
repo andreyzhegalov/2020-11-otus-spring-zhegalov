@@ -82,8 +82,10 @@ public class DataBaseChangeLog {
     public void initUsers(MongoOperations mongoOperations) {
         final var admin = new User("admin", encodePassword("password"), "ROLE_ADMIN");
         final var notAdmin = new User("notadmin", encodePassword("123"), "ROLE_USER");
+        final var editor = new User("editor", encodePassword("editor"), "ROLE_EDITOR");
 
         mongoOperations.insert(notAdmin);
         mongoOperations.insert(admin);
+        mongoOperations.insert(editor);
     }
 }

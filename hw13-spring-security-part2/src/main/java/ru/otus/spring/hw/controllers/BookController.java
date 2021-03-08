@@ -58,6 +58,7 @@ public class BookController {
         return "redirect:/books";
     }
 
+    @PreAuthorize("hasRole('EDITOR')")
     @DeleteMapping("/books")
     public String deleteBook(@RequestParam("id") @NotBlank String id) {
         bookService.deleteBook(id);

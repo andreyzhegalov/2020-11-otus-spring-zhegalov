@@ -2,6 +2,7 @@ package ru.otus.spring.hw.security;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,7 +40,7 @@ public class MethodAuthorizationTest {
 
     @Test
     @WithMockUser(roles = { "EDITOR" })
-    void onlyUserWithEditorRoleCanAddAuthor() throws Exception {
+    void onlyUserWithEditorRoleCanAddBook() throws Exception {
         mvc.perform(post("/books").param("title", "book title").param("genreId", "genreId")
                 .param("authorsId", "authorId").param("authorsId", "authorsId")).andDo(print())
                 .andExpect(status().isFound()).andExpect(view().name("redirect:/books"));
@@ -49,10 +50,27 @@ public class MethodAuthorizationTest {
 
     @Test
     @WithMockUser(roles = { "ADMIN" })
-    void userWithAdminRoleCanNotAddAuthor() throws Exception {
+    void userWithAdminRoleCanNotAddBook() throws Exception {
         mvc.perform(post("/books").param("title", "book title").param("genreId", "genreId")
                 .param("authorsId", "authorId").param("authorsId", "authorsId")).andDo(print())
                 .andExpect(status().isForbidden());
+
+        then(bookService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    @WithMockUser(roles = { "EDITOR" })
+    void onlyUserWithEditorRoleCanDeleteBook() throws Exception {
+        mvc.perform(delete("/books").param("id", "123")).andDo(print()).andExpect(status().is3xxRedirection())
+                .andExpect(status().isFound()).andExpect(view().name("redirect:/books"));
+
+        then(bookService).should().deleteBook(any());
+    }
+
+    @Test
+    @WithMockUser(roles = { "ADMIN" })
+    void userWithAdminRoleCanNotRemoveBook() throws Exception {
+        mvc.perform(delete("/books").param("id", "123")).andDo(print()).andExpect(status().isForbidden());
 
         then(bookService).shouldHaveNoInteractions();
     }
