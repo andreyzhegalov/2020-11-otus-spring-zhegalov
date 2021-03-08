@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,18 @@ public class UrlAuthorizationTest {
 
     @MockBean
     private GenreRepository genreRepository;
+
+    @Test
+    @WithMockUser(roles = { "ADMIN" })
+    public void shouldEnabledAccessToRootUriForAdmin() throws Exception {
+        this.mvc.perform(get("/")).andDo(print()).andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @WithMockUser(roles = { "USER" })
+    public void shouldEnabledAccessToRootUriForUser() throws Exception {
+        this.mvc.perform(get("/")).andDo(print()).andExpect(status().is3xxRedirection());
+    }
 
     @ParameterizedTest
     @ValueSource(strings = { "/genres", "/books", "/authors", "/comments?bookId=1" })
