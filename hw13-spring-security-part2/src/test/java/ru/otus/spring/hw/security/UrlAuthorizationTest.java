@@ -20,7 +20,7 @@ import ru.otus.spring.hw.repositories.UserRepository;
 import ru.otus.spring.hw.service.BookService;
 import ru.otus.spring.hw.service.CommentService;
 
-@WebMvcTest()
+@WebMvcTest
 @ComponentScan({ "ru.otus.spring.hw.security" })
 public class UrlAuthorizationTest {
 

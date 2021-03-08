@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,6 +51,7 @@ public class BookController {
         return "books";
     }
 
+    @PreAuthorize("hasRole('EDITOR')")
     @PostMapping("/books")
     public String createBook(@Valid BookDto dto, BindingResult bindingResult) {
         bookService.save(dto);
