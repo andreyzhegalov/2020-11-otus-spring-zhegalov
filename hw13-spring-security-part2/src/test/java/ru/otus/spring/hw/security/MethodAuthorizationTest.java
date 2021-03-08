@@ -86,8 +86,7 @@ public class MethodAuthorizationTest {
     @Test
     @WithMockUser(roles = { "ADMIN" })
     void userWithAdminRoleCanNotAddAuthor() throws Exception {
-        mvc.perform(post("/authors").param("name", "name")).andDo(print())
-                .andExpect(status().isForbidden());
+        mvc.perform(post("/authors").param("name", "name")).andDo(print()).andExpect(status().isForbidden());
 
         then(authorRepository).shouldHaveNoInteractions();
     }
@@ -108,4 +107,43 @@ public class MethodAuthorizationTest {
         then(authorRepository).shouldHaveNoInteractions();
     }
 
+    @Test
+    @WithMockUser(roles = { "EDITOR" })
+    void onlyUserWithEditorRoleCanAddGenre() throws Exception {
+        mvc.perform(post("/genres").param("name", "genre name")).andDo(print()).andExpect(status().is3xxRedirection());
+        then(genreRepository).should().save(any());
+    }
+
+    @Test
+    @WithMockUser(roles = { "ADMIN" })
+    void userWithAdminRoleCanNotAddGenre() throws Exception {
+        mvc.perform(post("/genres").param("name", "genre name")).andDo(print()).andExpect(status().isForbidden());
+
+        then(genreRepository).shouldHaveNoInteractions();
+    }
+
+    @Test
+    @WithMockUser(roles = { "EDITOR" })
+    void onlyUserWithEditorRoleCanDeleteGenre() throws Exception {
+        mvc.perform(delete("/genres").param("id", "123")).andDo(print()).andExpect(status().is3xxRedirection());
+
+        then(genreRepository).should().deleteById(anyString());
+    }
+
+    @Test
+    @WithMockUser(roles = { "ADMIN" })
+    void userWithAdminRoleCanNotRemoveGenre() throws Exception {
+        mvc.perform(delete("/genres").param("id", "123")).andDo(print()).andExpect(status().isForbidden());
+
+        then(genreRepository).shouldHaveNoInteractions();
+    }
+
+    @Test
+    @WithMockUser(roles = { "USER" })
+    void userWithUserRoleCanAddNewComment() throws Exception {
+        mvc.perform(post("/comments").param("bookId", "123").param("text", "comment text")).andDo(print())
+                .andExpect(status().is3xxRedirection());
+
+        then(commentService).should().addComment(any());
+    }
 }

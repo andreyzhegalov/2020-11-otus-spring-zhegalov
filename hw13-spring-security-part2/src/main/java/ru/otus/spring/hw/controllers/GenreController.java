@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,12 +32,14 @@ public class GenreController {
         return "genres";
     }
 
+    @PreAuthorize("hasRole('EDITOR')")
     @PostMapping("/genres")
     public String saveGenre(@Valid GenreDto genreDto, BindingResult bindingResult) {
         genreRepository.save(genreDto.toEntity());
         return "redirect:/genres";
     }
 
+    @PreAuthorize("hasRole('EDITOR')")
     @DeleteMapping("/genres")
     public String deleteGenre(@RequestParam("id") @NotBlank String id) {
         genreRepository.deleteById(id);
