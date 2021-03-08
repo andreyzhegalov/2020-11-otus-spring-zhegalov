@@ -42,13 +42,14 @@ public class SecurityControllerTest {
     private CommentService commentService;
 
     @Test
-    void shouldRedirectToLoginForAllRequest() throws Exception {
-        mvc.perform(get("/")).andDo(print()).andExpect(status().is(302)).andExpect(redirectedUrlPattern("**/login"));
+    void shouldRedirectToLoginPageForAllRequest() throws Exception {
+        mvc.perform(get("/")).andDo(print()).andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 
     @Test
     void shouldRedirectToLoginForAnonymous() throws Exception {
-        mvc.perform(get("/").with(anonymous())).andDo(print()).andExpect(status().is(302))
+        mvc.perform(get("/").with(anonymous())).andDo(print()).andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("**/login"));
     }
 

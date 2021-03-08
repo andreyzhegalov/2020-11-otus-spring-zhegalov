@@ -49,7 +49,7 @@ public class CustomUserDetailServiceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void shouldReturnCorrectGrantedAuthority() throws Exception {
+    void shouldReturnCorrectUserDetails() throws Exception {
         final var password = "123";
         final var userName = "admin";
         final var role = "ROLE_ADMIN";
@@ -63,7 +63,6 @@ public class CustomUserDetailServiceTest {
         assertThat((List<GrantedAuthority>) userDetails.getAuthorities())
                 .containsOnly(new SimpleGrantedAuthority(role));
     }
-
 
     @Test
     void shouldAuthenticatedForCorrectUserCredential() throws Exception {

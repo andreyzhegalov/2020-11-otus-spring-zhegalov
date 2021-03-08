@@ -3,9 +3,9 @@ mongock:
 
 logging:
   level:
-    ROOT: DEBUG
-    org.springframework: DEBUG
-    ru.otus.spring.hw: DEBUG
+    ROOT: INFO
+    org.springframework: INFO
+    ru.otus.spring.hw: INFO
 
 ---
 spring:

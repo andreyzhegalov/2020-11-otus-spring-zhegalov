@@ -16,17 +16,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-            .authorizeRequests().antMatchers("/", "/books", "/comments").hasAnyRole( "ADMIN", "EDITOR", "USER" )
+        http.csrf().disable().authorizeRequests()
+            .antMatchers("/", "/books", "/comments").hasAnyRole("ADMIN", "EDITOR", "USER")
             .and()
-            .authorizeRequests().antMatchers("/*").hasAnyRole( "ADMIN", "EDITOR" )
+            .authorizeRequests().antMatchers("/*").hasAnyRole("ADMIN", "EDITOR")
             .and()
             .authorizeRequests().antMatchers("/**").denyAll()
             .and()
             .authorizeRequests().anyRequest().authenticated()
             .and()
-            .formLogin()
-            .usernameParameter("custom_name").passwordParameter("custom_password").permitAll();
+            .formLogin().usernameParameter("custom_name").passwordParameter("custom_password").permitAll();
     }
 
     @Bean

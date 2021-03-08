@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
@@ -45,19 +46,35 @@ public class UrlAuthorizationTest {
     @Test
     @WithMockUser(roles = { "ADMIN" })
     public void shouldEnabledAccessToRootUriForAdmin() throws Exception {
-        this.mvc.perform(get("/")).andDo(print()).andExpect(status().is3xxRedirection());
+        this.mvc.perform(get("/")).andDo(print()).andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/books"));
     }
 
     @Test
     @WithMockUser(roles = { "USER" })
     public void shouldEnabledAccessToRootUriForUser() throws Exception {
-        this.mvc.perform(get("/")).andDo(print()).andExpect(status().is3xxRedirection());
+        this.mvc.perform(get("/")).andDo(print()).andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/books"));
+    }
+
+    @Test
+    @WithMockUser(roles = { "EDITOR" })
+    public void shouldEnabledAccessToRootUriForEditor() throws Exception {
+        this.mvc.perform(get("/")).andDo(print()).andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/books"));
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/genres", "/books", "/authors", "/comments?bookId=1" })
     @WithMockUser(roles = { "ADMIN" })
     public void shouldEnabledAccessToAllUriForAdmin(String uri) throws Exception {
+        this.mvc.perform(get(uri)).andDo(print()).andExpect(status().isOk());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "/genres", "/books", "/authors", "/comments?bookId=1" })
+    @WithMockUser(roles = { "EDITOR" })
+    public void shouldEnabledAccessToAllUriForEditor(String uri) throws Exception {
         this.mvc.perform(get(uri)).andDo(print()).andExpect(status().isOk());
     }
 
@@ -71,7 +88,7 @@ public class UrlAuthorizationTest {
     @ParameterizedTest
     @ValueSource(strings = { "/books", "/comments?bookId=1" })
     @WithMockUser(roles = { "USER" })
-    public void shouldEnabledAccessToBooksAndCommentsUriForNotAdminUser(String uri) throws Exception {
+    public void shouldEnabledAccessToBooksAndCommentsUriForUser(String uri) throws Exception {
         this.mvc.perform(get(uri)).andDo(print()).andExpect(status().isOk());
     }
 }

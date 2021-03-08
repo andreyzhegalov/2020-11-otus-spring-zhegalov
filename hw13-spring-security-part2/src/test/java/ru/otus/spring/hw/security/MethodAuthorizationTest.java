@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class MethodAuthorizationTest {
     void onlyUserWithEditorRoleCanAddBook() throws Exception {
         mvc.perform(post("/books").param("title", "book title").param("genreId", "genreId")
                 .param("authorsId", "authorId").param("authorsId", "authorsId")).andDo(print())
-                .andExpect(status().isFound()).andExpect(view().name("redirect:/books"));
+                .andExpect(status().is3xxRedirection());
 
         then(bookService).should().save(any());
     }
@@ -63,7 +62,7 @@ public class MethodAuthorizationTest {
     @WithMockUser(roles = { "EDITOR" })
     void onlyUserWithEditorRoleCanDeleteBook() throws Exception {
         mvc.perform(delete("/books").param("id", "123")).andDo(print()).andExpect(status().is3xxRedirection())
-                .andExpect(status().isFound()).andExpect(view().name("redirect:/books"));
+                .andExpect(status().is3xxRedirection());
 
         then(bookService).should().deleteBook(any());
     }
@@ -80,6 +79,7 @@ public class MethodAuthorizationTest {
     @WithMockUser(roles = { "EDITOR" })
     void onlyUserWithEditorRoleCanAddAuthor() throws Exception {
         mvc.perform(post("/authors").param("name", "name")).andDo(print()).andExpect(status().is3xxRedirection());
+
         then(authorRepository).should().save(any());
     }
 
