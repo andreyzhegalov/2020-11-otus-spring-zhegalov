@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,12 +33,14 @@ public class AuthorController {
         return "authors";
     }
 
+    @PreAuthorize("hasRole('EDITOR')")
     @PostMapping("/authors")
     public String saveAuthor(@Valid AuthorDto authorDto, BindingResult bindingResult) {
         authorRepository.save(authorDto.toEntity());
         return "redirect:/authors";
     }
 
+    @PreAuthorize("hasRole('EDITOR')")
     @DeleteMapping("/authors")
     public String deleteAuthor(@RequestParam("id") @NotBlank String id) {
         authorRepository.deleteById(id);

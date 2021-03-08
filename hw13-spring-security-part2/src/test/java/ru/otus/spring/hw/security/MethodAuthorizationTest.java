@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.security;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -73,6 +74,38 @@ public class MethodAuthorizationTest {
         mvc.perform(delete("/books").param("id", "123")).andDo(print()).andExpect(status().isForbidden());
 
         then(bookService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    @WithMockUser(roles = { "EDITOR" })
+    void onlyUserWithEditorRoleCanAddAuthor() throws Exception {
+        mvc.perform(post("/authors").param("name", "name")).andDo(print()).andExpect(status().is3xxRedirection());
+        then(authorRepository).should().save(any());
+    }
+
+    @Test
+    @WithMockUser(roles = { "ADMIN" })
+    void userWithAdminRoleCanNotAddAuthor() throws Exception {
+        mvc.perform(post("/authors").param("name", "name")).andDo(print())
+                .andExpect(status().isForbidden());
+
+        then(authorRepository).shouldHaveNoInteractions();
+    }
+
+    @Test
+    @WithMockUser(roles = { "EDITOR" })
+    void onlyUserWithEditorRoleCanDeleteAuthor() throws Exception {
+        mvc.perform(delete("/authors").param("id", "123")).andDo(print()).andExpect(status().is3xxRedirection());
+
+        then(authorRepository).should().deleteById(anyString());
+    }
+
+    @Test
+    @WithMockUser(roles = { "ADMIN" })
+    void userWithAdminRoleCanNotRemoveAuthor() throws Exception {
+        mvc.perform(delete("/authors").param("id", "123")).andDo(print()).andExpect(status().isForbidden());
+
+        then(authorRepository).shouldHaveNoInteractions();
     }
 
 }
