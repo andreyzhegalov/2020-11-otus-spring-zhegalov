@@ -57,7 +57,7 @@ public class CommentHandler {
 
     @Transactional
     public @NotNull Mono<ServerResponse> deleteComment(ServerRequest request) {
-        final var handler = Mono.just(request.pathVariable("id")).flatMap(commentRepository::deleteById);
+        final var handler = commentRepository.deleteById(request.pathVariable("id"));
         return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).body(handler, String.class);
     }
 }

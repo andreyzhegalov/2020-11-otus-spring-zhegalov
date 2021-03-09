@@ -36,12 +36,11 @@ class AuthorHandler {
 
     @Transactional
     public @NotNull Mono<ServerResponse> deleteAuthor(ServerRequest request) {
-        final var handler = Mono.just(request.pathVariable("id")).log().flatMap(bookRepository::existsBookByAuthors_id)
-                .doOnNext(authorHasBook -> {
+        final var handler = bookRepository.existsBookByAuthors_id(request.pathVariable("id")).log()
+                .flatMap(authorHasBook -> {
                     if (authorHasBook) {
                         throw new CustomRouterException("author can't deleted with existed book");
                     }
-                }).flatMap(unused -> {
                     final var authorId = request.pathVariable("id");
                     return authorRepository.deleteById(authorId);
                 });

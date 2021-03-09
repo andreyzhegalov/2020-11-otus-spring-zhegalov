@@ -36,15 +36,13 @@ public class GenreHandler {
 
     @Transactional
     public @NotNull Mono<ServerResponse> deleteGenre(ServerRequest request) {
-        final var handler = Mono.just(request.pathVariable("id")).flatMap(bookRepository::existsBookByGenre_id)
-                .doOnNext(genreHasBook -> {
-                    if (genreHasBook) {
-                        throw new CustomRouterException("genre can't deleted with existed book");
-                    }
-                }).flatMap(unused -> {
-                    final var genreId = request.pathVariable("id");
-                    return genreRepository.deleteById(genreId);
-                });
+        final var handler = bookRepository.existsBookByGenre_id(request.pathVariable("id")).flatMap(genreHasBook -> {
+            if (genreHasBook) {
+                throw new CustomRouterException("genre can't deleted with existed book");
+            }
+            final var genreId = request.pathVariable("id");
+            return genreRepository.deleteById(genreId);
+        });
         return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).body(handler, String.class);
     }
 }
