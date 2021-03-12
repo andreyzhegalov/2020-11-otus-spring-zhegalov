@@ -39,13 +39,15 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Action</th>
+          <th id="genre-table-action-header" sec:authorize="hasRole('EDITOR')">
+            Action
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="genre : ${genres}">
           <td th:text="${genre.name}">Detective</td>
-          <td>
+          <td id = "genre-table-action-cell" sec:authorize="hasRole('EDITOR')">
             <form
               id="deleted-genre-form"
               th:action="@{/genres(id=${genre.id})}"
@@ -62,6 +64,7 @@
     <!-- Added genre -->
     <form
       id="added-genre-form"
+      sec:authorize="hasRole('EDITOR')"
       th:action="@{/genres}"
       th:method="post"
       action="genres.html"

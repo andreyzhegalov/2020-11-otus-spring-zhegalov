@@ -3,6 +3,7 @@ package ru.otus.spring.hw.controllers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -13,6 +14,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -44,6 +47,34 @@ public class GenreControllerTest {
         mvc.perform(get("/genres")).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().attributeExists("genres")).andExpect(view().name("genres"));
         then(genreRepository).should().findAll();
+    }
+
+    @Test
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    void viewShouldNotContainsSaveAndDeleteButtonForNotEditorUser() throws Exception {
+        given(genreRepository.findAll()).willReturn(Arrays.asList(new Genre()));
+
+        final var result = mvc.perform(get("/genres")).andDo(print()).andExpect(status().isOk())
+                .andExpect(model().attributeExists("genres")).andExpect(view().name("genres")).andReturn();
+
+        final String content = result.getResponse().getContentAsString();
+        assertThat(content).isNotNull().doesNotContain("added-genre-form");
+        assertThat(content).doesNotContain("genre-table-action-header");
+        assertThat(content).doesNotContain("genre-table-action-cell");
+    }
+
+    @Test
+    @WithMockUser(roles = { "EDITOR" })
+    void viewShouldContainsSaveOrDeleteButtonForEditorUser() throws Exception {
+        given(genreRepository.findAll()).willReturn(Arrays.asList(new Genre()));
+
+        final var result = mvc.perform(get("/genres")).andDo(print()).andExpect(status().isOk())
+                .andExpect(model().attributeExists("genres")).andExpect(view().name("genres")).andReturn();
+
+        final String content = result.getResponse().getContentAsString();
+        assertThat(content).isNotNull().contains("added-genre-form");
+        assertThat(content).contains("genre-table-action-header");
+        assertThat(content).contains("genre-table-action-cell");
     }
 
     @Test
