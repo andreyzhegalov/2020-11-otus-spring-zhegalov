@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -15,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -48,6 +50,38 @@ public class AuthorControllerTest {
                 .andExpect(model().attributeExists("authors"))
                 .andExpect(model().attribute("authors", instanceOf(List.class))).andExpect(view().name("authors"));
         then(authorRepository).should().findAll();
+    }
+
+    @Test
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    void viewShouldNotContainsSaveAndDeleteButtonForNotEditorUser() throws Exception {
+        given(authorRepository.findAll()).willReturn(Arrays.asList(new Author()));
+
+        final var result = mvc.perform(get("/authors")).andDo(print()).andExpect(status().isOk())
+                .andExpect(model().attributeExists("authors"))
+                .andExpect(model().attribute("authors", instanceOf(List.class))).andExpect(view().name("authors"))
+                .andReturn();
+
+        final String content = result.getResponse().getContentAsString();
+        assertThat(content).isNotNull().doesNotContain("added-author-form");
+        assertThat(content).doesNotContain("author-table-action-header");
+        assertThat(content).doesNotContain("author-table-action-cell");
+    }
+
+    @Test
+    @WithMockUser(roles = { "EDITOR" })
+    void viewShouldContainsSaveOrDeleteButtonForEditorUser() throws Exception {
+        given(authorRepository.findAll()).willReturn(Arrays.asList(new Author()));
+
+        final var result = mvc.perform(get("/authors")).andDo(print()).andExpect(status().isOk())
+                .andExpect(model().attributeExists("authors"))
+                .andExpect(model().attribute("authors", instanceOf(List.class))).andExpect(view().name("authors"))
+                .andReturn();
+
+        final String content = result.getResponse().getContentAsString();
+        assertThat(content).isNotNull().contains("added-author-form");
+        assertThat(content).contains("author-table-action-header");
+        assertThat(content).contains("author-table-action-cell");
     }
 
     @Test

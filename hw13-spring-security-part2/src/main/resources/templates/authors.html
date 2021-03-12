@@ -40,17 +40,18 @@
         <tr>
           <th>Name</th>
           <th>Books</th>
-          <th>Action</th>
+          <th id="author-table-action-header" sec:authorize="hasRole('EDITOR')">
+            Action
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="author : ${authors}">
           <td th:text="${author.name}">Pushkin</td>
-          <td
-              th:text="${#strings.arrayJoin( author.booksTitle, ', ')}">
-              book1, book2
+          <td th:text="${#strings.arrayJoin( author.booksTitle, ', ')}">
+            book1, book2
           </td>
-          <td>
+          <td id = "author-table-action-cell" sec:authorize="hasRole('EDITOR')">
             <form
               id="deleted-author-form"
               th:action="@{/authors(id=${author.id})}"
@@ -67,6 +68,7 @@
     <!-- Added author -->
     <form
       id="added-author-form"
+      sec:authorize="hasRole('EDITOR')"
       th:action="@{/authors}"
       th:method="post"
       action="authors.html"
