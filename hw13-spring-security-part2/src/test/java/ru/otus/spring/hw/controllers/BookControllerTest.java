@@ -1,5 +1,6 @@
 package ru.otus.spring.hw.controllers;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,6 +56,46 @@ public class BookControllerTest {
         then(bookService).should().findAll();
         then(authorRepository).should().findAll();
         then(genreService).should().findAll();
+    }
+
+    @Test
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    void viewShouldNotContainsSaveButtonForNotEditorUser() throws Exception {
+        final var result = mvc.perform(get("/books")).andDo(print()).andExpect(status().isOk())
+                .andExpect(model().attributeExists("books")).andExpect(model().attributeExists("authors"))
+                .andExpect(model().attributeExists("genres")).andExpect(view().name("books")).andReturn();
+        final String content = result.getResponse().getContentAsString();
+        assertThat(content).isNotNull().doesNotContain("added-book-form");
+    }
+
+    @Test
+    @WithMockUser(roles = { "EDITOR" })
+    void viewShouldContainsSaveButtonForEditorUser() throws Exception {
+        final var result = mvc.perform(get("/books")).andDo(print()).andExpect(status().isOk())
+                .andExpect(model().attributeExists("books")).andExpect(model().attributeExists("authors"))
+                .andExpect(model().attributeExists("genres")).andExpect(view().name("books")).andReturn();
+        final String content = result.getResponse().getContentAsString();
+        assertThat(content).isNotNull().contains("added-book-form");
+    }
+
+    @Test
+    @WithMockUser(roles = { "ADMIN", "EDITOR" })
+    void viewShouldContainsAuthorAndGenrePageLinksForAnyNotUserRole() throws Exception {
+        final var result = mvc.perform(get("/books")).andDo(print()).andExpect(status().isOk())
+                .andExpect(model().attributeExists("books")).andExpect(model().attributeExists("authors"))
+                .andExpect(model().attributeExists("genres")).andExpect(view().name("books")).andReturn();
+        final String content = result.getResponse().getContentAsString();
+        assertThat(content).isNotNull().contains("goto-ref");
+    }
+
+    @Test
+    @WithMockUser(roles = { "USER" })
+    void viewShouldNotContainsAuthorAndGenrePageLinksForUserRole() throws Exception {
+        final var result = mvc.perform(get("/books")).andDo(print()).andExpect(status().isOk())
+                .andExpect(model().attributeExists("books")).andExpect(model().attributeExists("authors"))
+                .andExpect(model().attributeExists("genres")).andExpect(view().name("books")).andReturn();
+        final String content = result.getResponse().getContentAsString();
+        assertThat(content).isNotNull().doesNotContain("goto-ref");
     }
 
     @Test

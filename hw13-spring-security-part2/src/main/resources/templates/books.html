@@ -29,7 +29,11 @@
     </style>
   </head>
   <body>
-    <div class="row">
+    <div
+      sec:authorize="hasAnyRole('ADMIN', 'EDITOR')"
+      id="goto-ref"
+      class="row"
+    >
       <label for="holder-input">Goto:</label>
       <a th:href="@{/authors}" href="authors.html">Authors</a>
       <a th:href="@{/genres}" href="genres.html">Genres</a>
@@ -78,6 +82,7 @@
       th:action="@{/books}"
       th:method="post"
       action="books.html"
+      sec:authorize="hasRole('EDITOR')"
     >
       <h3>Add book:</h3>
 
@@ -89,7 +94,7 @@
       <div class="row">
         <label for="genres">Genre:</label>
         <select id="genres" name="genreId">
-          <option disabled selected value> -- select an genre -- </option>
+          <option disabled selected value>-- select an genre --</option>
           <option
             th:each="genre : ${genres}"
             th:value="${genre.id}"
