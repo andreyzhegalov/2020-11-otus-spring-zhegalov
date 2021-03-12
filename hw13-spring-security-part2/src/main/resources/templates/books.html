@@ -47,7 +47,9 @@
           <th>Genre</th>
           <th>Authors</th>
           <th>Comments</th>
-          <th>Actions</th>
+          <th id="book-table-action-header" sec:authorize="hasRole('EDITOR')">
+            Action
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -62,7 +64,7 @@
               >Comments</a
             >
           </td>
-          <td>
+          <td id = "book-table-action-cell" sec:authorize="hasRole('EDITOR')">
             <form
               id="deleted-book-form"
               th:action="@{/books(id=${book.id})}"

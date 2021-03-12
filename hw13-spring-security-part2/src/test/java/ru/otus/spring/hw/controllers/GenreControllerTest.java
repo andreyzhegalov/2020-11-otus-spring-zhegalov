@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -52,7 +53,7 @@ public class GenreControllerTest {
     @Test
     @WithMockUser(roles = { "ADMIN", "USER" })
     void viewShouldNotContainsSaveAndDeleteButtonForNotEditorUser() throws Exception {
-        given(genreRepository.findAll()).willReturn(Arrays.asList(new Genre()));
+        given(genreRepository.findAll()).willReturn(Collections.singletonList(new Genre()));
 
         final var result = mvc.perform(get("/genres")).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().attributeExists("genres")).andExpect(view().name("genres")).andReturn();
@@ -66,7 +67,7 @@ public class GenreControllerTest {
     @Test
     @WithMockUser(roles = { "EDITOR" })
     void viewShouldContainsSaveOrDeleteButtonForEditorUser() throws Exception {
-        given(genreRepository.findAll()).willReturn(Arrays.asList(new Genre()));
+        given(genreRepository.findAll()).willReturn(Collections.singletonList(new Genre()));
 
         final var result = mvc.perform(get("/genres")).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().attributeExists("genres")).andExpect(view().name("genres")).andReturn();

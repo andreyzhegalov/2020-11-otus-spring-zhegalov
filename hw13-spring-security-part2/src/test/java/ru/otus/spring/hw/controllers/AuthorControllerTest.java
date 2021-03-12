@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -55,7 +56,7 @@ public class AuthorControllerTest {
     @Test
     @WithMockUser(roles = { "ADMIN", "USER" })
     void viewShouldNotContainsSaveAndDeleteButtonForNotEditorUser() throws Exception {
-        given(authorRepository.findAll()).willReturn(Arrays.asList(new Author()));
+        given(authorRepository.findAll()).willReturn(Collections.singletonList(new Author()));
 
         final var result = mvc.perform(get("/authors")).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().attributeExists("authors"))
@@ -71,7 +72,7 @@ public class AuthorControllerTest {
     @Test
     @WithMockUser(roles = { "EDITOR" })
     void viewShouldContainsSaveOrDeleteButtonForEditorUser() throws Exception {
-        given(authorRepository.findAll()).willReturn(Arrays.asList(new Author()));
+        given(authorRepository.findAll()).willReturn(Collections.singletonList(new Author()));
 
         final var result = mvc.perform(get("/authors")).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().attributeExists("authors"))

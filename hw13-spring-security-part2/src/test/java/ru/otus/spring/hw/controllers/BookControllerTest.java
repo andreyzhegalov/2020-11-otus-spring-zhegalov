@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -15,6 +16,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,6 +27,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.otus.spring.hw.dto.BookDto;
+import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.Genre;
 import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.service.BookService;
@@ -60,22 +66,32 @@ public class BookControllerTest {
 
     @Test
     @WithMockUser(roles = { "ADMIN", "USER" })
-    void viewShouldNotContainsSaveButtonForNotEditorUser() throws Exception {
+    void viewShouldNotContainsEditButtonForNotEditorUser() throws Exception {
+        final var book = new Book("id", "title", new Genre("genreId", "name"));
+        given(bookService.findAll()).willReturn(Collections.singletonList(book));
+
         final var result = mvc.perform(get("/books")).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().attributeExists("books")).andExpect(model().attributeExists("authors"))
                 .andExpect(model().attributeExists("genres")).andExpect(view().name("books")).andReturn();
+
         final String content = result.getResponse().getContentAsString();
         assertThat(content).isNotNull().doesNotContain("added-book-form");
+        assertThat(content).doesNotContain("book-table-action-header");
+        assertThat(content).doesNotContain("book-table-action-cell");
     }
 
     @Test
     @WithMockUser(roles = { "EDITOR" })
-    void viewShouldContainsSaveButtonForEditorUser() throws Exception {
+    void viewShouldContainsEditButtonForEditorUser() throws Exception {
+        final var book = new Book("id", "title", new Genre("genreId", "name"));
+        given(bookService.findAll()).willReturn(Collections.singletonList(book));
         final var result = mvc.perform(get("/books")).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().attributeExists("books")).andExpect(model().attributeExists("authors"))
                 .andExpect(model().attributeExists("genres")).andExpect(view().name("books")).andReturn();
         final String content = result.getResponse().getContentAsString();
         assertThat(content).isNotNull().contains("added-book-form");
+        assertThat(content).contains("book-table-action-header");
+        assertThat(content).contains("book-table-action-cell");
     }
 
     @Test
