@@ -26,6 +26,6 @@ spring:
 
 logging:
   level:
-    ROOT: ERROR
-    org.springframework: INFO
+    ROOT: DEBUG
+    org.springframework: DEBUG
     ru.otus.spring.hw: DEBUG
