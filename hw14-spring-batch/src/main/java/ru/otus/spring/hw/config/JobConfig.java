@@ -9,6 +9,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.MongoItemWriter;
@@ -21,6 +22,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import ru.otus.spring.hw.config.mappers.BookMapper;
 import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.service.BookService;
 
 @Configuration
 @EnableBatchProcessing
@@ -40,6 +42,12 @@ public class JobConfig {
                     )
             .rowMapper(new BookMapper())
             .build();
+    }
+
+    @StepScope
+    @Bean
+    public ItemProcessor<Book, Book> processor(BookService bookService) {
+        return (ItemProcessor<Book, Book>) bookService::addAuthors;
     }
 
     @StepScope
