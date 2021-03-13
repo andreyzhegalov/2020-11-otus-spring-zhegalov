@@ -1,6 +1,5 @@
 package ru.otus.spring.hw.config;
 
-
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
@@ -33,15 +32,10 @@ public class JobConfig {
     @StepScope
     @Bean
     public JdbcCursorItemReader<Book> bookReader(DataSource dataSource) {
-        return new JdbcCursorItemReaderBuilder<Book>()
-            .name("bookItemReader")
-            .dataSource(dataSource).sql(
-                    "select books.id as book_id, title, genres.id as genre_id, genres.name as genre_name from "
-                    + BOOK_TABLE_NAME
-                    +  " left join genres on books.genre_id=genres.id"
-                    )
-            .rowMapper(new BookMapper())
-            .build();
+        return new JdbcCursorItemReaderBuilder<Book>().name("bookItemReader").dataSource(dataSource)
+                .sql("select books.id as book_id, title, genres.id as genre_id, genres.name as genre_name from "
+                        + BOOK_TABLE_NAME + " left join genres on books.genre_id=genres.id")
+                .rowMapper(new BookMapper()).build();
     }
 
     @StepScope
@@ -53,25 +47,19 @@ public class JobConfig {
     @StepScope
     @Bean
     public MongoItemWriter<Book> writer(MongoTemplate mongoTemplate) {
-        return new MongoItemWriterBuilder<Book>().collection(BOOK_COLLECTION_NAME)
-            .template(mongoTemplate)
-            .build();
+        return new MongoItemWriterBuilder<Book>().collection(BOOK_COLLECTION_NAME).template(mongoTemplate).build();
     }
-
 
     @Bean
     public Job makeJob(JobBuilderFactory jobBuilderFactory, Step step1) {
-        return jobBuilderFactory.get("Test")
-            .start(step1).build();
+        return jobBuilderFactory.get("Test").start(step1).build();
     }
 
     @Bean
-    public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<Book> bookReader, ItemWriter bookWriter) {
-        return stepBuilderFactory.get("step1")
-            .chunk(2)
-            .reader(bookReader)
-            .writer(bookWriter)
-            .build();
+    public Step importBookStep(StepBuilderFactory stepBuilderFactory, ItemReader<Book> bookReader,
+            ItemWriter<Book> bookWriter) {
+        return stepBuilderFactory.get("importBookStep").<Book, Book>chunk(8).reader(bookReader).writer(bookWriter)
+                .build();
     }
 
 }

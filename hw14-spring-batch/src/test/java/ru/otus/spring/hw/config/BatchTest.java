@@ -27,7 +27,9 @@ import ru.otus.spring.hw.model.Genre;
 @SpringBootTest
 @SpringBatchTest
 public class BatchTest {
-    private final static String BOOK_COLLECTION_NAME = "books";
+    private static final String BOOK_COLLECTION_NAME = "books";
+    private static final String IMPORT_BOOK_STEP_NAME = "importBookStep";
+    private static final int BOOK_ITEM_COUNT = 2;
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
@@ -47,17 +49,17 @@ public class BatchTest {
     }
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         itemWriter.setCollection(BOOK_COLLECTION_NAME);
     }
 
     @AfterEach
-    void tearDown(){
+    void tearDown() {
         mongoTemplate.dropCollection(BOOK_COLLECTION_NAME);
     }
 
     @Test
-    void bookItemReaderShouldReadAllBookFromDataBase() throws Exception  {
+    void bookItemReaderShouldReadAllBookFromDataBase() throws Exception {
         final var stepExecution = MetaDataInstanceFactory.createStepExecution(defaultJobParameters());
         final var bookList = new ArrayList<Book>();
 
@@ -79,7 +81,7 @@ public class BatchTest {
     }
 
     @Test
-    void theBookMustBeWrittenInMongo() throws Exception{
+    void theBookMustBeWrittenInMongo() throws Exception {
         assertThat(mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME)).isEmpty();
 
         final var stepExecution = MetaDataInstanceFactory.createStepExecution(defaultJobParameters());
@@ -88,8 +90,22 @@ public class BatchTest {
             return null;
         });
 
-        final var bookCollectionName =  mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME);
+        final var bookCollectionName = mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME);
         assertThat(bookCollectionName).hasSize(1);
+    }
+
+    @Test
+    void stepImportBookShouldCompleteSuccessfully() {
+        final var jobExecution = jobLauncherTestUtils.launchStep(IMPORT_BOOK_STEP_NAME, defaultJobParameters());
+        final var actualStepExecutions = jobExecution.getStepExecutions();
+        final var actualExitStatus = jobExecution.getExitStatus();
+
+        assertThat(actualStepExecutions).hasSize(1);
+        assertThat(actualExitStatus.getExitCode()).isEqualTo(ExitStatus.COMPLETED.getExitCode());
+        actualStepExecutions.forEach(stepExecution -> {
+            assertThat(stepExecution.getWriteCount()).isEqualTo(BOOK_ITEM_COUNT);
+            assertThat(stepExecution.getReadCount()).isEqualTo(BOOK_ITEM_COUNT);
+        });
     }
 
     @Test
