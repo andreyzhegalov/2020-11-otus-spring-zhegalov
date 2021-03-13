@@ -15,6 +15,11 @@ spring:
   flyway:
     enabled: true
 
+  data:
+    mongodb:
+      database: test_batch_zhegalov
+      uri: mongodb://172.17.0.3
+
   jpa:
     generate-ddl: false
     hibernate:
