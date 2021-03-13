@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Author {
-    private final static long NOT_EXISTED_ID = 0L;
-
-    private long id = NOT_EXISTED_ID;
+public class Author <T>{
+    private T id;
     private String name;
 }

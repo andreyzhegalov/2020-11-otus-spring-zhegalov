@@ -5,15 +5,15 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.BookDb;
 import ru.otus.spring.hw.model.Genre;
 
-public class BookMapper implements RowMapper<Book> {
+public class BookMapper implements RowMapper<BookDb> {
     @Override
-    public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public BookDb mapRow(ResultSet rs, int rowNum) throws SQLException {
         final long bookId = rs.getLong("id");
         final String title = rs.getNString("title");
-        final var book = new Book();
+        final var book = new BookDb();
         book.setId(bookId);
         book.setTitle(title);
 

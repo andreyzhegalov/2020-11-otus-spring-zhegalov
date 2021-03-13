@@ -22,23 +22,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.BookDb;
 import ru.otus.spring.hw.model.Genre;
 
 @SpringBootTest
 @SpringBatchTest
 public class BatchTest {
     private static final String BOOK_COLLECTION_NAME = "books";
-    private static final String IMPORT_BOOK_STEP_NAME = "importBookStep";
+    private static final String MIGRATION_BOOK_STEP_NAME = "migrationBookStep";
     private static final int BOOK_ITEM_COUNT = 2;
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
 
     @Autowired
-    private JdbcCursorItemReader<Book> itemReader;
+    private JdbcCursorItemReader<BookDb> itemReader;
 
     @Autowired
-    private MongoItemWriter<Book> itemWriter;
+    private MongoItemWriter<BookDb> itemWriter;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -61,10 +62,10 @@ public class BatchTest {
     @Test
     void bookItemReaderShouldReadAllBookFromDataBase() throws Exception {
         final var stepExecution = MetaDataInstanceFactory.createStepExecution(defaultJobParameters());
-        final var bookList = new ArrayList<Book>();
+        final var bookList = new ArrayList<BookDb>();
 
         StepScopeTestUtils.doInStepScope(stepExecution, () -> {
-            Book book;
+            BookDb book;
             itemReader.open(stepExecution.getExecutionContext());
             while ((book = itemReader.read()) != null) {
                 bookList.add(book);
@@ -73,20 +74,27 @@ public class BatchTest {
             return null;
         });
 
+        final var expectedGenre = new Genre();
+        expectedGenre.setId(2L);
+        expectedGenre.setName("genre2");
+
+        final var book  = bookList.get(0);
         assertThat(bookList).hasSize(2);
-        final var genre = new Genre();
-        genre.setId(2L);
-        genre.setName("genre2");
-        assertThat(bookList.get(0)).isEqualTo(new Book(1, "book1", genre));
+        assertThat(book.getId()).isEqualTo(1L);
+        assertThat(book.getGenre()).isEqualTo(expectedGenre);
+        assertThat(book.getAuthors()).isEmpty();
     }
 
     @Test
     void theBookMustBeWrittenInMongo() throws Exception {
         assertThat(mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME)).isEmpty();
+        final var book = new BookDb();
+        book.setId(1L);
+        book.setTitle("book1");
 
         final var stepExecution = MetaDataInstanceFactory.createStepExecution(defaultJobParameters());
         StepScopeTestUtils.doInStepScope(stepExecution, () -> {
-            itemWriter.write(Collections.singletonList(new Book(1L, "book1", null)));
+            itemWriter.write(Collections.singletonList(book));
             return null;
         });
 
@@ -95,8 +103,8 @@ public class BatchTest {
     }
 
     @Test
-    void stepImportBookShouldCompleteSuccessfully() {
-        final var jobExecution = jobLauncherTestUtils.launchStep(IMPORT_BOOK_STEP_NAME, defaultJobParameters());
+    void stepMigationBookShouldCompleteSuccessfully() {
+        final var jobExecution = jobLauncherTestUtils.launchStep(MIGRATION_BOOK_STEP_NAME, defaultJobParameters());
         final var actualStepExecutions = jobExecution.getStepExecutions();
         final var actualExitStatus = jobExecution.getExitStatus();
 
@@ -113,22 +121,26 @@ public class BatchTest {
         final var jobExecution = jobLauncherTestUtils.launchJob();
         assertThat(jobExecution).isNotNull();
         assertThat(jobExecution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
+        final var savedBooks = mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME);
+        assertThat(savedBooks).hasSize(2).allMatch(s -> !s.getTitle().equals(""))
+                .allMatch(s -> !s.getAuthors().isEmpty()).allMatch(s -> s.getGenre() != null);
     }
 
-// Job job = new SimpleJob();
-// job.setRestartable(false);
-//
-// JobParameters jobParameters = new JobParameters();
-//
-// JobExecution firstExecution = jobRepository.createJobExecution(job, jobParameters);
-// jobRepository.saveOrUpdate(firstExecution);
-//
-// try {
-//     jobRepository.createJobExecution(job, jobParameters);
-//     fail();
-// }
-// catch (JobRestartException e) {
-//     // expected
-// }
+    // Job job = new SimpleJob();
+    // job.setRestartable(false);
+    //
+    // JobParameters jobParameters = new JobParameters();
+    //
+    // JobExecution firstExecution = jobRepository.createJobExecution(job,
+    // jobParameters);
+    // jobRepository.saveOrUpdate(firstExecution);
+    //
+    // try {
+    // jobRepository.createJobExecution(job, jobParameters);
+    // fail();
+    // }
+    // catch (JobRestartException e) {
+    // // expected
+    // }
 
 }

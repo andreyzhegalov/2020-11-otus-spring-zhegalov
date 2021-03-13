@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Component;
 
 import ru.otus.spring.hw.model.Author;
+import ru.otus.spring.hw.model.AuthorDb;
 
 @Component
 public class AuthorRepository {
@@ -16,23 +17,26 @@ public class AuthorRepository {
     private List<AuthorWithBookId> authorList;
 
     private final static class AuthorWithBookId {
-        Author author;
+        AuthorDb author;
         long bookId;
     }
 
     public AuthorRepository(NamedParameterJdbcOperations namedParameterJdbcOperations) {
         this.authorList = namedParameterJdbcOperations.query(SELECT_AUTHOR_WITH_BOOK_ID, (rs, row) -> {
-            final long id = rs.getLong("id");
-            final String name = rs.getNString("name");
-            final long bookId = rs.getLong("book_id");
+            final var id = rs.getLong("id");
+            final var name = rs.getNString("name");
+            final var bookId = rs.getLong("book_id");
             final var author = new AuthorWithBookId();
+
             author.bookId = bookId;
-            author.author = new Author(id, name);
+            author.author = new AuthorDb();
+            author.author.setId(id);
+            author.author.setName(name);
             return author;
         });
     }
 
-    public List<Author> getByBookId(long bookId) {
+    public List<Author<Long>> getByBookId(long bookId) {
         return this.authorList.stream().filter(author -> author.bookId == bookId).map(author -> author.author)
                 .collect(Collectors.toList());
     }

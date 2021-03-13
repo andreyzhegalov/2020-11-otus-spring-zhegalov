@@ -8,15 +8,13 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class Book {
-    private final static long NOT_EXISTED_ID = 0L;
-
-    private long id = NOT_EXISTED_ID;
+public class Book<T> {
+    private T id;
     private String title;
-    private List<Author> authors = new ArrayList<>();
+    private List<Author<T>> authors = new ArrayList<>();
     private Genre genre;
 
-    public Book(long id, String title, Genre genre) {
+    public Book(T id, String title, Genre genre) {
         this.id = id;
         this.title = title;
         this.genre = genre;
