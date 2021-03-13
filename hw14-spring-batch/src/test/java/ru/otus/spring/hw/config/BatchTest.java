@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobParameters;
@@ -26,6 +27,7 @@ import ru.otus.spring.hw.model.Book;
 @SpringBootTest
 @SpringBatchTest
 public class BatchTest {
+    private final static String BOOK_COLLECTION_NAME = "books";
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
@@ -44,10 +46,16 @@ public class BatchTest {
         return paramsBuilder.toJobParameters();
     }
 
+    @AfterEach
+    void tearDown(){
+        mongoTemplate.dropCollection(BOOK_COLLECTION_NAME);
+    }
+
     @Test
     void bookItemReaderShouldReadAllBookFromDataBase() throws Exception  {
         final var stepExecution = MetaDataInstanceFactory.createStepExecution(defaultJobParameters());
         final var bookList = new ArrayList<Book>();
+
         StepScopeTestUtils.doInStepScope(stepExecution, () -> {
             Book book;
             itemReader.open(stepExecution.getExecutionContext());
@@ -64,15 +72,15 @@ public class BatchTest {
 
     @Test
     void theBookMustBeWrittenInMongo() throws Exception{
-        final var bookCollectionName =  mongoTemplate.findAll(Book.class, "books");
-        assertThat(bookCollectionName).isEmpty();
+        assertThat(mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME)).isEmpty();
 
         final var stepExecution = MetaDataInstanceFactory.createStepExecution(defaultJobParameters());
         StepScopeTestUtils.doInStepScope(stepExecution, () -> {
             itemWriter.write(Collections.singletonList(new Book(1L, "book1", null)));
             return null;
         });
-
+        final var bookCollectionName =  mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME);
+        assertThat(bookCollectionName).hasSize(1);
     }
 
     @Test
