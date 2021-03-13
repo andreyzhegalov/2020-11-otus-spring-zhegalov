@@ -25,13 +25,19 @@ import ru.otus.spring.hw.model.Book;
 @Configuration
 @EnableBatchProcessing
 public class JobConfig {
+    private final static String BOOK_TABLE_NAME = "books";
+    private final static String BOOK_COLLECTION_NAME = "books";
 
     @StepScope
     @Bean
     public JdbcCursorItemReader<Book> bookReader(DataSource dataSource) {
         return new JdbcCursorItemReaderBuilder<Book>()
             .name("bookItemReader")
-            .dataSource(dataSource).sql("SELECT id, title FROM books")
+            .dataSource(dataSource).sql(
+                    "select books.id as book_id, title, genres.id as genre_id, genres.name as genre_name from "
+                    + BOOK_TABLE_NAME
+                    +  " left join genres on books.genre_id=genres.id"
+                    )
             .rowMapper(new BookMapper())
             .build();
     }
@@ -39,7 +45,7 @@ public class JobConfig {
     @StepScope
     @Bean
     public MongoItemWriter<Book> writer(MongoTemplate mongoTemplate) {
-        return new MongoItemWriterBuilder<Book>().collection("books")
+        return new MongoItemWriterBuilder<Book>().collection(BOOK_COLLECTION_NAME)
             .template(mongoTemplate)
             .build();
     }

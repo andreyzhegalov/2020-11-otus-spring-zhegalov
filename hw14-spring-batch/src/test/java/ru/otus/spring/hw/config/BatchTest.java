@@ -1,12 +1,12 @@
 package ru.otus.spring.hw.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobParameters;
@@ -19,10 +19,10 @@ import org.springframework.batch.test.StepScopeTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import ru.otus.spring.hw.model.Book;
+import ru.otus.spring.hw.model.Genre;
 
 @SpringBootTest
 @SpringBatchTest
@@ -46,6 +46,11 @@ public class BatchTest {
         return paramsBuilder.toJobParameters();
     }
 
+    @BeforeEach
+    void setUp(){
+        itemWriter.setCollection(BOOK_COLLECTION_NAME);
+    }
+
     @AfterEach
     void tearDown(){
         mongoTemplate.dropCollection(BOOK_COLLECTION_NAME);
@@ -67,7 +72,10 @@ public class BatchTest {
         });
 
         assertThat(bookList).hasSize(2);
-        assertThat(bookList.get(0)).isEqualTo(new Book(1, "book1", null));
+        final var genre = new Genre();
+        genre.setId(2L);
+        genre.setName("genre2");
+        assertThat(bookList.get(0)).isEqualTo(new Book(1, "book1", genre));
     }
 
     @Test
@@ -79,6 +87,7 @@ public class BatchTest {
             itemWriter.write(Collections.singletonList(new Book(1L, "book1", null)));
             return null;
         });
+
         final var bookCollectionName =  mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME);
         assertThat(bookCollectionName).hasSize(1);
     }
