@@ -51,8 +51,8 @@ public class JobConfig {
     }
 
     @Bean
-    public Job makeJob(JobBuilderFactory jobBuilderFactory, Step step1) {
-        return jobBuilderFactory.get("Test").start(step1).build();
+    public Job makeMigrationJob(JobBuilderFactory jobBuilderFactory, Step importBookStep) {
+        return jobBuilderFactory.get("migrationJob").start(importBookStep).build();
     }
 
     @Bean

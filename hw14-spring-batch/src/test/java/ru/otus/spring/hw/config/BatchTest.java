@@ -114,4 +114,21 @@ public class BatchTest {
         assertThat(jobExecution).isNotNull();
         assertThat(jobExecution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
     }
+
+// Job job = new SimpleJob();
+// job.setRestartable(false);
+//
+// JobParameters jobParameters = new JobParameters();
+//
+// JobExecution firstExecution = jobRepository.createJobExecution(job, jobParameters);
+// jobRepository.saveOrUpdate(firstExecution);
+//
+// try {
+//     jobRepository.createJobExecution(job, jobParameters);
+//     fail();
+// }
+// catch (JobRestartException e) {
+//     // expected
+// }
+
 }
