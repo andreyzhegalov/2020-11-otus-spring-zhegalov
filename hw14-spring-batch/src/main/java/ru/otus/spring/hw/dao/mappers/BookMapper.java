@@ -1,11 +1,11 @@
-package ru.otus.spring.hw.config.mappers;
+package ru.otus.spring.hw.dao.mappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import ru.otus.spring.hw.model.BookDb;
+import ru.otus.spring.hw.dto.BookDb;
 import ru.otus.spring.hw.model.Genre;
 
 public class BookMapper implements RowMapper<BookDb> {

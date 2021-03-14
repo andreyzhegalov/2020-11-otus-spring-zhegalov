@@ -23,9 +23,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import ru.otus.spring.hw.config.mappers.BookMapper;
-import ru.otus.spring.hw.model.BookDb;
-import ru.otus.spring.hw.model.BookMongo;
+import ru.otus.spring.hw.dao.mappers.BookMapper;
+import ru.otus.spring.hw.dto.BookDb;
+import ru.otus.spring.hw.dto.BookMongo;
 import ru.otus.spring.hw.service.BookService;
 
 @Configuration
@@ -52,7 +52,7 @@ public class JobConfig {
         CompositeItemProcessor<BookDb, BookMongo> compositeProcessor = new CompositeItemProcessor<BookDb, BookMongo>();
         final var itemProcessors = new ArrayList<ItemProcessor<?, ?>>();
         itemProcessors.add((ItemProcessor<BookDb, BookDb>) bookService::addAuthors);
-        itemProcessors.add((ItemProcessor<BookDb, BookMongo>) bookService::convertId);
+        itemProcessors.add((ItemProcessor<BookDb, BookMongo>) BookMongo::new );
         compositeProcessor.setDelegates(itemProcessors);
         return compositeProcessor;
     }

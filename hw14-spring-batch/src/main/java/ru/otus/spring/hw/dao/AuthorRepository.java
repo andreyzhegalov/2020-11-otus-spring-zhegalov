@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Component;
 
 import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.model.AuthorDb;
+import ru.otus.spring.hw.dto.AuthorDb;
 
 @Component
 public class AuthorRepository {

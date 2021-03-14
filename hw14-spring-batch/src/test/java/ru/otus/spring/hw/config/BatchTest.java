@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,8 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import ru.otus.spring.hw.dto.BookDb;
+import ru.otus.spring.hw.dto.BookMongo;
 import ru.otus.spring.hw.model.Book;
-import ru.otus.spring.hw.model.BookDb;
 import ru.otus.spring.hw.model.Genre;
 
 @SpringBootTest
@@ -39,7 +41,7 @@ public class BatchTest {
     private JdbcCursorItemReader<BookDb> itemReader;
 
     @Autowired
-    private MongoItemWriter<BookDb> itemWriter;
+    private MongoItemWriter<BookMongo> itemWriter;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -88,8 +90,8 @@ public class BatchTest {
     @Test
     void theBookMustBeWrittenInMongo() throws Exception {
         assertThat(mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME)).isEmpty();
-        final var book = new BookDb();
-        book.setId(1L);
+        final var book = new BookMongo();
+        book.setId(new ObjectId());
         book.setTitle("book1");
 
         final var stepExecution = MetaDataInstanceFactory.createStepExecution(defaultJobParameters());
