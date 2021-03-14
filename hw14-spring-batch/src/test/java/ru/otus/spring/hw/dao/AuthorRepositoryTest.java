@@ -8,11 +8,11 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 
 @JdbcTest
-@Import(AuthorRepository.class)
+@Import(AuthorRepositoryJdbc.class)
 public class AuthorRepositoryTest {
 
     @Autowired
-    private AuthorRepository authorRepository;
+    private AuthorRepositoryJdbc authorRepository;
 
     @Test
     void shouldReturnAuthorWithBookId(){

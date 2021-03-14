@@ -21,6 +21,7 @@ import org.springframework.batch.test.StepScopeTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import ru.otus.spring.hw.model.Book;
@@ -32,6 +33,7 @@ public class BatchTest {
     private static final String BOOK_COLLECTION_NAME = "books";
     private static final String MIGRATION_BOOK_STEP_NAME = "migrationBookStep";
     private static final int BOOK_ITEM_COUNT = 2;
+	private static final String TASKLET_DROP_COLLECTION = "dropCollection";
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
@@ -101,6 +103,24 @@ public class BatchTest {
 
         final var bookCollectionName = mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME);
         assertThat(bookCollectionName).hasSize(1);
+    }
+
+    @Test
+    void stepTaskletDropCollectionCompleteSuccessfully() throws Exception{
+        final var book = new Book<ObjectId>();
+        book.setId(new ObjectId());
+        book.setTitle("book1");
+        mongoTemplate.save(book, BOOK_COLLECTION_NAME);
+        assertThat(mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME)).isNotEmpty();
+
+        final var jobExecution = jobLauncherTestUtils.launchStep(TASKLET_DROP_COLLECTION);
+        final var actualStepExecutions = jobExecution.getStepExecutions();
+        final var actualExitStatus = jobExecution.getExitStatus();
+
+        assertThat(actualStepExecutions).hasSize(1);
+        assertThat(actualExitStatus.getExitCode()).isEqualTo(ExitStatus.COMPLETED.getExitCode());
+
+        assertThat(mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME)).isEmpty();
     }
 
     @Test

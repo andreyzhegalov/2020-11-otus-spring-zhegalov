@@ -9,7 +9,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import ru.otus.spring.hw.dao.AuthorRepository;
+import ru.otus.spring.hw.dao.AuthorRepositoryJdbc;
 import ru.otus.spring.hw.model.Author;
 import ru.otus.spring.hw.model.Book;
 
@@ -22,7 +22,7 @@ public class BookServiceTest {
         book.setId(bookId);
         assertThat(book.getAuthors()).isEmpty();
 
-        final var authorRepository = Mockito.mock(AuthorRepository.class);
+        final var authorRepository = Mockito.mock(AuthorRepositoryJdbc.class);
         given(authorRepository.getByBookId(bookId)).willReturn(Collections.singletonList(new Author<Long>()));
 
         book = new BookService(authorRepository).addAuthors(book);

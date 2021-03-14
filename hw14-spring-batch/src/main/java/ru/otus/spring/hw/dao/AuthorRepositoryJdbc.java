@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import ru.otus.spring.hw.model.Author;
 
 @Component
-public class AuthorRepository {
+public class AuthorRepositoryJdbc {
     private final static String SELECT_AUTHOR_WITH_BOOK_ID = "select id, name, ba.book_id as book_id from authors as a "
             + " right join book_author as ba where a.id = ba.author_id";
 
@@ -20,7 +20,7 @@ public class AuthorRepository {
         long bookId;
     }
 
-    public AuthorRepository(NamedParameterJdbcOperations namedParameterJdbcOperations) {
+    public AuthorRepositoryJdbc(NamedParameterJdbcOperations namedParameterJdbcOperations) {
         this.authorList = namedParameterJdbcOperations.query(SELECT_AUTHOR_WITH_BOOK_ID, (rs, row) -> {
             final var id = rs.getLong("id");
             final var name = rs.getNString("name");

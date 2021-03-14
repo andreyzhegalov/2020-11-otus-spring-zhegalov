@@ -19,7 +19,9 @@ import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.support.CompositeItemProcessor;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -37,6 +39,12 @@ public class JobConfig {
 
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
+
+    @Autowired
+    private JobBuilderFactory jobBuilderFactory;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @StepScope
     @Bean
@@ -66,8 +74,9 @@ public class JobConfig {
     }
 
     @Bean
-    public Job makeMigrationJob(JobBuilderFactory jobBuilderFactory, Step migrationBookStep) {
-        return jobBuilderFactory.get("migrationJob").start(migrationBookStep).build();
+    public Job makeMigrationJob(@Qualifier("migrationBookStep") Step migrationBookStep,
+            @Qualifier("dropCollection") Step dropCollection) {
+        return jobBuilderFactory.get("migrationJob").start(dropCollection).next(migrationBookStep).build();
     }
 
     @Bean
@@ -75,5 +84,13 @@ public class JobConfig {
             CompositeItemProcessor<Book<Long>, Book<ObjectId>> compositeProcessor) {
         return stepBuilderFactory.get("migrationBookStep").<Book<Long>, Book<ObjectId>>chunk(8).reader(bookReader)
                 .processor(compositeProcessor).writer(bookWriter).build();
+    }
+
+    @Bean
+    public Step dropCollection() {
+        return stepBuilderFactory.get("dropCollection").tasklet((stepContribution, chunkContext) -> {
+            mongoTemplate.dropCollection(BOOK_COLLECTION_NAME);
+            return RepeatStatus.FINISHED;
+        }).build();
     }
 }
