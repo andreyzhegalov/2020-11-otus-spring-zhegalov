@@ -20,7 +20,7 @@ class ApplicationCommandsTest {
 
     @Test
     void printShouldPrintAllBooks() throws Exception {
-        shell.evaluate(() -> "start-migration");
+        shell.evaluate(() -> "start-migration param");
         then(jobLauncher).should().run(any(), any());
     }
 }

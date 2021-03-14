@@ -6,6 +6,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellOption;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.config.AppProps;
@@ -20,8 +21,9 @@ public class ApplicationCommands {
     private final MongoTemplate mongoTemplate;
 
     @ShellMethod(value = "startMigration", key = { "sm", "start-migration" })
-    public void startMigration() throws Exception {
-        final var execution = jobLauncher.run(migrationJob, new JobParametersBuilder().toJobParameters());
+    public void startMigration(@ShellOption String message) throws Exception {
+        final var parameters = new JobParametersBuilder().addString("message", message).toJobParameters();
+        final var execution = jobLauncher.run(migrationJob, parameters);
         System.out.println(execution);
     }
 
@@ -30,8 +32,8 @@ public class ApplicationCommands {
         mongoTemplate.getCollection(appProps.getCollectionName()).find().forEach(System.out::println);
     }
 
-    @ShellMethod(value = "dropCollection", key = {"dc", "drop-collection"})
-    public void dropCollection(){
+    @ShellMethod(value = "dropCollection", key = { "dc", "drop-collection" })
+    public void dropCollection() {
         mongoTemplate.dropCollection(appProps.getCollectionName());
     }
 }
