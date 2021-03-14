@@ -21,7 +21,6 @@ import org.springframework.batch.test.StepScopeTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import ru.otus.spring.hw.model.Book;
@@ -29,11 +28,10 @@ import ru.otus.spring.hw.model.Genre;
 
 @SpringBootTest
 @SpringBatchTest
-public class BatchTest {
-    private static final String BOOK_COLLECTION_NAME = "books";
+public class JobConfigTest {
     private static final String MIGRATION_BOOK_STEP_NAME = "migrationBookStep";
     private static final int BOOK_ITEM_COUNT = 2;
-	private static final String TASKLET_DROP_COLLECTION = "dropCollection";
+    private static final String TASKLET_DROP_COLLECTION = "dropCollection";
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
@@ -47,19 +45,17 @@ public class BatchTest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private AppProps appProps;
+
     private JobParameters defaultJobParameters() {
         JobParametersBuilder paramsBuilder = new JobParametersBuilder();
         return paramsBuilder.toJobParameters();
     }
 
-    @BeforeEach
-    void setUp() {
-        itemWriter.setCollection(BOOK_COLLECTION_NAME);
-    }
-
     @AfterEach
     void tearDown() {
-        mongoTemplate.dropCollection(BOOK_COLLECTION_NAME);
+        mongoTemplate.dropCollection(appProps.getCollectionName());
     }
 
     @Test
@@ -81,7 +77,7 @@ public class BatchTest {
         expectedGenre.setId(2L);
         expectedGenre.setName("genre2");
 
-        final var book  = bookList.get(0);
+        final var book = bookList.get(0);
         assertThat(bookList).hasSize(2);
         assertThat(book.getId()).isEqualTo(1L);
         assertThat(book.getGenre()).isEqualTo(expectedGenre);
@@ -90,7 +86,7 @@ public class BatchTest {
 
     @Test
     void theBookMustBeWrittenInMongo() throws Exception {
-        assertThat(mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME)).isEmpty();
+        assertThat(mongoTemplate.findAll(Book.class, appProps.getCollectionName())).isEmpty();
         final var book = new Book<ObjectId>();
         book.setId(new ObjectId());
         book.setTitle("book1");
@@ -101,17 +97,17 @@ public class BatchTest {
             return null;
         });
 
-        final var bookCollectionName = mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME);
+        final var bookCollectionName = mongoTemplate.findAll(Book.class, appProps.getCollectionName());
         assertThat(bookCollectionName).hasSize(1);
     }
 
     @Test
-    void stepTaskletDropCollectionCompleteSuccessfully() throws Exception{
+    void stepTaskletDropCollectionCompleteSuccessfully() throws Exception {
         final var book = new Book<ObjectId>();
         book.setId(new ObjectId());
         book.setTitle("book1");
-        mongoTemplate.save(book, BOOK_COLLECTION_NAME);
-        assertThat(mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME)).isNotEmpty();
+        mongoTemplate.save(book, appProps.getCollectionName());
+        assertThat(mongoTemplate.findAll(Book.class, appProps.getCollectionName())).isNotEmpty();
 
         final var jobExecution = jobLauncherTestUtils.launchStep(TASKLET_DROP_COLLECTION);
         final var actualStepExecutions = jobExecution.getStepExecutions();
@@ -120,7 +116,7 @@ public class BatchTest {
         assertThat(actualStepExecutions).hasSize(1);
         assertThat(actualExitStatus.getExitCode()).isEqualTo(ExitStatus.COMPLETED.getExitCode());
 
-        assertThat(mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME)).isEmpty();
+        assertThat(mongoTemplate.findAll(Book.class, appProps.getCollectionName())).isEmpty();
     }
 
     @Test
@@ -142,7 +138,7 @@ public class BatchTest {
         final var jobExecution = jobLauncherTestUtils.launchJob();
         assertThat(jobExecution).isNotNull();
         assertThat(jobExecution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
-        final var savedBooks = mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME);
+        final var savedBooks = mongoTemplate.findAll(Book.class, appProps.getCollectionName());
         assertThat(savedBooks).hasSize(2).allMatch(s -> !s.getTitle().equals(""))
                 .allMatch(s -> !s.getAuthors().isEmpty()).allMatch(s -> s.getGenre() != null);
     }

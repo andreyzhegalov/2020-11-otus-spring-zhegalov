@@ -34,9 +34,6 @@ import ru.otus.spring.hw.service.BookService;
 @Configuration
 @EnableBatchProcessing
 public class JobConfig {
-    private final static String BOOK_TABLE_NAME = "books";
-    private final static String BOOK_COLLECTION_NAME = "books";
-
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
 
@@ -46,12 +43,15 @@ public class JobConfig {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private AppProps appProps;
+
     @StepScope
     @Bean
     public JdbcCursorItemReader<Book<Long>> bookReader(DataSource dataSource) {
         return new JdbcCursorItemReaderBuilder<Book<Long>>().name("bookItemReader").dataSource(dataSource)
                 .sql("select books.id as book_id, title, genres.id as genre_id, genres.name as genre_name from "
-                        + BOOK_TABLE_NAME + " left join genres on books.genre_id=genres.id")
+                        + " books left join genres on books.genre_id=genres.id")
                 .rowMapper(new BookMapper()).build();
     }
 
@@ -69,7 +69,7 @@ public class JobConfig {
     @StepScope
     @Bean
     public MongoItemWriter<Book<ObjectId>> writer(MongoTemplate mongoTemplate) {
-        return new MongoItemWriterBuilder<Book<ObjectId>>().collection(BOOK_COLLECTION_NAME).template(mongoTemplate)
+        return new MongoItemWriterBuilder<Book<ObjectId>>().collection(appProps.getCollectionName()).template(mongoTemplate)
                 .build();
     }
 
@@ -89,7 +89,7 @@ public class JobConfig {
     @Bean
     public Step dropCollection() {
         return stepBuilderFactory.get("dropCollection").tasklet((stepContribution, chunkContext) -> {
-            mongoTemplate.dropCollection(BOOK_COLLECTION_NAME);
+            mongoTemplate.dropCollection(appProps.getCollectionName());
             return RepeatStatus.FINISHED;
         }).build();
     }
