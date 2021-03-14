@@ -1,6 +1,7 @@
 package ru.otus.spring.hw.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import ru.otus.spring.hw.dto.BookDb;
-import ru.otus.spring.hw.dto.BookMongo;
 import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
 
@@ -38,10 +37,10 @@ public class BatchTest {
     private JobLauncherTestUtils jobLauncherTestUtils;
 
     @Autowired
-    private JdbcCursorItemReader<BookDb> itemReader;
+    private JdbcCursorItemReader<Book<Long>> itemReader;
 
     @Autowired
-    private MongoItemWriter<BookMongo> itemWriter;
+    private MongoItemWriter<Book<ObjectId>> itemWriter;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -64,10 +63,10 @@ public class BatchTest {
     @Test
     void bookItemReaderShouldReadAllBookFromDataBase() throws Exception {
         final var stepExecution = MetaDataInstanceFactory.createStepExecution(defaultJobParameters());
-        final var bookList = new ArrayList<BookDb>();
+        final var bookList = new ArrayList<Book<Long>>();
 
         StepScopeTestUtils.doInStepScope(stepExecution, () -> {
-            BookDb book;
+            Book<Long> book;
             itemReader.open(stepExecution.getExecutionContext());
             while ((book = itemReader.read()) != null) {
                 bookList.add(book);
@@ -76,7 +75,7 @@ public class BatchTest {
             return null;
         });
 
-        final var expectedGenre = new Genre();
+        final var expectedGenre = new Genre<Long>();
         expectedGenre.setId(2L);
         expectedGenre.setName("genre2");
 
@@ -90,7 +89,7 @@ public class BatchTest {
     @Test
     void theBookMustBeWrittenInMongo() throws Exception {
         assertThat(mongoTemplate.findAll(Book.class, BOOK_COLLECTION_NAME)).isEmpty();
-        final var book = new BookMongo();
+        final var book = new Book<ObjectId>();
         book.setId(new ObjectId());
         book.setTitle("book1");
 
@@ -105,7 +104,7 @@ public class BatchTest {
     }
 
     @Test
-    void stepMigationBookShouldCompleteSuccessfully() {
+    void stepMigrationBookShouldCompleteSuccessfully() {
         final var jobExecution = jobLauncherTestUtils.launchStep(MIGRATION_BOOK_STEP_NAME, defaultJobParameters());
         final var actualStepExecutions = jobExecution.getStepExecutions();
         final var actualExitStatus = jobExecution.getExitStatus();

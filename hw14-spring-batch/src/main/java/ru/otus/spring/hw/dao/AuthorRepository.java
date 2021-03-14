@@ -7,17 +7,16 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Component;
 
 import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.dto.AuthorDb;
 
 @Component
 public class AuthorRepository {
     private final static String SELECT_AUTHOR_WITH_BOOK_ID = "select id, name, ba.book_id as book_id from authors as a "
             + " right join book_author as ba where a.id = ba.author_id";
 
-    private List<AuthorWithBookId> authorList;
+    private final List<AuthorWithBookId> authorList;
 
     private final static class AuthorWithBookId {
-        AuthorDb author;
+        Author<Long> author;
         long bookId;
     }
 
@@ -29,7 +28,7 @@ public class AuthorRepository {
             final var author = new AuthorWithBookId();
 
             author.bookId = bookId;
-            author.author = new AuthorDb();
+            author.author = new Author<Long>();
             author.author.setId(id);
             author.author.setName(name);
             return author;

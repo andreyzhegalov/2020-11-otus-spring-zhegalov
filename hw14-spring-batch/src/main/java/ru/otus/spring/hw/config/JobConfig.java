@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
+import org.bson.types.ObjectId;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -23,9 +24,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import ru.otus.spring.hw.converters.BookConverter;
 import ru.otus.spring.hw.dao.mappers.BookMapper;
-import ru.otus.spring.hw.dto.BookDb;
-import ru.otus.spring.hw.dto.BookMongo;
+import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.service.BookService;
 
 @Configuration
@@ -39,8 +40,8 @@ public class JobConfig {
 
     @StepScope
     @Bean
-    public JdbcCursorItemReader<BookDb> bookReader(DataSource dataSource) {
-        return new JdbcCursorItemReaderBuilder<BookDb>().name("bookItemReader").dataSource(dataSource)
+    public JdbcCursorItemReader<Book<Long>> bookReader(DataSource dataSource) {
+        return new JdbcCursorItemReaderBuilder<Book<Long>>().name("bookItemReader").dataSource(dataSource)
                 .sql("select books.id as book_id, title, genres.id as genre_id, genres.name as genre_name from "
                         + BOOK_TABLE_NAME + " left join genres on books.genre_id=genres.id")
                 .rowMapper(new BookMapper()).build();
@@ -48,19 +49,20 @@ public class JobConfig {
 
     @StepScope
     @Bean
-    public CompositeItemProcessor<BookDb, BookMongo> compositeProcessor(BookService bookService) {
-        CompositeItemProcessor<BookDb, BookMongo> compositeProcessor = new CompositeItemProcessor<BookDb, BookMongo>();
+    public CompositeItemProcessor<Book<Long>, Book<ObjectId>> compositeProcessor(BookService bookService) {
+        CompositeItemProcessor<Book<Long>, Book<ObjectId>> compositeProcessor = new CompositeItemProcessor<Book<Long>, Book<ObjectId>>();
         final var itemProcessors = new ArrayList<ItemProcessor<?, ?>>();
-        itemProcessors.add((ItemProcessor<BookDb, BookDb>) bookService::addAuthors);
-        itemProcessors.add((ItemProcessor<BookDb, BookMongo>) BookMongo::new );
+        itemProcessors.add((ItemProcessor<Book<Long>, Book<Long>>) bookService::addAuthors);
+        itemProcessors.add((ItemProcessor<Book<Long>, Book<ObjectId>>) BookConverter::convertId);
         compositeProcessor.setDelegates(itemProcessors);
         return compositeProcessor;
     }
 
     @StepScope
     @Bean
-    public MongoItemWriter<BookMongo> writer(MongoTemplate mongoTemplate) {
-        return new MongoItemWriterBuilder<BookMongo>().collection(BOOK_COLLECTION_NAME).template(mongoTemplate).build();
+    public MongoItemWriter<Book<ObjectId>> writer(MongoTemplate mongoTemplate) {
+        return new MongoItemWriterBuilder<Book<ObjectId>>().collection(BOOK_COLLECTION_NAME).template(mongoTemplate)
+                .build();
     }
 
     @Bean
@@ -69,10 +71,9 @@ public class JobConfig {
     }
 
     @Bean
-    public Step migrationBookStep(ItemReader<BookDb> bookReader, ItemWriter<BookMongo> bookWriter,
-            CompositeItemProcessor<BookDb, BookMongo> compositeProcessor) {
-        return stepBuilderFactory.get("migrationBookStep").<BookDb, BookMongo>chunk(8).reader(bookReader)
+    public Step migrationBookStep(ItemReader<Book<Long>> bookReader, ItemWriter<Book<ObjectId>> bookWriter,
+            CompositeItemProcessor<Book<Long>, Book<ObjectId>> compositeProcessor) {
+        return stepBuilderFactory.get("migrationBookStep").<Book<Long>, Book<ObjectId>>chunk(8).reader(bookReader)
                 .processor(compositeProcessor).writer(bookWriter).build();
     }
-
 }

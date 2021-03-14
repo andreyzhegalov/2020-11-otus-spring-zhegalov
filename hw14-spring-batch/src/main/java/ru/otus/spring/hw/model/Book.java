@@ -12,11 +12,5 @@ public class Book<T> {
     private T id;
     private String title;
     private List<Author<T>> authors = new ArrayList<>();
-    private Genre genre;
-
-    public Book(T id, String title, Genre genre) {
-        this.id = id;
-        this.title = title;
-        this.genre = genre;
-    }
+    private Genre<T> genre;
 }

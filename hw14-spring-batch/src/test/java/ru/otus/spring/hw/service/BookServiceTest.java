@@ -10,20 +10,20 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import ru.otus.spring.hw.dao.AuthorRepository;
-import ru.otus.spring.hw.dto.AuthorDb;
-import ru.otus.spring.hw.dto.BookDb;
+import ru.otus.spring.hw.model.Author;
+import ru.otus.spring.hw.model.Book;
 
 public class BookServiceTest {
 
     @Test
     void givenBookWithOutAuthors_whenBookServiceAddAuthors_thenBookWithAuthors() {
         final var bookId = 1L;
-        var book = new BookDb();
+        var book = new Book<Long>();
         book.setId(bookId);
         assertThat(book.getAuthors()).isEmpty();
 
         final var authorRepository = Mockito.mock(AuthorRepository.class);
-        given(authorRepository.getByBookId(bookId)).willReturn(Collections.singletonList(new AuthorDb()));
+        given(authorRepository.getByBookId(bookId)).willReturn(Collections.singletonList(new Author<Long>()));
 
         book = new BookService(authorRepository).addAuthors(book);
 
