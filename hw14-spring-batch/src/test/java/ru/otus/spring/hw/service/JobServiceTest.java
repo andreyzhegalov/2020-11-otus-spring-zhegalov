@@ -2,7 +2,6 @@ package ru.otus.spring.hw.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.Assert.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.ExitStatus;
@@ -12,8 +11,6 @@ import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @SpringBootTest
 @SpringBatchTest
@@ -25,19 +22,18 @@ public class JobServiceTest {
     @Autowired
     private JobService jobService;
 
-    // @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
-    // @Test
-    // void shouldThrowExceptionIfExecutionJobIstanceCompleted() throws Exception {
-    //     final var parameters = new JobParametersBuilder().addString("parameter1", "value").toJobParameters();
-    //
-    //     final var jobExecution = jobLauncher.launchJob(parameters);
-    //     assertThat(jobExecution.getStepExecutions()).hasSize(2);
-    //     assertThat(jobExecution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
-    //
-    //     assertThatCode(() -> jobLauncher.launchJob(parameters)).isInstanceOf(JobInstanceAlreadyCompleteException.class);
-    // }
+    @Test
+    void restartingJobWithSameParametrsShouldThrowException() throws Exception {
+        final var parameters = new JobParametersBuilder().addString("parameter2", "value").toJobParameters();
 
-    @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+        final var jobExecution = jobLauncher.launchJob(parameters);
+        assertThat(jobExecution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
+        assertThat(jobExecution.getStepExecutions()).hasSize(2);
+
+        assertThatCode(() -> jobLauncher.launchJob(parameters)).isInstanceOf(JobInstanceAlreadyCompleteException.class);
+
+    }
+
     @Test
     void shouldRestartJobWithSameParameters() throws Exception {
         final var parameters = new JobParametersBuilder().addString("parameter1", "value").toJobParameters();
