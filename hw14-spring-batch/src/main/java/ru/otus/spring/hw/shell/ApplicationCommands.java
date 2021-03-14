@@ -10,19 +10,23 @@ import org.springframework.shell.standard.ShellOption;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.config.AppProps;
+import ru.otus.spring.hw.service.JobService;
 
 @RequiredArgsConstructor
 @ShellComponent
 public class ApplicationCommands {
+    private static final String JOB_NAME = "migrationJob";
 
     private final JobLauncher jobLauncher;
     private final Job migrationJob;
     private final AppProps appProps;
     private final MongoTemplate mongoTemplate;
+    private final JobService jobService;
 
     @ShellMethod(value = "startMigration", key = { "sm", "start-migration" })
     public void startMigration(@ShellOption String message) throws Exception {
         final var parameters = new JobParametersBuilder().addString("message", message).toJobParameters();
+        jobService.resetJob(JOB_NAME, parameters);
         final var execution = jobLauncher.run(migrationJob, parameters);
         System.out.println(execution);
     }
