@@ -34,14 +34,13 @@ import ru.otus.spring.hw.service.BookService;
 @Configuration
 @EnableBatchProcessing
 public class JobConfig {
+    private static final String SQL_SELECT_ALL_BOOKS = "select books.id as book_id, title, genres.id as genre_id, genres.name as genre_name from "
+            + " books left join genres on books.genre_id=genres.id";
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     @Autowired
     private AppProps appProps;
@@ -50,9 +49,7 @@ public class JobConfig {
     @Bean
     public JdbcCursorItemReader<Book<Long>> bookReader(DataSource dataSource) {
         return new JdbcCursorItemReaderBuilder<Book<Long>>().name("bookItemReader").dataSource(dataSource)
-                .sql("select books.id as book_id, title, genres.id as genre_id, genres.name as genre_name from "
-                        + " books left join genres on books.genre_id=genres.id")
-                .rowMapper(new BookMapper()).build();
+                .sql(SQL_SELECT_ALL_BOOKS).rowMapper(new BookMapper()).build();
     }
 
     @StepScope
@@ -69,8 +66,8 @@ public class JobConfig {
     @StepScope
     @Bean
     public MongoItemWriter<Book<ObjectId>> writer(MongoTemplate mongoTemplate) {
-        return new MongoItemWriterBuilder<Book<ObjectId>>().collection(appProps.getCollectionName()).template(mongoTemplate)
-                .build();
+        return new MongoItemWriterBuilder<Book<ObjectId>>().collection(appProps.getCollectionName())
+                .template(mongoTemplate).build();
     }
 
     @Bean
@@ -87,7 +84,7 @@ public class JobConfig {
     }
 
     @Bean
-    public Step dropCollection() {
+    public Step dropCollection(MongoTemplate mongoTemplate) {
         return stepBuilderFactory.get("dropCollection").tasklet((stepContribution, chunkContext) -> {
             mongoTemplate.dropCollection(appProps.getCollectionName());
             return RepeatStatus.FINISHED;
