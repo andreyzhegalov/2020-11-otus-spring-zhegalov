@@ -12,7 +12,7 @@ public class BookService {
 
     private final AuthorRepositoryJdbc authorRepository;
 
-    public Book<Long> addAuthors(Book<Long> initBook) {
+    public Book<Long> addAuthorsToBook(Book<Long> initBook) {
         final var authorList = authorRepository.getByBookId(initBook.getId());
         initBook.setAuthors(authorList);
         return initBook;

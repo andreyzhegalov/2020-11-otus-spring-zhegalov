@@ -26,7 +26,7 @@ public class ApplicationCommands {
     @ShellMethod(value = "startMigration", key = { "sm", "start-migration" })
     public void startMigration(@ShellOption String message) throws Exception {
         final var parameters = new JobParametersBuilder().addString("message", message).toJobParameters();
-        jobService.allowStartIfComplete(JOB_NAME, parameters);
+        jobService.allowStartJobIfComplete(JOB_NAME, parameters);
         final var execution = jobLauncher.run(migrationJob, parameters);
         System.out.println(execution);
     }

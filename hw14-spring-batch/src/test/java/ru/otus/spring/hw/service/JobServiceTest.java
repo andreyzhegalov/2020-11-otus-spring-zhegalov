@@ -43,7 +43,7 @@ public class JobServiceTest {
         assertThat(jobExecution.getStepExecutions()).hasSize(2);
         final var jobName = jobExecution.getJobInstance().getJobName();
 
-        jobService.allowStartIfComplete(jobName, parameters);
+        jobService.allowStartJobIfComplete(jobName, parameters);
 
         final var restartJobExecution = jobLauncher.launchJob(parameters);
         assertThat(restartJobExecution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);

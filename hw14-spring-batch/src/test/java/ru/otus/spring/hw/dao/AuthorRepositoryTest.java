@@ -15,12 +15,16 @@ public class AuthorRepositoryTest {
     private AuthorRepositoryJdbc authorRepository;
 
     @Test
-    void shouldReturnAuthorWithBookId(){
-        final var authorList =  authorRepository.getByBookId(1L);
+    void shouldReturnAuthorWithBookId() {
+        final var authorList = authorRepository.getByBookId(1L);
         assertThat(authorList).isNotNull().hasSize(2);
         final var author = authorList.get(0);
         assertThat(author.getId()).isNotNull();
         assertThat(author.getName()).isNotBlank();
     }
-}
 
+    @Test
+    void shouldReturnEmptyListForNotExistedBookId() {
+        assertThat(authorRepository.getByBookId(0L)).isNotNull().isEmpty();
+    }
+}

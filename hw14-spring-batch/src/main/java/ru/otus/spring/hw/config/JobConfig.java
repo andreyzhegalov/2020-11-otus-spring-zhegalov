@@ -52,9 +52,9 @@ public class JobConfig {
 
     @Bean
     public CompositeItemProcessor<Book<Long>, Book<ObjectId>> compositeProcessor(BookService bookService) {
-        CompositeItemProcessor<Book<Long>, Book<ObjectId>> compositeProcessor = new CompositeItemProcessor<Book<Long>, Book<ObjectId>>();
+        final var compositeProcessor = new CompositeItemProcessor<Book<Long>, Book<ObjectId>>();
         final var itemProcessors = new ArrayList<ItemProcessor<?, ?>>();
-        itemProcessors.add((ItemProcessor<Book<Long>, Book<Long>>) bookService::addAuthors);
+        itemProcessors.add((ItemProcessor<Book<Long>, Book<Long>>) bookService::addAuthorsToBook);
         itemProcessors.add((ItemProcessor<Book<Long>, Book<ObjectId>>) BookConverter::convertId);
         compositeProcessor.setDelegates(itemProcessors);
         return compositeProcessor;
@@ -68,8 +68,8 @@ public class JobConfig {
 
     @Bean
     public Job makeMigrationJob(@Qualifier("migrationBookStep") Step migrationBookStep,
-            @Qualifier("dropCollection") Step dropCollection) {
-        return jobBuilderFactory.get("migrationJob").start(dropCollection).next(migrationBookStep).build();
+            @Qualifier("dropCollectionStep") Step dropCollectionStep) {
+        return jobBuilderFactory.get("migrationJob").start(dropCollectionStep).next(migrationBookStep).build();
     }
 
     @Bean
@@ -80,8 +80,8 @@ public class JobConfig {
     }
 
     @Bean
-    public Step dropCollection(MongoTemplate mongoTemplate) {
-        return stepBuilderFactory.get("dropCollection").tasklet((stepContribution, chunkContext) -> {
+    public Step dropCollectionStep(MongoTemplate mongoTemplate) {
+        return stepBuilderFactory.get("dropCollectionStep").tasklet((stepContribution, chunkContext) -> {
             mongoTemplate.dropCollection(appProps.getCollectionName());
             return RepeatStatus.FINISHED;
         }).allowStartIfComplete(true).build();

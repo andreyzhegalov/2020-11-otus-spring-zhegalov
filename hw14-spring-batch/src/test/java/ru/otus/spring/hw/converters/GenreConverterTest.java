@@ -10,7 +10,7 @@ import ru.otus.spring.hw.model.Genre;
 public class GenreConverterTest {
 
     @Test
-    void shouldReplaceLongIdToObjectId(){
+    void shouldReplaceLongIdToObjectId() {
         final var genre = new Genre<Long>();
         genre.setId(1L);
         genre.setName("name");
@@ -20,4 +20,3 @@ public class GenreConverterTest {
         assertThat(convertedGenre.getName()).isEqualTo(genre.getName());
     }
 }
-

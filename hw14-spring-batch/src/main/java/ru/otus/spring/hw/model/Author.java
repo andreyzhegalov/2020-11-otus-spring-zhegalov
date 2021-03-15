@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Author <T>{
+public class Author<T> {
     private T id;
     private String name;
 }

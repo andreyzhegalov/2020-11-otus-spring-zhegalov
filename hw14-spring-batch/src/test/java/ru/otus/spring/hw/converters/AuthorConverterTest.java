@@ -10,7 +10,7 @@ import ru.otus.spring.hw.model.Author;
 public class AuthorConverterTest {
 
     @Test
-    void shouldReplaceLongIdToObjectId(){
+    void shouldReplaceLongIdToObjectId() {
         final var author = new Author<Long>();
         author.setId(1L);
         author.setName("name");
@@ -20,4 +20,3 @@ public class AuthorConverterTest {
         assertThat(convertedAuthor.getName()).isEqualTo(author.getName());
     }
 }
-

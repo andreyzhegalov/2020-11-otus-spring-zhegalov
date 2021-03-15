@@ -58,12 +58,15 @@ public class JobConfigTest {
         final var bookList = new ArrayList<Book<Long>>();
 
         StepScopeTestUtils.doInStepScope(stepExecution, () -> {
-            Book<Long> book;
             itemReader.open(stepExecution.getExecutionContext());
-            while ((book = itemReader.read()) != null) {
+            while (true) {
+                Book<Long> book = itemReader.read();
+                if (book == null) {
+                    itemReader.close();
+                    break;
+                }
                 bookList.add(book);
             }
-            itemReader.close();
             return null;
         });
 
@@ -88,8 +91,7 @@ public class JobConfigTest {
             return null;
         });
 
-        final var bookCollectionName = mongoTemplate.findAll(Book.class, appProps.getCollectionName());
-        assertThat(bookCollectionName).hasSize(1);
+        assertThat(mongoTemplate.findAll(Book.class, appProps.getCollectionName())).hasSize(1);
     }
 
     @Test
@@ -99,13 +101,12 @@ public class JobConfigTest {
         mongoTemplate.save(book, appProps.getCollectionName());
         assertThat(mongoTemplate.findAll(Book.class, appProps.getCollectionName())).isNotEmpty();
 
-        final var jobExecution = jobLauncherTestUtils.launchStep("dropCollection");
+        final var jobExecution = jobLauncherTestUtils.launchStep("dropCollectionStep");
         final var actualStepExecutions = jobExecution.getStepExecutions();
         final var actualExitStatus = jobExecution.getExitStatus();
 
         assertThat(actualStepExecutions).hasSize(1);
         assertThat(actualExitStatus.getExitCode()).isEqualTo(ExitStatus.COMPLETED.getExitCode());
-
         assertThat(mongoTemplate.findAll(Book.class, appProps.getCollectionName())).isEmpty();
     }
 
@@ -119,12 +120,12 @@ public class JobConfigTest {
         assertThat(actualExitStatus.getExitCode()).isEqualTo(ExitStatus.COMPLETED.getExitCode());
         actualStepExecutions.forEach(stepExecution -> {
             assertThat(stepExecution.getReadCount()).isNotZero();
-            assertThat(stepExecution.getReadCount()).isEqualTo(stepExecution.getWriteCount());
+            assertThat(stepExecution.getWriteCount()).isEqualTo(stepExecution.getReadCount());
         });
     }
 
     @Test
-    void givenDbWithBook_whenReadBookFromDb_thenBookShouldBeWrittenInMongo() throws Exception {
+    void migrationJobShouldCompleteSuccessfully() throws Exception {
         final var jobExecution = jobLauncherTestUtils.launchJob();
         assertThat(jobExecution).isNotNull();
         assertThat(jobExecution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
@@ -132,22 +133,5 @@ public class JobConfigTest {
         assertThat(savedBooks).hasSize(2).allMatch(s -> !s.getTitle().equals(""))
                 .allMatch(s -> !s.getAuthors().isEmpty()).allMatch(s -> s.getGenre() != null);
     }
-
-    // Job job = new SimpleJob();
-    // job.setRestartable(false);
-    //
-    // JobParameters jobParameters = new JobParameters();
-    //
-    // JobExecution firstExecution = jobRepository.createJobExecution(job,
-    // jobParameters);
-    // jobRepository.saveOrUpdate(firstExecution);
-    //
-    // try {
-    // jobRepository.createJobExecution(job, jobParameters);
-    // fail();
-    // }
-    // catch (JobRestartException e) {
-    // // expected
-    // }
 
 }

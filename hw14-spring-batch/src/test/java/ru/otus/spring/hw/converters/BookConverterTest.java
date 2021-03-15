@@ -14,7 +14,7 @@ import ru.otus.spring.hw.model.Genre;
 public class BookConverterTest {
 
     @Test
-    void shouldReplaceLongIdToObjectId(){
+    void shouldReplaceLongIdToObjectId() {
         var book = new Book<Long>();
         book.setId(1L);
         final var genre = new Genre<Long>();
@@ -26,11 +26,10 @@ public class BookConverterTest {
 
         final var bookWithObjectId = BookConverter.convertId(book);
 
-        assertThat(bookWithObjectId.getTitle()).isEqualTo(book.getTitle());
         assertThat(bookWithObjectId.getId()).isExactlyInstanceOf(ObjectId.class);
+        assertThat(bookWithObjectId.getTitle()).isEqualTo(book.getTitle());
         assertThat(bookWithObjectId.getGenre().getId()).isExactlyInstanceOf(ObjectId.class);
         assertThat(bookWithObjectId.getAuthors()).isNotEmpty();
         assertThat(bookWithObjectId.getAuthors().get(0).getId()).isExactlyInstanceOf(ObjectId.class);
     }
 }
-

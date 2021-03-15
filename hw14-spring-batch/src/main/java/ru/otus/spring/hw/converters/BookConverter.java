@@ -23,4 +23,3 @@ public class BookConverter {
         return authorList.stream().map(AuthorConverter::convertId).collect(Collectors.toList());
     }
 }
-

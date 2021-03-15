@@ -25,7 +25,7 @@ public class BookServiceTest {
         final var authorRepository = Mockito.mock(AuthorRepositoryJdbc.class);
         given(authorRepository.getByBookId(bookId)).willReturn(Collections.singletonList(new Author<Long>()));
 
-        book = new BookService(authorRepository).addAuthors(book);
+        book = new BookService(authorRepository).addAuthorsToBook(book);
 
         then(authorRepository).should().getByBookId(bookId);
         assertThat(book.getAuthors()).isNotEmpty();

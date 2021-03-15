@@ -12,12 +12,11 @@ import lombok.RequiredArgsConstructor;
 public class JobService {
     private final JobRepository jobRepository;
 
-    public void allowStartIfComplete(String jobName, JobParameters parameters) {
+    public void allowStartJobIfComplete(String jobName, JobParameters parameters) {
         final var repositoryJobExecution = jobRepository.getLastJobExecution(jobName, parameters);
         if (repositoryJobExecution == null) {
             return;
         }
-
         repositoryJobExecution.setStatus(BatchStatus.STOPPED);
         jobRepository.update(repositoryJobExecution);
     }
