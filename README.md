@@ -30,7 +30,8 @@
 9. *hw09-web-ui-part1* - CRUD приложение с Web UI и хранением данных в БД.
 10. *hw10-web-ui-part2* - CRUD приложение с использованием AJAX и REST-контроллеров.
 11. *hw11-web-ui-part3* - CRUD приложение с использованием WebFlux.
-12. *hw12-spring-security-part1* -CRUD Web-приложение с механизмом аутентификации.
+12. *hw12-spring-security-part1* - CRUD Web-приложение с механизмом аутентификации.
+13. *hw13-spring-security-part2* - CRUD Web-приложение с механизмом авторизации.
 
 ##### License
 
