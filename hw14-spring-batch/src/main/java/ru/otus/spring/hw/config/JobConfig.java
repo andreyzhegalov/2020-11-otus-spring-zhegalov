@@ -10,7 +10,6 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -45,14 +44,12 @@ public class JobConfig {
     @Autowired
     private AppProps appProps;
 
-    @StepScope
     @Bean
     public JdbcCursorItemReader<Book<Long>> bookReader(DataSource dataSource) {
         return new JdbcCursorItemReaderBuilder<Book<Long>>().name("bookItemReader").dataSource(dataSource)
                 .sql(SQL_SELECT_ALL_BOOKS).rowMapper(new BookMapper()).build();
     }
 
-    @StepScope
     @Bean
     public CompositeItemProcessor<Book<Long>, Book<ObjectId>> compositeProcessor(BookService bookService) {
         CompositeItemProcessor<Book<Long>, Book<ObjectId>> compositeProcessor = new CompositeItemProcessor<Book<Long>, Book<ObjectId>>();
@@ -63,7 +60,6 @@ public class JobConfig {
         return compositeProcessor;
     }
 
-    @StepScope
     @Bean
     public MongoItemWriter<Book<ObjectId>> writer(MongoTemplate mongoTemplate) {
         return new MongoItemWriterBuilder<Book<ObjectId>>().collection(appProps.getCollectionName())
