@@ -3,11 +3,13 @@ package ru.otus.spring.hw.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @NoArgsConstructor
-@Data
 public class Book<T> {
     private T id;
     private String title;

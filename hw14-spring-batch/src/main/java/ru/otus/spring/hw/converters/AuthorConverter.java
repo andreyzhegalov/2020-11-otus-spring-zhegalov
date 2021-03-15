@@ -12,5 +12,4 @@ public class AuthorConverter {
         converted.setName(init.getName());
         return converted;
     }
-
 }

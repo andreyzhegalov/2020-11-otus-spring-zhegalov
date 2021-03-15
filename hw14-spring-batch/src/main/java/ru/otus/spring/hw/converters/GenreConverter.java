@@ -12,5 +12,4 @@ public class GenreConverter {
         converted.setName(init.getName());
         return converted;
     }
-
 }
