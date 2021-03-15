@@ -27,7 +27,7 @@ class ApplicationCommandsTest {
     @Test
     void printShouldPrintAllBooks() throws Exception {
         shell.evaluate(() -> "start-migration param");
-        then(jobService).should().resetJob(anyString(), any());
+        then(jobService).should().allowStartIfComplete(anyString(), any());
         then(jobLauncher).should().run(any(), any());
     }
 }

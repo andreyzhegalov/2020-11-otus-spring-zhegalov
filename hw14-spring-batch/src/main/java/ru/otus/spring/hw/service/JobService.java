@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class JobService {
     private final JobRepository jobRepository;
 
-    public void resetJob(String jobName, JobParameters parameters) {
+    public void allowStartIfComplete(String jobName, JobParameters parameters) {
         final var repositoryJobExecution = jobRepository.getLastJobExecution(jobName, parameters);
         if (repositoryJobExecution == null) {
             return;
@@ -20,10 +20,5 @@ public class JobService {
 
         repositoryJobExecution.setStatus(BatchStatus.STOPPED);
         jobRepository.update(repositoryJobExecution);
-
-        repositoryJobExecution.getStepExecutions().forEach(step -> {
-            step.setStatus(BatchStatus.STOPPED);
-            jobRepository.update(step);
-        });
     }
 }

@@ -76,7 +76,7 @@ public class JobConfig {
     public Step migrationBookStep(ItemReader<Book<Long>> bookReader, ItemWriter<Book<ObjectId>> bookWriter,
             CompositeItemProcessor<Book<Long>, Book<ObjectId>> compositeProcessor) {
         return stepBuilderFactory.get("migrationBookStep").<Book<Long>, Book<ObjectId>>chunk(8).reader(bookReader)
-                .processor(compositeProcessor).writer(bookWriter).build();
+                .processor(compositeProcessor).writer(bookWriter).allowStartIfComplete(true).build();
     }
 
     @Bean
@@ -84,6 +84,6 @@ public class JobConfig {
         return stepBuilderFactory.get("dropCollection").tasklet((stepContribution, chunkContext) -> {
             mongoTemplate.dropCollection(appProps.getCollectionName());
             return RepeatStatus.FINISHED;
-        }).build();
+        }).allowStartIfComplete(true).build();
     }
 }
