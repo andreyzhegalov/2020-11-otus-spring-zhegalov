@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 
 @JdbcTest
 @Import(AuthorRepositoryJdbc.class)
-public class AuthorRepositoryTest {
+public class AuthorRepositoryJdbcTest {
 
     @Autowired
     private AuthorRepositoryJdbc authorRepository;

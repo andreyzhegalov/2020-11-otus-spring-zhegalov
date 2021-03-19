@@ -45,11 +45,11 @@
             <artifactId>h2</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>de.flapdoodle.embed</groupId>
-            <artifactId>de.flapdoodle.embed.mongo</artifactId>
-            <scope>test</scope>
-        </dependency>
+        <!-- <dependency> -->
+        <!--     <groupId>de.flapdoodle.embed</groupId> -->
+        <!--     <artifactId>de.flapdoodle.embed.mongo</artifactId> -->
+        <!--     <scope>test</scope> -->
+        <!-- </dependency> -->
 
         <!-- for h2 console -->
         <dependency>

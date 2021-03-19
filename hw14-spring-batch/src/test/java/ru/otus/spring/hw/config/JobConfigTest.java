@@ -2,7 +2,6 @@ package ru.otus.spring.hw.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 import org.bson.types.ObjectId;
@@ -12,7 +11,6 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.item.data.MongoItemWriter;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.MetaDataInstanceFactory;
 import org.springframework.batch.test.StepScopeTestUtils;
@@ -21,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 
 import ru.otus.spring.hw.model.Book;
 
@@ -31,9 +30,6 @@ public class JobConfigTest {
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
-
-    @Autowired
-    private JdbcCursorItemReader<Book<Long>> itemReader;
 
     @Autowired
     private MongoItemWriter<Book<ObjectId>> itemWriter;
@@ -55,32 +51,7 @@ public class JobConfigTest {
     }
 
     @Test
-    void bookItemReaderShouldReadAllBookFromDataBase() throws Exception {
-        final var stepExecution = MetaDataInstanceFactory.createStepExecution(defaultJobParameters());
-        final var bookList = new ArrayList<Book<Long>>();
-
-        StepScopeTestUtils.doInStepScope(stepExecution, () -> {
-            itemReader.open(stepExecution.getExecutionContext());
-            while (true) {
-                Book<Long> book = itemReader.read();
-                if (book == null) {
-                    itemReader.close();
-                    break;
-                }
-                bookList.add(book);
-            }
-            return null;
-        });
-
-        final var book = bookList.get(0);
-        assertThat(bookList).hasSize(2);
-        assertThat(book.getId()).isNotNull().isNotZero();
-        assertThat(book.getGenre()).isNotNull();
-        assertThat(book.getGenre().getName()).isNotBlank();
-        assertThat(book.getAuthors()).isEmpty();
-    }
-
-    @Test
+    @DirtiesContext
     void theBookMustBeWrittenInMongo() throws Exception {
         assertThat(mongoTemplate.findAll(Book.class, appProps.getCollectionName())).isEmpty();
         final var book = new Book<ObjectId>();
@@ -97,6 +68,7 @@ public class JobConfigTest {
     }
 
     @Test
+    @DirtiesContext
     void stepTaskletDropCollectionCompleteSuccessfully() throws Exception {
         final var book = new Book<ObjectId>();
         book.setId(new ObjectId());
@@ -113,6 +85,7 @@ public class JobConfigTest {
     }
 
     @Test
+    @DirtiesContext
     void stepMigrationBookShouldCompleteSuccessfully() {
         final var jobExecution = jobLauncherTestUtils.launchStep("migrationBookStep", defaultJobParameters());
         final var actualStepExecutions = jobExecution.getStepExecutions();
@@ -127,6 +100,7 @@ public class JobConfigTest {
     }
 
     @Test
+    @DirtiesContext
     void migrationJobShouldCompleteSuccessfully() throws Exception {
         final var jobExecution = jobLauncherTestUtils.launchJob();
         assertThat(jobExecution).isNotNull();
