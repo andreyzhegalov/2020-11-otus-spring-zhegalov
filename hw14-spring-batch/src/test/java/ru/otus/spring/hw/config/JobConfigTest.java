@@ -109,5 +109,4 @@ public class JobConfigTest {
         assertThat(savedBooks).hasSize(2).allMatch(s -> !s.getTitle().equals(""))
                 .allMatch(s -> !s.getAuthors().isEmpty()).allMatch(s -> s.getGenre() != null);
     }
-
 }

@@ -2,6 +2,7 @@ package ru.otus.spring.hw.batch;
 
 import java.util.Iterator;
 
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import ru.otus.spring.hw.dao.AuthorRepositoryJdbc;
 import ru.otus.spring.hw.dao.BookRepositoryJdbc;
 import ru.otus.spring.hw.model.Book;
 
+@StepScope
 @Component
 public class BookReader implements ItemReader<Book<Long>> {
     private final Iterator<Book<Long>> iterator;
