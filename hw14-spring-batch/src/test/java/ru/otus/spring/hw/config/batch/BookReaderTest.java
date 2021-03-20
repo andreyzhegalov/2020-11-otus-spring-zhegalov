@@ -1,8 +1,9 @@
-package ru.otus.spring.hw.batch;
+package ru.otus.spring.hw.config.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -13,6 +14,7 @@ import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
 
 @SpringBootTest
+@SpringBatchTest
 public class BookReaderTest {
 
     @Autowired
@@ -40,7 +42,7 @@ public class BookReaderTest {
         authorList.forEach((a -> {
             assertThat(a).isNotNull().isInstanceOf(Author.class);
             assertThat(a.getId()).isNotNull();
-            assertThat(a.getName()).isNotBlank();
+            assertThat(a.getName()).isNotNull().isNotBlank();
         }));
     }
 

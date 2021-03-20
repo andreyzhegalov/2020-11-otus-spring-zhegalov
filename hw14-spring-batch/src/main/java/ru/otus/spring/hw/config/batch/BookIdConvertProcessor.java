@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.batch;
+package ru.otus.spring.hw.config.batch;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.batch;
+package ru.otus.spring.hw.config.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,7 +15,7 @@ public class BookIdConvertProcessorTest {
     private final BookIdConvertProcessor bookIdConvertProcessor = new BookIdConvertProcessor();
 
     @Test
-    void convertedBookShouldContainIdOfObjectIdType(){
+    void convertedBookShouldContainIdOfObjectIdType() {
         final var author = new Author<Long>();
         author.setId(3L);
         final var genre = new Genre<Long>();
@@ -73,7 +73,8 @@ public class BookIdConvertProcessorTest {
 
         assertThat(converterBookWithGenre11).isNotNull();
         assertThat(converterBookWithGenre12).isNotNull();
-        assertThat(converterBookWithGenre11.getGenre().getId()).isNotEqualTo(converterBookWithGenre12.getGenre().getId());
+        assertThat(converterBookWithGenre11.getGenre().getId())
+                .isNotEqualTo(converterBookWithGenre12.getGenre().getId());
     }
 
     @Test
@@ -121,7 +122,7 @@ public class BookIdConvertProcessorTest {
 
         assertThat(converterBookWithAuthor11).isNotNull();
         assertThat(converterBookWithAuthor12).isNotNull();
-        converterBookWithAuthor11.getAuthors().forEach(author->{
+        converterBookWithAuthor11.getAuthors().forEach(author -> {
             assertThat(author).isNotIn(converterBookWithAuthor12.getAuthors());
         });
     }
