@@ -37,7 +37,6 @@ public class JobConfig {
     @Autowired
     private AppProps appProps;
 
-
     @Bean
     public CompositeItemProcessor<Book<Long>, Book<ObjectId>> compositeProcessor(BookService bookService) {
         final var compositeProcessor = new CompositeItemProcessor<Book<Long>, Book<ObjectId>>();

@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.config;
+package ru.otus.spring.hw.batch;
 
 import java.util.Iterator;
 
@@ -21,7 +21,7 @@ public class BookReader implements ItemReader<Book<Long>> {
 
     @Override
     public Book<Long> read() throws Exception {
-        if( !iterator.hasNext()){
+        if (!iterator.hasNext()) {
             return null;
         }
         final var book = iterator.next();

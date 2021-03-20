@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.config;
+package ru.otus.spring.hw.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +13,7 @@ import ru.otus.spring.hw.model.Book;
 import ru.otus.spring.hw.model.Genre;
 
 @SpringBootTest
-public class CustomBookReaderTest {
+public class BookReaderTest {
 
     @Autowired
     private BookReader bookReader;
@@ -37,7 +37,7 @@ public class CustomBookReaderTest {
         assertThat(book.getGenre()).isNotNull().isInstanceOf(Genre.class).extracting("name").isNotNull();
         assertThat(book.getAuthors()).isNotNull().isNotEmpty();
         final var authorList = book.getAuthors();
-        authorList.forEach((a ->{
+        authorList.forEach((a -> {
             assertThat(a).isNotNull().isInstanceOf(Author.class);
             assertThat(a.getId()).isNotNull();
             assertThat(a.getName()).isNotBlank();
