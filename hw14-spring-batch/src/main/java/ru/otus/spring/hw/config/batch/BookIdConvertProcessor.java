@@ -2,6 +2,7 @@ package ru.otus.spring.hw.config.batch;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
@@ -23,8 +24,10 @@ public class BookIdConvertProcessor implements ItemProcessor<Book<Long>, Book<Ob
     @Override
     public Book<ObjectId> process(@NotNull Book<Long> book) {
         var convertedBook = BookConverter.convertId(book);
-        genreIdMap.putIfAbsent(book.getGenre().getId(), convertedBook.getGenre().getId());
-        convertedBook.getGenre().setId(genreIdMap.get(book.getGenre().getId()));
+        final var genreInMap = genreIdMap.putIfAbsent(book.getGenre().getId(), convertedBook.getGenre().getId());
+        if (Objects.nonNull(genreInMap)) {
+            convertedBook.getGenre().setId(genreIdMap.get(book.getGenre().getId()));
+        }
         updateAuthorId(book, convertedBook);
 
         return convertedBook;
@@ -34,8 +37,10 @@ public class BookIdConvertProcessor implements ItemProcessor<Book<Long>, Book<Ob
         for (int i = 0; i < initBook.getAuthors().size(); i++) {
             final var author = initBook.getAuthors().get(i);
             final var convertedAuthor = convertedBook.getAuthors().get(i);
-            authorIdMap.putIfAbsent(author.getId(), convertedAuthor.getId());
-            convertedAuthor.setId(authorIdMap.get(author.getId()));
+            final var authorInMap = authorIdMap.putIfAbsent(author.getId(), convertedAuthor.getId());
+            if (Objects.nonNull(authorInMap)) {
+                convertedAuthor.setId(authorIdMap.get(author.getId()));
+            }
         }
     }
 }
