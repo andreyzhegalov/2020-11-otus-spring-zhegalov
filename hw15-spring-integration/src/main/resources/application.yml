@@ -1,0 +1,6 @@
+logging:
+  level:
+    ROOT: INFO
+    org.springframework: INFO
+    ru.otus.spring.hw: INFO
+    org.mongodb.driver: INFO

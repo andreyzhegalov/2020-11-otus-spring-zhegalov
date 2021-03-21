@@ -42,6 +42,7 @@
         <module>hw11-web-ui-part3</module>
         <module>hw12-spring-security-part1</module>
         <module>hw13-spring-security-part2</module>
+        <module>hw15-spring-integration</module>
     </modules>
 
     <build>
