@@ -9,6 +9,6 @@ import ru.otus.spring.hw.model.Description;
 @MessagingGateway
 public interface MessageGateway {
 
-    @Gateway(requestChannel = "coordinateChannel", replyChannel = "addressChannel")
+    @Gateway(requestChannel = "coordinateChannel", replyChannel = "descriptionChannel")
     Description process(Coordinate coordinate);
 }
