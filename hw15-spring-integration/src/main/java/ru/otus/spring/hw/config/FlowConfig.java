@@ -30,8 +30,10 @@ public class FlowConfig {
 
     @Bean
     public IntegrationFlow messageFlow() {
-        return IntegrationFlows.from("coordinateChannel").handle("addressService", "getAddress")
-                .channel("addressChannel").get();
+        return IntegrationFlows.from("coordinateChannel")
+            .handle("descriptionService", "getDescription")
+                .channel("addressChannel")
+                .get();
     }
 
 }
