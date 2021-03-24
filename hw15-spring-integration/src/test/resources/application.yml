@@ -3,4 +3,4 @@ logging:
     ROOT: INFO
     org.springframework.integration: DEBUG
     org.springframework: INFO
-    ru.otus.spring.hw: DEBUG
+    ru.otus.spring.hw: INFO

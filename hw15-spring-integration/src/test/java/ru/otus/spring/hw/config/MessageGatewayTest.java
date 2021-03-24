@@ -31,13 +31,6 @@ public class MessageGatewayTest {
     private DescriptionService descriptionService;
 
     @Test
-    void shouldReturnDescriptionIfCoordinatesFound() {
-        given(descriptionService.getDescription(any())).willReturn(new Description());
-        assertThat(messageGateway.process(new Coordinate())).isNotNull();
-        then(descriptionService).should().getDescription(any());
-    }
-
-    @Test
     void shouldGetAddressFromAddressService() {
         given(addressService.getAddress(any())).willReturn(new Address());
         given(descriptionService.getDescription(any())).willReturn(new Description());
