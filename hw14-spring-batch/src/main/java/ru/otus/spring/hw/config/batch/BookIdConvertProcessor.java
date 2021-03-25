@@ -1,8 +1,8 @@
 package ru.otus.spring.hw.config.batch;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
@@ -18,8 +18,8 @@ import ru.otus.spring.hw.model.Book;
 @RequiredArgsConstructor
 @Component
 public class BookIdConvertProcessor implements ItemProcessor<Book<Long>, Book<ObjectId>> {
-    private final Map<Long, ObjectId> genreIdMap = new HashMap<>();
-    private final Map<Long, ObjectId> authorIdMap = new HashMap<>();
+    private final Map<Long, ObjectId> genreIdMap = new ConcurrentHashMap<>();
+    private final Map<Long, ObjectId> authorIdMap = new ConcurrentHashMap<>();
 
     @Override
     public Book<ObjectId> process(@NotNull Book<Long> book) {

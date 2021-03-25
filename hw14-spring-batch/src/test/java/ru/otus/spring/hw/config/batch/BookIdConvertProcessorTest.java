@@ -56,7 +56,7 @@ public class BookIdConvertProcessorTest {
     }
 
     @Test
-    void shouldCorrectlyConvertGenreIdForDiferentsGenre() {
+    void shouldCorrectlyConvertGenreIdForDifferentGenre() {
         final var genre11 = new Genre<Long>();
         genre11.setId(11L);
         final var genre12 = new Genre<Long>();
@@ -105,7 +105,7 @@ public class BookIdConvertProcessorTest {
         final var author11 = new Author<Long>();
         author11.setId(11L);
         final var author12 = new Author<Long>();
-        author11.setId(12L);
+        author12.setId(12L);
         final var genre = new Genre<Long>();
         genre.setId(2L);
         final var bookWithAuthor11 = new Book<Long>();
