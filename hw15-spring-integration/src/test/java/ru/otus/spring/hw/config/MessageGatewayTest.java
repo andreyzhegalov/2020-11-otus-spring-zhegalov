@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.integration.test.context.SpringIntegrationTest;
 
+import ru.otus.spring.hw.config.FlowConfig.MessageGateway;
 import ru.otus.spring.hw.model.Address;
 import ru.otus.spring.hw.model.Coordinate;
 import ru.otus.spring.hw.model.Description;
@@ -29,6 +30,7 @@ public class MessageGatewayTest {
 
     @MockBean
     private DescriptionService descriptionService;
+
 
     @Test
     void shouldGetAddressFromAddressService() {
