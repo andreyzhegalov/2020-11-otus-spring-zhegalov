@@ -7,10 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.dsl.IntegrationFlow;
-import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.dsl.Pollers;
 import org.springframework.integration.scheduling.PollerMetadata;
-import org.springframework.messaging.MessageChannel;
 
 import ru.otus.spring.hw.model.Address;
 import ru.otus.spring.hw.model.Coordinate;
@@ -21,12 +19,7 @@ public class FlowConfig {
 
     @Bean(name = PollerMetadata.DEFAULT_POLLER)
     public PollerMetadata poller() {
-        return Pollers.fixedRate(100).maxMessagesPerPoll(2).get();
-    }
-
-    @Bean
-    public MessageChannel addressChannel() {
-        return MessageChannels.publishSubscribe().get();
+        return Pollers.fixedRate(100).maxMessagesPerPoll(1).get();
     }
 
     @MessagingGateway
@@ -41,15 +34,11 @@ public class FlowConfig {
             .handle("addressService", "getAddress", e->e.id("addressActivator"))
             .<Address, Boolean>route(p-> Objects.isNull(p),
                     mapping->mapping
+                    .subFlowMapping(false,
+                            sf->sf.handle("descriptionService", "getDescription", e->e.id("descriptionActivator"))
+                                    .channel("descriptionChannel")
+                        )
                     .channelMapping(true, "notFoundChannel")
-                    .channelMapping(false, "addressToDescriptionFlow.input")
                     );
-    }
-
-    @Bean
-    public IntegrationFlow addressToDescriptionFlow(){
-        return f->f
-            .handle("descriptionService", "getDescription", e->e.id("descriptionActivator"))
-            .channel("descriptionChannel");
     }
 }
