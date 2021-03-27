@@ -40,7 +40,6 @@ public class FlowConfig {
                         .subFlowMapping(true,
                                 sf->sf
                                 .<Object, Description>transform(orderItem ->{
-                                    System.out.println("transform !!!!!!!");
                                     return new Description();
                                 })
                                 .channel("descriptionChannel")

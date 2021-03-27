@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.integration.test.context.SpringIntegrationTest;
 
 import ru.otus.spring.hw.config.FlowConfig.MessageGateway;
 import ru.otus.spring.hw.model.Address;
@@ -21,7 +20,6 @@ import ru.otus.spring.hw.service.AddressService;
 import ru.otus.spring.hw.service.DescriptionService;
 
 @SpringBootTest
-@SpringIntegrationTest
 public class MessageGatewayTest {
 
     @Autowired

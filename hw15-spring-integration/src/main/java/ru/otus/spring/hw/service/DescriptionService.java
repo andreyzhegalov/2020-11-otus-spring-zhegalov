@@ -11,10 +11,4 @@ public class DescriptionService {
     public Description getDescription(Address coordinate) {
         return new Description();
     }
-
-    public Description deleteThis(Address address) {
-        System.out.println("!!!!!!!!!!!!");
-        return new Description();
-    }
-
 }

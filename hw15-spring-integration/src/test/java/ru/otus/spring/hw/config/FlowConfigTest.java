@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.integration.channel.DirectChannel;
-import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.StandardIntegrationFlow;
 import org.springframework.integration.dsl.context.IntegrationFlowContext;
@@ -25,14 +24,13 @@ import org.springframework.integration.test.context.SpringIntegrationTest;
 import org.springframework.integration.test.mock.MockIntegration;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 import ru.otus.spring.hw.model.Address;
 import ru.otus.spring.hw.model.Coordinate;
 import ru.otus.spring.hw.model.Description;
 
 @SpringBootTest
-@SpringIntegrationTest()
+@SpringIntegrationTest
 @DirtiesContext
 public class FlowConfigTest {
     @Autowired
@@ -49,119 +47,133 @@ public class FlowConfigTest {
         this.mockIntegrationContext.resetBeans("addressActivator", "descriptionActivator");
     }
 
-   @Test
-   void givenNewMessageInCoordinateChannel_whenAddressServiceFoundAddress_thenAddressChannelHasNewAddressMessage() {
-       // дано: сервис адреса находит адрес по координатам
-       mockIntegrationContext.substituteMessageHandlerFor("addressActivator",
-               MockIntegration.mockMessageHandler().handleNextAndReply(m -> Optional.of(new Address())));
-
-       // дано: подменяем сервис получения описания с захватом аргумента
-       final var messageArgumentCaptor = MockIntegration.messageArgumentCaptor();
-       final MessageHandler descriptionService = Mockito.spy(MockIntegration.mockMessageHandler(messageArgumentCaptor))
-               .handleNext(m -> {
-               });
-       mockIntegrationContext.substituteMessageHandlerFor("descriptionActivator", descriptionService);
-
-       // когда: Отправляем сообщение с координатами
-       final var coordinateChannel = this.context.getBean("coordinateToAddressFlow.channel#1", DirectChannel.class);
-       assertThat(coordinateChannel).isNotNull();
-       final var coordinateMessage = MessageBuilder.withPayload(new Coordinate()).build();
-       coordinateChannel.send(coordinateMessage);
-
-       // тогда: сервис получения описания принимает сообщение с адресом
-       then(descriptionService).should().handleMessage(any());
-       assertThat(messageArgumentCaptor.getValue()).isNotNull();
-   }
-
     @Test
-    void givenNewAddressMessage_whenDescriptionServiceFoundDescription_thenDescriptionMessageHasData() {
-        // дано: подменяем обработчик описания c захватом параметров вызова
-        final var messageArgumentCaptor = MockIntegration.messageArgumentCaptor();
-        final MessageHandler mockHandler = Mockito.spy(MockIntegration.mockMessageHandler(messageArgumentCaptor))
-                .handleNext(m -> {
+    void givenNewMessageInCoordinateChannel_whenAddressServiceFoundAddress_thenDescriptionServiceRecivesAddressMessage() {
+        final var coordinateChannel = this.context.getBean("coordinateToAddressFlow.channel#1", DirectChannel.class);
+        assertThat(coordinateChannel).isNotNull();
+
+        final var coordinateMessage = MessageBuilder.withPayload(new Coordinate()).build();
+
+        final var descriptionServiceArgumentCaptor = MockIntegration.messageArgumentCaptor();
+        final MessageHandler mockDescriptionService = Mockito
+                .spy(MockIntegration.mockMessageHandler(descriptionServiceArgumentCaptor)).handleNext(m -> {
                 });
-        mockIntegrationContext.substituteMessageHandlerFor("descriptionActivator", mockHandler);
+        mockIntegrationContext.substituteMessageHandlerFor("descriptionActivator", mockDescriptionService);
 
-        // когда: отправляем в канал координат сообщение
-        final var addressChannel = this
-            .context.getBean("coordinateToAddressFlow.channel#2", DirectChannel.class);
-        assertThat(addressChannel).isNotNull();
-        final var addressMessage = MessageBuilder.withPayload(Optional.of(new Address())).build();
-        addressChannel.send(addressMessage);
+        // дано: сервис адреса находит адрес по координатам
+        mockIntegrationContext.substituteMessageHandlerFor("addressActivator",
+                MockIntegration.mockMessageHandler().handleNextAndReply(m -> Optional.of(new Address())));
 
-        // тогда: проверяем что на обработчик описания пришло сообщение с адресом
-        then(mockHandler).should().handleMessage(any());
-        final var descriptionMessage = messageArgumentCaptor.getValue();
-        assertThat(descriptionMessage.getPayload()).isNotNull().isInstanceOf(Address.class);
+        // когда: отправляем сообщение с координатами
+        coordinateChannel.send(coordinateMessage);
+
+        // тогда: сервис описания принимает сообщение с адресом
+        then(mockDescriptionService).should().handleMessage(any());
+        assertThat(descriptionServiceArgumentCaptor.getValue()).isNotNull();
     }
 
     @Test
-    void givenNewAddressMessage_whenSendingNewAddressMessage_thenOutBoundEndPointReceiveNewMessage() {
-        // дано: мок для обработчика описания
-        final var messageArgumentCaptor = MockIntegration.messageArgumentCaptor();
-        final MessageHandler mockHandler = Mockito.spy(MockIntegration.mockMessageHandler(messageArgumentCaptor))
-                .handleNext(m -> {
-                });
-
-        // дано: добавляем мок обработчик на канал описания
-        final var descriptionChannel = this.context.getBean("descriptionChannel", DirectChannel.class);
-        StandardIntegrationFlow flow = IntegrationFlows.from(descriptionChannel).handle(mockHandler).get();
-        IntegrationFlowRegistration registration = this.integrationFlowContext.registration(flow).register();
-
-        // когда: отправляем в канал адреса сообщение
+    void givenNewAddressMessage_whenSendingNewAddressMessage_thenOutBoundEndPointReceivesNewMessage() {
         final var addressChannel = this.context.getBean("coordinateToAddressFlow.channel#2", DirectChannel.class);
         assertThat(addressChannel).isNotNull();
-        final var addressMessage = MessageBuilder.withPayload(Optional.of(new Address())).build();
-        addressChannel.send(addressMessage);
+
+        final var descriptionServiceArgumentCaptor = MockIntegration.messageArgumentCaptor();
+        final MessageHandler outBoundHandler = Mockito
+                .spy(MockIntegration.mockMessageHandler(descriptionServiceArgumentCaptor)).handleNext(m -> {
+                });
+
+        // добавляем обработчик на канал с описанием
+        final var descriptionChannel = this.context.getBean("descriptionChannel", DirectChannel.class);
+        StandardIntegrationFlow flow = IntegrationFlows.from(descriptionChannel).handle(outBoundHandler).get();
+        IntegrationFlowRegistration registration = this.integrationFlowContext.registration(flow).register();
+
+        // сервис описания находит по адресу описание и возвращает его
+        mockIntegrationContext.substituteMessageHandlerFor("descriptionActivator",
+                MockIntegration.mockMessageHandler().handleNextAndReply(address -> {
+                    final var description = new Description();
+                    description.setText("some description");
+                    return description;
+                }));
+
+        // дано: сообщение с адресом
+        final var addressMessageWithAddress = MessageBuilder.withPayload(Optional.of(new Address())).build();
+
+        // когда: отправляем в канал адреса сообщение
+        addressChannel.send(addressMessageWithAddress);
 
         // тогда: на вход обработчика описания приходит сообщение с описанием
-        then(mockHandler).should().handleMessage(any());
-        final var descriptionMessage = messageArgumentCaptor.getValue();
+        then(outBoundHandler).should().handleMessage(any());
+        final var descriptionMessage = descriptionServiceArgumentCaptor.getValue();
         assertThat(descriptionMessage.getPayload()).isNotNull().isInstanceOf(Description.class);
+        final var description = (Description) descriptionMessage.getPayload();
+        assertThat(description.getText()).isEqualTo("some description");
 
         registration.destroy();
     }
 
     @Test
-    void givenNewCoordinateMessage_whenAddressNotFound_thenDescriptionMessageShouldBeReceived() {
-        // дано: сервис адреса НЕ находит адрес по координатам
+    void givenNewAddressMessageWithAddress_whenSendingAddressMessage_thenDescriptionServiceReceivesAddressMessage() {
+        final var addressChannel = this.context.getBean("coordinateToAddressFlow.channel#2", DirectChannel.class);
+        assertThat(addressChannel).isNotNull();
+
+        // подменяем обработчик описания c захватом параметров вызова
+        final var descriptionServiceArgumentCaptor = MockIntegration.messageArgumentCaptor();
+        final MessageHandler mockDescriptionService = Mockito
+                .spy(MockIntegration.mockMessageHandler(descriptionServiceArgumentCaptor)).handleNext(m -> {
+                });
+        mockIntegrationContext.substituteMessageHandlerFor("descriptionActivator", mockDescriptionService);
+
+        // дано: сообщение с адресом
+        final var addressMessage = MessageBuilder.withPayload(Optional.of(new Address())).build();
+
+        // когда: отправляем в канал адреса сообщение
+        addressChannel.send(addressMessage);
+
+        // тогда: на обработчик описания пришло сообщение с адресом
+        then(mockDescriptionService).should().handleMessage(any());
+        final var descriptionMessage = descriptionServiceArgumentCaptor.getValue();
+        assertThat(descriptionMessage.getPayload()).isNotNull().isInstanceOf(Address.class);
+    }
+
+    @Test
+    void givenNewCoordinateMessage_whenAddressNotFound_thenDescriptionMessageShouldBeReceivedWithEmptyText() {
+        final var coordinateChannel = this.context.getBean("coordinateToAddressFlow.channel#1", DirectChannel.class);
+        assertThat(coordinateChannel).isNotNull();
+
+        // сервис адреса НЕ находит адрес по координатам
         final MessageHandler mockAddressService = Mockito.spy(MockIntegration.mockMessageHandler())
                 .handleNextAndReply(m -> Optional.empty());
         mockIntegrationContext.substituteMessageHandlerFor("addressActivator", mockAddressService);
 
-        // дано: подменяем сервис получения описания по адресу
-        final MessageHandler mockDescriptionService = Mockito.spy(MockIntegration.mockMessageHandler()
-                .handleNext(m->{
-                }));
+        // подменяем сервис получения описания по адресу
+        final MessageHandler mockDescriptionService = Mockito.spy(MockIntegration.mockMessageHandler());
         mockIntegrationContext.substituteMessageHandlerFor("descriptionActivator", mockDescriptionService);
 
-        // дано: добавляем мок для обработчика описания
-        final var messageArgumentCaptor = MockIntegration.messageArgumentCaptor();
-        final MessageHandler mockClientHandler = Mockito
-            .spy(MockIntegration.mockMessageHandler(messageArgumentCaptor))
-                .handleNext(m -> {
+        // добавляем мок для обработчика описания
+        final var descriptionServiceArgumentCaptor = MockIntegration.messageArgumentCaptor();
+        final MessageHandler outBoundHandler = Mockito
+                .spy(MockIntegration.mockMessageHandler(descriptionServiceArgumentCaptor)).handleNext(m -> {
                 });
 
-        // дано: добавляем мок обработчик на канал описания
+        // добавляем обработчик на канал с описанием
         final var descriptionChannel = this.context.getBean("descriptionChannel", DirectChannel.class);
-        assertThat(descriptionChannel).isNotNull();
-        StandardIntegrationFlow flow = IntegrationFlows
-            .from(descriptionChannel).handle(mockClientHandler).get();
+        StandardIntegrationFlow flow = IntegrationFlows.from(descriptionChannel).handle(outBoundHandler).get();
         IntegrationFlowRegistration registration = this.integrationFlowContext.registration(flow).register();
 
-        // когда: Отправляем сообщение с координатами
-        final var coordinateChannel = this
-            .context.getBean("coordinateToAddressFlow.channel#1", DirectChannel.class);
-        assertThat(coordinateChannel).isNotNull();
+        // дано: новое сообщение с координатами
         final var coordinateMessage = MessageBuilder.withPayload(new Coordinate()).build();
+
+        // когда: Отправляем сообщение с координатами
         coordinateChannel.send(coordinateMessage);
 
         // тогда: сервис описания не вызывается
         then(mockDescriptionService).should(never()).handleMessage(any());
-        then(mockClientHandler).should().handleMessage(any());
-        // тогда: получаем сообщение с пустым описанием
-        final var descriptionMessage = messageArgumentCaptor.getValue();
+        // тогда: получаем на выходе сообщение с пустым описанием
+        then(outBoundHandler).should().handleMessage(any());
+        final var descriptionMessage = descriptionServiceArgumentCaptor.getValue();
         assertThat(descriptionMessage.getPayload()).isNotNull().isInstanceOf(Description.class);
+        final var description = (Description) descriptionMessage.getPayload();
+        assertThat(description.getText()).isBlank();
 
         registration.destroy();
     }
