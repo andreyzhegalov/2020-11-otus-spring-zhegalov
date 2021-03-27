@@ -32,6 +32,7 @@
 11. *hw11-web-ui-part3* - CRUD приложение с использованием WebFlux.
 12. *hw12-spring-security-part1* - CRUD Web-приложение с механизмом аутентификации.
 13. *hw13-spring-security-part2* - CRUD Web-приложение с механизмом авторизации.
+14. *hw14-spring-batch* - Приложение для миграции данных из реляционного хранилища в NoSQL на основе Spring Batch.
 
 ##### License
 
