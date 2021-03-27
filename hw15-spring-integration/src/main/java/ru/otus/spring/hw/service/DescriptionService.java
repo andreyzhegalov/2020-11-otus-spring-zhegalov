@@ -9,7 +9,11 @@ import ru.otus.spring.hw.model.Description;
 public class DescriptionService {
 
     public Description getDescription(Address coordinate) {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        return new Description();
+    }
+
+    public Description deleteThis(Address address) {
+        System.out.println("!!!!!!!!!!!!");
         return new Description();
     }
 
