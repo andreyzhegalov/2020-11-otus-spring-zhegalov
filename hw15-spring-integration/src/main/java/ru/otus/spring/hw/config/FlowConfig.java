@@ -18,12 +18,12 @@ public class FlowConfig {
 
     @MessagingGateway
     public interface MessageGateway {
-        @Gateway(requestChannel = "coordinateToAddressFlow.input", replyChannel = "descriptionChannel")
+        @Gateway(requestChannel = "coordinateToDescriptionFlow.input", replyChannel = "descriptionChannel")
         Description process(Coordinate coordinate);
     }
 
     @Bean
-    public IntegrationFlow coordinateToAddressFlow() {
+    public IntegrationFlow coordinateToDescriptionFlow() {
         return f->f.channel(c->c.queue(10))
             .bridge(e -> e.poller(Pollers.fixedDelay(100).maxMessagesPerPoll(1)))
             .handle("addressService", "getAddress", e->e.id("addressActivator"))

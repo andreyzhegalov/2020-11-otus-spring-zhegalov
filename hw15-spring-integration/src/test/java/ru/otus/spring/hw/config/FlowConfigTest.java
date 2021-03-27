@@ -33,6 +33,9 @@ import ru.otus.spring.hw.model.Description;
 @SpringIntegrationTest
 @DirtiesContext
 public class FlowConfigTest {
+    private static final String COORDINATE_CHANNEL_NAME = "coordinateToDescriptionFlow.channel#1";
+    private static final String ADDRESS_CHANNEL_NAME = "coordinateToDescriptionFlow.channel#2";
+
     @Autowired
     private ApplicationContext context;
 
@@ -49,7 +52,7 @@ public class FlowConfigTest {
 
     @Test
     void givenNewMessageInCoordinateChannel_whenAddressServiceFoundAddress_thenDescriptionServiceRecivesAddressMessage() {
-        final var coordinateChannel = this.context.getBean("coordinateToAddressFlow.channel#1", DirectChannel.class);
+        final var coordinateChannel = this.context.getBean(COORDINATE_CHANNEL_NAME, DirectChannel.class);
         assertThat(coordinateChannel).isNotNull();
 
         final var coordinateMessage = MessageBuilder.withPayload(new Coordinate()).build();
@@ -74,7 +77,7 @@ public class FlowConfigTest {
 
     @Test
     void givenNewAddressMessage_whenSendingNewAddressMessage_thenOutBoundEndPointReceivesNewMessage() {
-        final var addressChannel = this.context.getBean("coordinateToAddressFlow.channel#2", DirectChannel.class);
+        final var addressChannel = this.context.getBean(ADDRESS_CHANNEL_NAME, DirectChannel.class);
         assertThat(addressChannel).isNotNull();
 
         final var descriptionServiceArgumentCaptor = MockIntegration.messageArgumentCaptor();
@@ -113,7 +116,7 @@ public class FlowConfigTest {
 
     @Test
     void givenNewAddressMessageWithAddress_whenSendingAddressMessage_thenDescriptionServiceReceivesAddressMessage() {
-        final var addressChannel = this.context.getBean("coordinateToAddressFlow.channel#2", DirectChannel.class);
+        final var addressChannel = this.context.getBean(ADDRESS_CHANNEL_NAME, DirectChannel.class);
         assertThat(addressChannel).isNotNull();
 
         // подменяем обработчик описания c захватом параметров вызова
@@ -137,7 +140,7 @@ public class FlowConfigTest {
 
     @Test
     void givenNewCoordinateMessage_whenAddressNotFound_thenDescriptionMessageShouldBeReceivedWithEmptyText() {
-        final var coordinateChannel = this.context.getBean("coordinateToAddressFlow.channel#1", DirectChannel.class);
+        final var coordinateChannel = this.context.getBean(COORDINATE_CHANNEL_NAME, DirectChannel.class);
         assertThat(coordinateChannel).isNotNull();
 
         // сервис адреса НЕ находит адрес по координатам

@@ -33,7 +33,7 @@ public class MessageGatewayTest {
 
 
     @Test
-    void shouldGetAddressFromAddressService() {
+    void shouldGetDescriptionWhenCoordinateRecives() {
         given(addressService.getAddress(any())).willReturn(Optional.of(new Address()));
         given(descriptionService.getDescription(any())).willReturn(new Description());
 
