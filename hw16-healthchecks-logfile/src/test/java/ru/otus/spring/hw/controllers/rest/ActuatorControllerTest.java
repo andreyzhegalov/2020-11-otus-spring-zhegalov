@@ -16,8 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest(properties = {
-        // "management.endpoint.heartbeat.enabled=true",
-        // "management.endpoints.web.exposure.include=heartbeat"
+        "management.endpoint.libraryEndpoint.enabled=true",
+        "management.endpoints.web.exposure.include=libraryEndpoint"
 })
 @AutoConfigureWebMvc
 @AutoConfigureMockMvc
@@ -28,7 +28,7 @@ public class ActuatorControllerTest {
 
     @Test
     void shouldReturnBodyWithLinksForActuatorRequest() throws Exception {
-        mvc.perform(get("/actuator")).andDo(print()).andExpect(status().isOk())
+        mvc.perform(get("/actuator/libraryEndpoint")).andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$._links", is(notNullValue())));
     }
 }

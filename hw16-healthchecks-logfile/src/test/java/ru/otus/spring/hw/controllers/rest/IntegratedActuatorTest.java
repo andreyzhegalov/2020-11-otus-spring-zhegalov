@@ -16,7 +16,8 @@ public class IntegratedActuatorTest {
     private String serverAddress;
 
     @ParameterizedTest
-    @ValueSource(strings = {"/actuator", "/actuator/metrics", "/actuator/health", "/actuator/logfile"})
+    @ValueSource(strings = { "/actuator", "/actuator/metrics", "/actuator/health", "/actuator/logfile",
+            "/actuator/libraryEndpoint" })
     void givenActuatorRequest_whenServerReceivedRequest_thenResponseHasStatusOk(final String uri) throws Exception {
         // Given
         final var request = new HttpGet(serverAddress + uri);
