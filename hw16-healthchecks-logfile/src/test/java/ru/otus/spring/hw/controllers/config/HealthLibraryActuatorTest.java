@@ -27,6 +27,6 @@ public class HealthLibraryActuatorTest {
     @Test
     void shouldReturnHealthLibraryRequestWithDetails() throws Exception {
         mvc.perform(get("/actuator/health")).andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.components.healthLibrary.details", is(notNullValue())));
+                .andExpect(jsonPath("$.components.library.details", is(notNullValue())));
     }
 }

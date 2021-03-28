@@ -9,7 +9,7 @@ import ru.otus.spring.hw.repositories.BookRepository;
 
 @RequiredArgsConstructor
 @Component
-public class HealthLibrary implements HealthIndicator{
+public class LibraryHealthIndicator implements HealthIndicator{
     private final BookRepository bookRepository;
 
 	@Override
