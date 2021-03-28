@@ -1,8 +1,8 @@
 mongock:
   enabled: false
 
-server:
-  port: 8081
+webserver:
+  address: http://localhost:8081
 
 logging:
   level:
