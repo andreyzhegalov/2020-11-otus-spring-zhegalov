@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.controllers.config;
+package ru.otus.spring.hw.actuator;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -15,18 +15,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebM
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(properties = { "management.endpoint.health.enabled=true",
-        "management.endpoint.health.show-details=always", "management.endpoints.web.exposure.include=health" })
+@SpringBootTest(properties = { "management.endpoint.libraryEndpoint.enabled=true",
+        "management.endpoints.web.exposure.include=libraryEndpoint" })
 @AutoConfigureWebMvc
 @AutoConfigureMockMvc
 @ImportAutoConfiguration
-public class HealthLibraryActuatorTest {
+public class LibraryHealthIndicatorTest {
+
     @Autowired
     private MockMvc mvc;
 
     @Test
-    void shouldReturnHealthLibraryRequestWithDetails() throws Exception {
-        mvc.perform(get("/actuator/health")).andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.components.library.details", is(notNullValue())));
+    void shouldReturnBodyWithBookCountForRequest() throws Exception {
+        mvc.perform(get("/actuator/libraryEndpoint")).andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.bookCnt", is(notNullValue())));
     }
 }

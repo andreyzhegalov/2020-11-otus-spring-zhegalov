@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.config;
+package ru.otus.spring.hw.actuator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

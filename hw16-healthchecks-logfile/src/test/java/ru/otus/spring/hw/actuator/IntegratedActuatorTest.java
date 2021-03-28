@@ -1,15 +1,17 @@
-package ru.otus.spring.hw.controllers.rest;
+package ru.otus.spring.hw.actuator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
+@Disabled
 @SpringBootTest
 public class IntegratedActuatorTest {
     @Value("${webserver.address}")
