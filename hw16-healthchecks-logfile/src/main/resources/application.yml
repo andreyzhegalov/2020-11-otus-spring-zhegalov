@@ -1,5 +1,7 @@
 spring:
   data:
+    rest:
+      basePath: /datarest
     mongodb:
       database: library_zhegalov
       uri: mongodb://localhost
