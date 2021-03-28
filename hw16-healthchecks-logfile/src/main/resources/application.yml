@@ -18,12 +18,14 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: metrics,health,logfile
   endpoint:
     health:
       show-details: always
 
 logging:
+  file:
+    name: "webapp.log"
   level:
     ROOT: DEBUG
     org.springframework: DEBUG

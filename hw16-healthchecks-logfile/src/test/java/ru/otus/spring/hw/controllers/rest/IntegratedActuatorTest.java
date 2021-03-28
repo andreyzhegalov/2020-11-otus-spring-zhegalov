@@ -2,12 +2,11 @@ package ru.otus.spring.hw.controllers.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -16,32 +15,16 @@ public class IntegratedActuatorTest {
     @Value("${webserver.address}")
     private String serverAddress;
 
-    @Test
-    void givenActuatorRequest_whenServerReceivedRequest_thenResponseContainsLinks() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"/actuator", "/actuator/metrics", "/actuator/health", "/actuator/logfile"})
+    void givenActuatorRequest_whenServerReceivedRequest_thenResponseHasStatusOk(final String uri) throws Exception {
         // Given
-        final var request = new HttpGet(serverAddress + "/actuator");
+        final var request = new HttpGet(serverAddress + uri);
 
         // When
         final var response = HttpClientBuilder.create().build().execute(request);
 
         // Then
-        final var jsonFromResponse = EntityUtils.toString(response.getEntity());
-        final var jsonNode = new ObjectMapper().readTree(jsonFromResponse);
-        assertThat(jsonNode.get("_links")).isNotNull();
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_OK);
     }
-
-    @Test
-    void givenActuatorMetricsRequest_whenServerReceivedRequest_thenResponseContainsMetrics() throws Exception {
-        // Given
-        final var request = new HttpGet(serverAddress + "/actuator/metrics");
-
-        // When
-        final var response = HttpClientBuilder.create().build().execute(request);
-
-        // Then
-        final var jsonFromResponse = EntityUtils.toString(response.getEntity());
-        final var jsonNode = new ObjectMapper().readTree(jsonFromResponse);
-        assertThat(jsonNode.get("names")).isNotNull();
-    }
-
 }
