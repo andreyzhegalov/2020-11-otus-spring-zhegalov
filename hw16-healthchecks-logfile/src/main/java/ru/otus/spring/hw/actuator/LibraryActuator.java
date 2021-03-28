@@ -13,7 +13,7 @@ import ru.otus.spring.hw.repositories.BookRepository;
 
 @RequiredArgsConstructor
 @Component
-@Endpoint(id = "libraryEndpoint")
+@Endpoint(id = "library")
 public class LibraryActuator {
     private final BookRepository bookRepository;
 

@@ -15,8 +15,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebM
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(properties = { "management.endpoint.libraryEndpoint.enabled=true",
-        "management.endpoints.web.exposure.include=libraryEndpoint" })
+@SpringBootTest(properties = { "management.endpoint.library.enabled=true",
+        "management.endpoints.web.exposure.include=library" })
 @AutoConfigureWebMvc
 @AutoConfigureMockMvc
 @ImportAutoConfiguration
@@ -27,7 +27,7 @@ public class LibraryHealthIndicatorTest {
 
     @Test
     void shouldReturnBodyWithBookCountForRequest() throws Exception {
-        mvc.perform(get("/actuator/libraryEndpoint")).andDo(print()).andExpect(status().isOk())
+        mvc.perform(get("/actuator/library")).andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$.bookCnt", is(notNullValue())));
     }
 }

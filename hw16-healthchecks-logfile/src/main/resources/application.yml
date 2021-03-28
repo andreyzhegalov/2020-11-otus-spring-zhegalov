@@ -20,7 +20,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: metrics,health,logfile,libraryEndpoint
+        include: metrics,health,logfile,library
   endpoint:
     health:
       show-details: always
@@ -29,7 +29,7 @@ logging:
   file:
     name: "webapp.log"
   level:
-    ROOT: DEBUG
-    org.springframework: DEBUG
-    ru.otus.spring.hw: DEBUG
-    org.mongodb.driver: DEBUG
+    ROOT: INFO
+    org.springframework: INFO
+    ru.otus.spring.hw: INFO
+    org.mongodb.driver: INFO
