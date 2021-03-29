@@ -1,3 +1,9 @@
+# Приложение с применением Spring Boot Actuator
+
+## Описание
+
+### Цель
+
 Реализовать production-grade мониторинг и прозрачность в приложении.
 
 #### Результат
@@ -12,10 +18,10 @@
 4. UI для данных от Spring Boot Actuator реализовывать не нужно.
 5. *Опционально:* переписать приложение на HATEOAS принципах с помощью Spring Data REST Repository
 
-#### Описание
+#### Описание решения
 
-Список акуаторов доступен по URI `/actuator`.
+Список актуаторов доступен по URI `/actuator`.
 Добавлен пользовательский актуатор `/actuator/library`.
-Добавлены пользовательский healthcheck `/actuator/health/library`.
-Добавлены интеграционные тесты для тестирования web-сервера. По умолчанию отключены.
+Добавлен пользовательский healthcheck `/actuator/health/library`.
+Добавлены интеграционные тесты для тестирования web-сервера `actuator/IntegratedActuatorTest.java`. По умолчанию отключены.
 Data REST repository доступен по базовому URI `/datarest`.
