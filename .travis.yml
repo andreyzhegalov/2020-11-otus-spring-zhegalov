@@ -2,10 +2,10 @@ language: java
 jdk:
   - openjdk13
 
-before_install:
-    mvn test -B |grep ERROR
-
 install: skip
+
+script:
+  - mvn test -B |grep ERROR
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
