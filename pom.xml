@@ -44,6 +44,7 @@
         <module>hw13-spring-security-part2</module>
         <module>hw14-spring-batch</module>
         <module>hw15-spring-integration</module>
+        <module>hw16-healthchecks-logfile</module>
     </modules>
 
     <build>

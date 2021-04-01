@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>List of all authors</title>
+    <style type="text/css">
+      body {
+        padding: 50px;
+      }
+
+      label {
+        display: inline-block;
+        width: 100px;
+      }
+
+      input:read-only {
+        background: lightgray;
+      }
+
+      .row {
+        margin-top: 10px;
+      }
+
+      .authors,
+      .authors td {
+        border: 1px solid lightgray;
+        padding: 5px;
+      }
+    </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+
+  <body>
+    <div class="row">
+      <a href="books.html">Back</a>
+    </div>
+    <hr />
+
+    <h3>Authors:</h3>
+    <table class="authors">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Books</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="authorsTable"></tbody>
+    </table>
+
+    <!-- add author form -->
+    <form id="authorAddForm" action="/api/authors">
+      <h3>Add author:</h3>
+
+      <div class="row">
+        <label for="authorName">Name:</label>
+        <input id="authorName" name="name" type="text" value="" />
+      </div>
+
+      <div class="row">
+        <button id="saveAuthorButton" type="submit">Save</button>
+      </div>
+    </form>
+
+    <script>
+      $(function () {
+        updateAuthorTable();
+      });
+
+      $(document).on(
+        "submit",
+        "form[name='deleteAuthorForm']",
+        function (event) {
+          event.preventDefault();
+
+          var $form = $(this);
+
+          $.ajax({
+            url: $form.attr("action"),
+            type: "DELETE",
+            success: function (result) {
+              resetAuthorForm();
+              updateAuthorTable();
+            },
+            error: function (xhr, resp, text) {
+              alert(xhr.responseJSON["errors"].toString());
+            },
+          });
+        }
+      );
+
+      $("#authorAddForm").submit(function (event) {
+        event.preventDefault();
+        var $form = $(this);
+        var data = {};
+
+        $.each(this.elements, function (i, v) {
+          var input = $(v);
+          data[input.attr("name")] = input.val();
+          delete data["undefined"];
+        });
+
+        $.ajax({
+          url: $form.attr("action"),
+          type: "POST",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          success: function (result) {
+            resetAuthorForm();
+            updateAuthorTable();
+          },
+          error: function (xhr, resp, text) {
+            alert(xhr.responseJSON["errors"].toString());
+          },
+        });
+      });
+
+      function resetAuthorForm() {
+        $("#authorsTable")[0].innerHTML = "";
+        $("#authorAddForm")[0].reset();
+      }
+
+      function updateAuthorTable() {
+        $.get("/api/authors").done(function (authors) {
+          authors.forEach(function (author) {
+            $("#authorsTable").append(`
+                  <tr>
+                    <td>${author.name}</td>
+                    <td>${author.booksTitle}</td>
+                    <td>
+                      <form
+                        name="deleteAuthorForm" action="/api/authors/${author.id}">
+                        <button type="submit"" >Delete</button>
+                      </form>
+                  </tr>
+              `);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
