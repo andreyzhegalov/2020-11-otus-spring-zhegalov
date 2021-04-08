@@ -25,6 +25,10 @@ COPY --from=0 ${PROJECT_DIR}/hw10-web-ui-part2/target/hw10-web-ui-part2-1.0.jar 
 
 EXPOSE ${SERVER_PORT}
 
+RUN  addgroup backend \
+    && adduser -G backend -D backend
+USER backend
+
 CMD ["java", \
     "-Dspring.data.mongodb.uri=${MONGO_DB_URL}", \
     "-Dserver.port=${SERVER_PORT}", \
