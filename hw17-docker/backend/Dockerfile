@@ -30,6 +30,8 @@ RUN  addgroup backend \
 USER backend
 
 CMD ["java", \
+    "-Xms1024M", \
+    "-Xmx1024M", \
     "-Dspring.data.mongodb.uri=${MONGO_DB_URL}", \
     "-Dserver.port=${SERVER_PORT}", \
     "-jar", \
