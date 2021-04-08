@@ -1,4 +1,4 @@
-FROM maven:3.5.4-jdk-11
+FROM maven:3.5.4-jdk-11 as builder
 ENV PROJECT_DIR=/opt/project
 
 RUN mkdir -p $PROJECT_DIR
@@ -21,7 +21,7 @@ RUN mkdir -p ${PROJECT_DIR}
 
 WORKDIR ${PROJECT_DIR}
 
-COPY --from=0 ${PROJECT_DIR}/hw10-web-ui-part2/target/hw10-web-ui-part2-1.0.jar ${PROJECT_DIR}/
+COPY --from=builder ${PROJECT_DIR}/hw10-web-ui-part2/target/hw10-web-ui-part2-1.0.jar ${PROJECT_DIR}/
 
 EXPOSE ${SERVER_PORT}
 
