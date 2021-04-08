@@ -35,6 +35,7 @@
 14. [*hw14-spring-batch*](https://github.com/andreyzhegalov/2020-11-otus-spring-zhegalov/tree/main/hw14-spring-batch) - Приложение для миграции данных из реляционного хранилища в NoSQL на основе Spring Batch.
 15. [*hw15-spring-integration*](https://github.com/andreyzhegalov/2020-11-otus-spring-zhegalov/tree/main/hw15-spring-integration) - Приложение с обработкой доменной сущности через каналы Spring Integration.
 16. [*hw16-healthchecks-logfile*](https://github.com/andreyzhegalov/2020-11-otus-spring-zhegalov/tree/main/hw16-healthchecks-logfile) - Приложение с применением Spring Boot Actuator.
+17. [*hw17-docker*](https://github.com/andreyzhegalov/2020-11-otus-spring-zhegalov/tree/main/hw17-docker) - Приложение в docker контейнере.
 
 ##### License
 
