@@ -16,6 +16,7 @@ FROM bellsoft/liberica-openjdk-alpine-musl:11.0.3
 ENV PROJECT_DIR=/opt/project
 ENV MONGO_DB_URL=mongo://localhost
 ENV SERVER_PORT=8081
+ENV LOG_LEVEL=DEBUG
 
 RUN mkdir -p ${PROJECT_DIR}
 
@@ -34,6 +35,7 @@ CMD ["java", \
     "-Xmx1024M", \
     "-Dspring.data.mongodb.uri=${MONGO_DB_URL}", \
     "-Dserver.port=${SERVER_PORT}", \
+    "-Dlogging.level.ROOT=${LOG_LEVEL}", \
     "-jar", \
     "/opt/project/hw10-web-ui-part2-1.0.jar" \
     ]

@@ -5,6 +5,7 @@ services:
     environment:
       - MONGO_DB_URL=mongodb://mongo
       - SERVER_PORT=${BACKEND_SERVER_PORT}
+      - LOG_LEVEL=${BACKEND_LOG_LEVEL}
     ports:
       - "${BACKEND_SERVER_PORT}:${BACKEND_SERVER_PORT}"
     networks:
