@@ -21,7 +21,7 @@ RUN mkdir -p ${PROJECT_DIR}
 
 WORKDIR ${PROJECT_DIR}
 
-COPY --from=builder ${PROJECT_DIR}/hw10-web-ui-part2/target/hw10-web-ui-part2-1.0.jar ${PROJECT_DIR}/
+COPY --from=builder ${PROJECT_DIR}/hw10-web-ui-part2/target/hw10-web-ui-part2-*.jar ./hw10-web-ui-part2.jar
 
 EXPOSE 8080 1026
 
@@ -41,5 +41,5 @@ CMD ["java", \
     "-Dserver.port=8080", \
     "-Dlogging.level.ROOT=${LOG_LEVEL}", \
     "-jar", \
-    "/opt/project/hw10-web-ui-part2-1.0.jar" \
+    "./hw10-web-ui-part2.jar" \
     ]
