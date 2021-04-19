@@ -1,0 +1,35 @@
+spring:
+  data:
+    rest:
+      basePath: /datarest
+    mongodb:
+      database: library_zhegalov
+      uri: mongodb://localhost
+
+server:
+  port: 8081
+  error:
+    include-stacktrace: always
+
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.spring.hw.changelog
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: metrics,health,logfile,library
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  file:
+    name: "webapp.log"
+  level:
+    ROOT: INFO
+    org.springframework: INFO
+    ru.otus.spring.hw: INFO
+    org.mongodb.driver: INFO
