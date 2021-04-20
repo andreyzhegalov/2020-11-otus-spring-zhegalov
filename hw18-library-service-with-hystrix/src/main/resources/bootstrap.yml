@@ -1,6 +1,6 @@
 hystrix:
   command:
-    getRentsKey:
+    findAllBooksKey:
       execution:
         isolation:
           thread:

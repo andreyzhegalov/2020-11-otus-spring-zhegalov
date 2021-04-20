@@ -152,29 +152,38 @@
       }
 
       function updateGenres() {
-        $.get("/api/genres").done(function (genres) {
-          genres.forEach(function (genre) {
-            $("#genresSelect").append(`
+        $.get("/api/genres")
+          .done(function (genres) {
+            genres.forEach(function (genre) {
+              $("#genresSelect").append(`
               <option value="${genre.id}"">${genre.name}</option>
             `);
+            });
+          })
+          .fail(function (jqXHR, textStatus, errorThrow) {
+            alert(jqXHR.responseJSON["error"].toString());
           });
-        });
       }
 
       function updateAuthors() {
-        $.get("/api/authors").done(function (authors) {
-          authors.forEach(function (author) {
-            $("#authorsSelect").append(`
+        $.get("/api/authors")
+          .done(function (authors) {
+            authors.forEach(function (author) {
+              $("#authorsSelect").append(`
               <option value="${author.id}"">${author.name}</option>
             `);
+            });
+          })
+          .fail(function (jqXHR, textStatus, errorThrow) {
+            alert(jqXHR.responseJSON["error"].toString());
           });
-        });
       }
 
       function updateBooks() {
-        $.get("/api/books").done(function (books) {
-          books.forEach(function (book) {
-            $("#booksTable").append(`
+        $.get("/api/books")
+          .done(function (books) {
+            books.forEach(function (book) {
+              $("#booksTable").append(`
                 <tr>
                   <td>"${book.title}"</td>
                   <td>"${book.genreName}"</td>
@@ -191,8 +200,11 @@
                   </td>
                 </tr>
               `);
+            });
+          })
+          .fail(function (jqXHR, textStatus, errorThrow) {
+            alert(jqXHR.responseJSON["error"].toString());
           });
-        });
       }
     </script>
   </body>

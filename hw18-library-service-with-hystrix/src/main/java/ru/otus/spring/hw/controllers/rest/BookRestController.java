@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
+import org.assertj.core.util.Lists;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +27,14 @@ import ru.otus.spring.hw.service.BookService;
 public class BookRestController {
     private final BookService bookService;
 
-    @HystrixCommand(commandKey = "getRentsKey" )
+    @HystrixCommand(commandKey = "findAllBooksKey", fallbackMethod = "fallbackHandler" )
     @GetMapping("/api/books")
     public List<BookDto> findAll() {
         return bookService.findAll().stream().map(BookDto::new).collect(Collectors.toList());
+    }
+
+    public List<BookDto> fallbackHandler(){
+        return Lists.emptyList();
     }
 
     @PostMapping("/api/books")
