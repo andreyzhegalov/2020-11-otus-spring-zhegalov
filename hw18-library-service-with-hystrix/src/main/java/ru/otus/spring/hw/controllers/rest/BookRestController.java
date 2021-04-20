@@ -1,5 +1,6 @@
 package ru.otus.spring.hw.controllers.rest;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
-import org.assertj.core.util.Lists;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,14 +27,15 @@ import ru.otus.spring.hw.service.BookService;
 public class BookRestController {
     private final BookService bookService;
 
-    @HystrixCommand(commandKey = "findAllBooksKey", fallbackMethod = "fallbackHandler" )
+    @HystrixCommand(fallbackMethod = "fallbackHandler")
     @GetMapping("/api/books")
     public List<BookDto> findAll() {
         return bookService.findAll().stream().map(BookDto::new).collect(Collectors.toList());
     }
 
-    public List<BookDto> fallbackHandler(){
-        return Lists.emptyList();
+    @SuppressWarnings("unused")
+    private List<BookDto> fallbackHandler() {
+        return Collections.emptyList();
     }
 
     @PostMapping("/api/books")

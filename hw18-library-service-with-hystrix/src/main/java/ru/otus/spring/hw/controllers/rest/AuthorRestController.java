@@ -1,10 +1,13 @@
 package ru.otus.spring.hw.controllers.rest;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +31,14 @@ public class AuthorRestController {
 
     @GetMapping("api/authors")
     @Transactional(readOnly = true)
+    @HystrixCommand(fallbackMethod = "fallbackHandler")
     public List<AuthorDto> getAllAuthors() {
         return authorRepository.findAll().stream().map(AuthorDto::new).collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unused")
+    private List<AuthorDto> fallbackHandler() {
+        return Collections.emptyList();
     }
 
     @PostMapping("/api/authors")
