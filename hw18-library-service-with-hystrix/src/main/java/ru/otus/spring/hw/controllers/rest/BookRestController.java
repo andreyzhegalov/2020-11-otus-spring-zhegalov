@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +26,7 @@ import ru.otus.spring.hw.service.BookService;
 public class BookRestController {
     private final BookService bookService;
 
+    @HystrixCommand(commandKey = "getRentsKey" )
     @GetMapping("/api/books")
     public List<BookDto> findAll() {
         return bookService.findAll().stream().map(BookDto::new).collect(Collectors.toList());

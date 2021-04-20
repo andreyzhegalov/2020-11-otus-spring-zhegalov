@@ -1,0 +1,7 @@
+hystrix:
+  command:
+    getRentsKey:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 1000
