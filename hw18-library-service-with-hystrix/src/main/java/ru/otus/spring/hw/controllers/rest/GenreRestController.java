@@ -31,27 +31,37 @@ public class GenreRestController {
 
     @GetMapping("/api/genres")
     @Transactional(readOnly = true)
-    @HystrixCommand(fallbackMethod = "fallbackHandler")
+    @HystrixCommand(fallbackMethod = "findAllFallbackHandler")
     public List<GenreDto> findAll() {
         return genreRepository.findAll().stream().map(GenreDto::new).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unused")
-    private List<GenreDto> fallbackHandler() {
+    private List<GenreDto> findAllFallbackHandler() {
         return Collections.emptyList();
     }
 
     @PostMapping("/api/genres")
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
+    @HystrixCommand(fallbackMethod = "saveGenreFallbackHandler")
     public GenreDto saveGenre(@Valid @RequestBody GenreDto genreDto) {
         final var savedGenre = genreRepository.save(genreDto.toEntity());
         return new GenreDto(savedGenre);
     }
 
+    @SuppressWarnings("unused")
+    private GenreDto saveGenreFallbackHandler(@Valid @RequestBody GenreDto genreDto) {
+        return new GenreDto();
+    }
+
     @DeleteMapping("/api/genres/{id}")
     @Transactional
+    @HystrixCommand(fallbackMethod = "deleteGenreFallbackHandler")
     public void deleteGenre(@PathVariable("id") @NotBlank String id) {
         genreRepository.deleteById(id);
+    }
+
+    public void deleteGenreFallbackHandler(@PathVariable("id") @NotBlank String id) {
     }
 }
