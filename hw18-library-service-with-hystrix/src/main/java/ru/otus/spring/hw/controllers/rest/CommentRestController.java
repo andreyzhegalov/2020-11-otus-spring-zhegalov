@@ -1,9 +1,12 @@
 package ru.otus.spring.hw.controllers.rest;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,18 +28,34 @@ public class CommentRestController {
     private final CommentService commentService;
 
     @GetMapping("/api/comments")
+    @HystrixCommand(fallbackMethod = "getAllCommentsFallbackHandler")
     List<CommentDto> getAllComments(@RequestParam("bookId") @NotBlank String bookId) {
         return commentService.findAllByBookId(bookId);
     }
 
+    @SuppressWarnings("unused")
+    private List<CommentDto> getAllCommentsFallbackHandler(@RequestParam("bookId") @NotBlank String bookId) {
+        return Collections.emptyList();
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/comments")
+    @HystrixCommand(fallbackMethod = "saveCommentFallbackHandler")
     CommentDto saveComment(@Valid @RequestBody CommentDto comment) {
         return commentService.addComment(comment);
     }
 
+    @SuppressWarnings("unused")
+    private CommentDto saveCommentFallbackHandler(@RequestBody CommentDto comment) {
+        return new CommentDto();
+    }
+
     @DeleteMapping("/api/comments/{id}")
+    @HystrixCommand(fallbackMethod = "deleteCommentFallbackHandler")
     void deleteComment(@PathVariable("id") @NotBlank String id) {
         commentService.deleteById(id);
+    }
+
+    void deleteCommentFallbackHandler(String id) {
     }
 }
