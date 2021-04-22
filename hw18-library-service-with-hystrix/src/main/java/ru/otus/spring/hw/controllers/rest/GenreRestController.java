@@ -51,7 +51,7 @@ public class GenreRestController {
     }
 
     @SuppressWarnings("unused")
-    private GenreDto saveGenreFallbackHandler(@Valid @RequestBody GenreDto genreDto) {
+    private GenreDto saveGenreFallbackHandler(GenreDto genreDto) {
         return new GenreDto();
     }
 
@@ -62,6 +62,7 @@ public class GenreRestController {
         genreRepository.deleteById(id);
     }
 
-    public void deleteGenreFallbackHandler(@PathVariable("id") @NotBlank String id) {
+    @SuppressWarnings("unused")
+    private void deleteGenreFallbackHandler(String id) {
     }
 }

@@ -27,26 +27,36 @@ import ru.otus.spring.hw.service.BookService;
 public class BookRestController {
     private final BookService bookService;
 
-    @HystrixCommand(fallbackMethod = "fallbackHandler")
     @GetMapping("/api/books")
+    @HystrixCommand(fallbackMethod = "findAllFallbackHandler")
     public List<BookDto> findAll() {
         return bookService.findAll().stream().map(BookDto::new).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unused")
-    private List<BookDto> fallbackHandler() {
+    private List<BookDto> findAllFallbackHandler() {
         return Collections.emptyList();
     }
 
     @PostMapping("/api/books")
     @ResponseStatus(HttpStatus.CREATED)
+    @HystrixCommand(fallbackMethod = "saveAuthorFallbackHandler")
     public BookDto saveAuthor(@Valid @RequestBody BookDto bookDto) {
         return bookService.save(bookDto);
     }
 
+    @SuppressWarnings("unused")
+    private BookDto saveAuthorFallbackHandler(BookDto bookDto) {
+        return new BookDto();
+    }
+
     @DeleteMapping("/api/books/{id}")
+    @HystrixCommand(fallbackMethod = "deleteBookFallbackHandler")
     public void deleteBook(@PathVariable("id") @NotBlank String id) {
         bookService.deleteBook(id);
     }
 
+    @SuppressWarnings("unused")
+    private void deleteBookFallbackHandler(String id){
+    }
 }

@@ -34,7 +34,7 @@ public class CommentRestController {
     }
 
     @SuppressWarnings("unused")
-    private List<CommentDto> getAllCommentsFallbackHandler(@RequestParam("bookId") @NotBlank String bookId) {
+    private List<CommentDto> getAllCommentsFallbackHandler(String bookId) {
         return Collections.emptyList();
     }
 
@@ -46,7 +46,7 @@ public class CommentRestController {
     }
 
     @SuppressWarnings("unused")
-    private CommentDto saveCommentFallbackHandler(@RequestBody CommentDto comment) {
+    private CommentDto saveCommentFallbackHandler(CommentDto comment) {
         return new CommentDto();
     }
 
@@ -56,6 +56,7 @@ public class CommentRestController {
         commentService.deleteById(id);
     }
 
-    void deleteCommentFallbackHandler(String id) {
+    @SuppressWarnings("unused")
+    private void deleteCommentFallbackHandler(String id) {
     }
 }

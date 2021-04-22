@@ -31,27 +31,38 @@ public class AuthorRestController {
 
     @GetMapping("api/authors")
     @Transactional(readOnly = true)
-    @HystrixCommand(fallbackMethod = "fallbackHandler")
+    @HystrixCommand(fallbackMethod = "getAllAuthorsFallbackHandler")
     public List<AuthorDto> getAllAuthors() {
         return authorRepository.findAll().stream().map(AuthorDto::new).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unused")
-    private List<AuthorDto> fallbackHandler() {
+    private List<AuthorDto> getAllAuthorsFallbackHandler() {
         return Collections.emptyList();
     }
 
     @PostMapping("/api/authors")
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
+    @HystrixCommand(fallbackMethod = "saveAuthorFallbackHandler")
     public AuthorDto saveAuthor(@Valid @RequestBody AuthorDto authorDto) {
         final var savedAuthor = authorRepository.save(authorDto.toEntity());
         return new AuthorDto(savedAuthor);
     }
 
+    @SuppressWarnings("unused")
+    private AuthorDto saveAuthorFallbackHandler(@Valid @RequestBody AuthorDto authorDto) {
+        return new AuthorDto();
+    }
+
     @DeleteMapping("/api/authors/{id}")
     @Transactional
+    @HystrixCommand(fallbackMethod = "deleteAuthorFallbackHandler" )
     public void deleteAuthor(@PathVariable("id") @NotBlank String id) {
         authorRepository.deleteById(id);
+    }
+
+    @SuppressWarnings("unused")
+    private void deleteAuthorFallbackHandler(String id){
     }
 }
