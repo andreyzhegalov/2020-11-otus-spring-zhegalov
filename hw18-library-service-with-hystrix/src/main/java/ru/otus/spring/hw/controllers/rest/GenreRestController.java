@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,19 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.controllers.dto.GenreDto;
-import ru.otus.spring.hw.repositories.GenreRepository;
+import ru.otus.spring.hw.service.GenreService;
 
 @RequiredArgsConstructor
 @RestController
 public class GenreRestController {
 
-    private final GenreRepository genreRepository;
+    private final GenreService genreService;
 
     @GetMapping("/api/genres")
-    @Transactional(readOnly = true)
     @HystrixCommand(fallbackMethod = "findAllFallbackHandler")
     public List<GenreDto> findAll() {
-        return genreRepository.findAll().stream().map(GenreDto::new).collect(Collectors.toList());
+        return genreService.findAll().stream().map(GenreDto::new).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unused")
@@ -43,11 +41,9 @@ public class GenreRestController {
 
     @PostMapping("/api/genres")
     @ResponseStatus(HttpStatus.CREATED)
-    @Transactional
     @HystrixCommand(fallbackMethod = "saveGenreFallbackHandler")
     public GenreDto saveGenre(@Valid @RequestBody GenreDto genreDto) {
-        final var savedGenre = genreRepository.save(genreDto.toEntity());
-        return new GenreDto(savedGenre);
+        return genreService.saveGenre(genreDto);
     }
 
     @SuppressWarnings("unused")
@@ -56,10 +52,9 @@ public class GenreRestController {
     }
 
     @DeleteMapping("/api/genres/{id}")
-    @Transactional
     @HystrixCommand(fallbackMethod = "deleteGenreFallbackHandler")
     public void deleteGenre(@PathVariable("id") @NotBlank String id) {
-        genreRepository.deleteById(id);
+        genreService.deleteGenre(id);
     }
 
     @SuppressWarnings("unused")
