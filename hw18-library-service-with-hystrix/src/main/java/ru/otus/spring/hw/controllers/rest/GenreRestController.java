@@ -1,6 +1,5 @@
 package ru.otus.spring.hw.controllers.rest;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,27 +28,17 @@ public class GenreRestController {
     private final GenreService genreService;
 
     @GetMapping("/api/genres")
-    @HystrixCommand(fallbackMethod = "findAllFallbackHandler")
     public List<GenreDto> findAll() {
         return genreService.findAll().stream().map(GenreDto::new).collect(Collectors.toList());
     }
 
-    @SuppressWarnings("unused")
-    private List<GenreDto> findAllFallbackHandler() {
-        return Collections.emptyList();
-    }
 
     @PostMapping("/api/genres")
     @ResponseStatus(HttpStatus.CREATED)
-    @HystrixCommand(fallbackMethod = "saveGenreFallbackHandler")
     public GenreDto saveGenre(@Valid @RequestBody GenreDto genreDto) {
         return genreService.saveGenre(genreDto);
     }
 
-    @SuppressWarnings("unused")
-    private GenreDto saveGenreFallbackHandler(GenreDto genreDto) {
-        return new GenreDto();
-    }
 
     @DeleteMapping("/api/genres/{id}")
     @HystrixCommand(fallbackMethod = "deleteGenreFallbackHandler")

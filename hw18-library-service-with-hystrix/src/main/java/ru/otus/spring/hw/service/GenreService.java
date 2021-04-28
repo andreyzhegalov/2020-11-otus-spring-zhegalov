@@ -11,6 +11,6 @@ public interface GenreService {
 
     GenreDto saveGenre(GenreDto genreDto);
 
-    void deleteGenre(String id);
+    boolean deleteGenre(String id);
 }
 
