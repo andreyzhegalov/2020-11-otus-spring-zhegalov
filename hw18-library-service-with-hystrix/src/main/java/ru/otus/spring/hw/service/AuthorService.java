@@ -11,6 +11,6 @@ public interface AuthorService {
 
     AuthorDto saveAuthor(AuthorDto authorDto);
 
-    void deleteAuthor(String id);
+    boolean deleteAuthor(String id);
 }
 

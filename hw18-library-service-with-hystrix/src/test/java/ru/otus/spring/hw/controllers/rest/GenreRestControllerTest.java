@@ -26,9 +26,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import ru.otus.spring.hw.controllers.dto.GenreDto;
 import ru.otus.spring.hw.model.Genre;
-import ru.otus.spring.hw.repositories.GenreRepository;
 import ru.otus.spring.hw.repositories.RepositoryException;
+import ru.otus.spring.hw.service.GenreService;
 
 @WebMvcTest(controllers = GenreRestController.class)
 public class GenreRestControllerTest {
@@ -36,15 +37,15 @@ public class GenreRestControllerTest {
     private MockMvc mvc;
 
     @MockBean
-    private GenreRepository genreRepository;
+    private GenreService genreService;
 
     @Captor
-    private ArgumentCaptor<Genre> genreCaptor;
+    private ArgumentCaptor<GenreDto> genreCaptor;
 
     @Test
     void shouldReturnGenreList() throws Exception {
         mvc.perform(get("/api/genres")).andDo(print()).andExpect(status().isOk());
-        then(genreRepository).should().findAll();
+        then(genreService).should().findAll();
     }
 
     @Test
@@ -53,12 +54,12 @@ public class GenreRestControllerTest {
         String genreJson = "{\"name\":\"genre name\"}";
         final var savedGenre = new Genre(genreName);
         savedGenre.setId("132");
-        given(genreRepository.save(any())).willReturn(savedGenre);
+        given(genreService.saveGenre(any())).willReturn(new GenreDto(savedGenre));
 
         mvc.perform(post("/api/genres").content(genreJson).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isCreated());
 
-        then(genreRepository).should().save(genreCaptor.capture());
+        then(genreService).should().saveGenre(genreCaptor.capture());
         assertThat(genreCaptor.getValue().getName()).isEqualTo(genreName);
     }
 
@@ -73,25 +74,25 @@ public class GenreRestControllerTest {
                 .andExpect(jsonPath("$.errors").isArray()).andExpect(jsonPath("$.errors", hasSize(1)))
                 .andExpect(jsonPath("$.errors", hasItem("Please provide a genre name")));
 
-        then(genreRepository).shouldHaveNoInteractions();
+        then(genreService).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldRemoveGenre() throws Exception {
         final var genreId = "123";
         mvc.perform(delete("/api/genres/{id}", genreId)).andDo(print()).andExpect(status().isOk());
-        then(genreRepository).should().deleteById(genreId);
+        then(genreService).should().deleteGenre(genreId);
     }
 
     @Test
     void shouldReturnErrorIfDeletedGenreHasBook() throws Exception {
         final var genreId = "id_genre_with_book";
         final var errorMessage = "error";
-        doThrow(new RepositoryException(errorMessage)).when(genreRepository).deleteById(genreId);
+        doThrow(new RepositoryException(errorMessage)).when(genreService).deleteGenre(genreId);
 
         mvc.perform(delete("/api/genres/{id}", genreId)).andDo(print()).andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors", is(errorMessage)));
 
-        then(genreRepository).should().deleteById(genreId);
+        then(genreService).should().deleteGenre(genreId);
     }
 }

@@ -26,9 +26,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import ru.otus.spring.hw.controllers.dto.AuthorDto;
 import ru.otus.spring.hw.model.Author;
-import ru.otus.spring.hw.repositories.AuthorRepository;
 import ru.otus.spring.hw.repositories.RepositoryException;
+import ru.otus.spring.hw.service.AuthorService;
 
 @WebMvcTest(controllers = AuthorRestController.class)
 public class AuthorRestControllerTest {
@@ -36,15 +37,15 @@ public class AuthorRestControllerTest {
     private MockMvc mvc;
 
     @MockBean
-    private AuthorRepository authorRepository;
+    private AuthorService authorService;
 
     @Captor
-    private ArgumentCaptor<Author> authorCaptor;
+    private ArgumentCaptor<AuthorDto> authorCaptor;
 
     @Test
     void shouldReturnAuthorList() throws Exception {
         mvc.perform(get("/api/authors")).andDo(print()).andExpect(status().isOk());
-        then(authorRepository).should().findAll();
+        then(authorService).should().findAll();
     }
 
     @Test
@@ -53,13 +54,13 @@ public class AuthorRestControllerTest {
         String authorJson = "{\"name\":\"author name\"}";
         final var savedAuthor = new Author(authorName);
         savedAuthor.setId("132");
-        given(authorRepository.save(any())).willReturn(savedAuthor);
+        given(authorService.saveAuthor(any())).willReturn(new AuthorDto(savedAuthor));
 
         mvc.perform(
                 post("/api/authors").content(authorJson).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isCreated());
 
-        then(authorRepository).should().save(authorCaptor.capture());
+        then(authorService).should().saveAuthor(authorCaptor.capture());
         assertThat(authorCaptor.getValue().getName()).isEqualTo(authorName);
     }
 
@@ -75,25 +76,25 @@ public class AuthorRestControllerTest {
                 .andExpect(jsonPath("$.errors").isArray()).andExpect(jsonPath("$.errors", hasSize(1)))
                 .andExpect(jsonPath("$.errors", hasItem("Please provide a author name")));
 
-        then(authorRepository).shouldHaveNoInteractions();
+        then(authorService).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldRemoveAuthor() throws Exception {
         final var authorId = "123";
         mvc.perform(delete("/api/authors/{id}", authorId)).andDo(print()).andExpect(status().isOk());
-        then(authorRepository).should().deleteById(authorId);
+        then(authorService).should().deleteAuthor(authorId);
     }
 
     @Test
     void shouldReturnErrorIfDeletedAuthorHasBook() throws Exception {
         final var authorId = "id_author_with_book";
         final var errorMessage = "error";
-        doThrow(new RepositoryException(errorMessage)).when(authorRepository).deleteById(authorId);
+        doThrow(new RepositoryException(errorMessage)).when(authorService).deleteAuthor(authorId);
 
         mvc.perform(delete("/api/authors/{id}", authorId)).andDo(print()).andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors", is(errorMessage)));
 
-        then(authorRepository).should().deleteById(authorId);
+        then(authorService).should().deleteAuthor(authorId);
     }
 }

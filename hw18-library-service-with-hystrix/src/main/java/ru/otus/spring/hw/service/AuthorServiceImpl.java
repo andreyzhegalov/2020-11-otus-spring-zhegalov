@@ -47,11 +47,13 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     @HystrixCommand(fallbackMethod = "deleteAuthorFallbackHandler" )
-    public void deleteAuthor(String id) {
+    public boolean deleteAuthor(String id) {
         authorRepository.deleteById(id);
+        return true;
     }
 
     @SuppressWarnings("unused")
-    private void deleteAuthorFallbackHandler(String id){
+    private boolean deleteAuthorFallbackHandler(String id){
+        return false;
     }
 }
