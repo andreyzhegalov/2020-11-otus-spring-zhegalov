@@ -1,6 +1,5 @@
 package ru.otus.spring.hw.controllers.rest;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -28,14 +27,8 @@ public class CommentRestController {
     private final CommentService commentService;
 
     @GetMapping("/api/comments")
-    @HystrixCommand(fallbackMethod = "getAllCommentsFallbackHandler")
     List<CommentDto> getAllComments(@RequestParam("bookId") @NotBlank String bookId) {
         return commentService.findAllByBookId(bookId);
-    }
-
-    @SuppressWarnings("unused")
-    private List<CommentDto> getAllCommentsFallbackHandler(String bookId) {
-        return Collections.emptyList();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -51,12 +44,7 @@ public class CommentRestController {
     }
 
     @DeleteMapping("/api/comments/{id}")
-    @HystrixCommand(fallbackMethod = "deleteCommentFallbackHandler")
     void deleteComment(@PathVariable("id") @NotBlank String id) {
         commentService.deleteById(id);
-    }
-
-    @SuppressWarnings("unused")
-    private void deleteCommentFallbackHandler(String id) {
     }
 }

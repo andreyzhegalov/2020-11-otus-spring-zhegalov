@@ -6,11 +6,11 @@ import ru.otus.spring.hw.controllers.dto.CommentDto;
 
 public interface CommentService {
 
-    CommentDto addComment(CommentDto commentDto);
-
     List<CommentDto> findAll();
 
     List<CommentDto> findAllByBookId(String id);
 
-    void deleteById(String id);
+    CommentDto addComment(CommentDto commentDto);
+
+    boolean deleteById(String id);
 }

@@ -1,7 +1,12 @@
 package ru.otus.spring.hw.service;
 
+import java.util.Collections;
 import java.util.List;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+
+import org.assertj.core.util.Lists;
+import org.springframework.cloud.client.loadbalancer.reactive.RetryableLoadBalancerExchangeFilterFunction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +22,29 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final BookRepository bookRepository;
 
+    @Transactional(readOnly = true)
+    @Override
+    @HystrixCommand(fallbackMethod = "findAllFallbackHandler")
+    public List<CommentDto> findAll() {
+        return commentRepository.findAllDto();
+    }
+
+    public List<CommentDto> findAllFallbackHandler() {
+        return Lists.emptyList();
+    }
+
+    @Transactional(readOnly = true)
+    @HystrixCommand(fallbackMethod = "findAllByBookIdFallbackHandler")
+    @Override
+    public List<CommentDto> findAllByBookId(String bookId) {
+        return commentRepository.findAllDtoByBookId(bookId);
+    }
+
+    @SuppressWarnings("unused")
+    private List<CommentDto> findAllByBookIdFallbackHandler(String bookId) {
+        return Collections.emptyList();
+    }
+
     @Transactional
     @Override
     public CommentDto addComment(CommentDto commentDto) {
@@ -29,21 +57,16 @@ public class CommentServiceImpl implements CommentService {
         return new CommentDto(savedComment);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<CommentDto> findAll() {
-        return commentRepository.findAllDto();
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<CommentDto> findAllByBookId(String bookId) {
-        return commentRepository.findAllDtoByBookId(bookId);
-    }
-
     @Transactional
+    @HystrixCommand(fallbackMethod = "deleteCommentFallbackHandler")
     @Override
-    public void deleteById(String id) {
+    public boolean deleteById(String id) {
         commentRepository.deleteById(id);
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    private boolean deleteCommentFallbackHandler(String id) {
+        return false;
     }
 }
