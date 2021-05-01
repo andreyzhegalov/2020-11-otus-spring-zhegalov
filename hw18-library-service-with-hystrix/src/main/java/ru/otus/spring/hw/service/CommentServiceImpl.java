@@ -6,7 +6,6 @@ import java.util.List;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import org.assertj.core.util.Lists;
-import org.springframework.cloud.client.loadbalancer.reactive.RetryableLoadBalancerExchangeFilterFunction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

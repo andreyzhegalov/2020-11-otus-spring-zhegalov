@@ -83,7 +83,7 @@ public class CommentServiceCircuitBreakerTest {
     }
 
     @Test
-    void shouldReturnFalseWhenDeleteCommentIfRepositoryNotResponce() {
+    void shouldReturnFalseWhenDeleteCommentIfRepositoryNotResponse() {
         final var answersWithDelay = new AnswersWithDelay(2 * CIRCUIT_BREAKER_TIMEOUT, null);
         doAnswer(answersWithDelay).when(commentRepository).deleteById(anyString());
 

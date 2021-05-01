@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,21 +30,14 @@ public class GenreRestController {
         return genreService.findAll().stream().map(GenreDto::new).collect(Collectors.toList());
     }
 
-
     @PostMapping("/api/genres")
     @ResponseStatus(HttpStatus.CREATED)
     public GenreDto saveGenre(@Valid @RequestBody GenreDto genreDto) {
         return genreService.saveGenre(genreDto);
     }
 
-
     @DeleteMapping("/api/genres/{id}")
-    @HystrixCommand(fallbackMethod = "deleteGenreFallbackHandler")
     public void deleteGenre(@PathVariable("id") @NotBlank String id) {
         genreService.deleteGenre(id);
-    }
-
-    @SuppressWarnings("unused")
-    private void deleteGenreFallbackHandler(String id) {
     }
 }

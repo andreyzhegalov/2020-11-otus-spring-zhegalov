@@ -29,13 +29,11 @@ public class AuthorRestController {
         return authorService.findAll().stream().map(AuthorDto::new).collect(Collectors.toList());
     }
 
-
     @PostMapping("/api/authors")
     @ResponseStatus(HttpStatus.CREATED)
     public AuthorDto saveAuthor(@Valid @RequestBody AuthorDto authorDto) {
         return authorService.saveAuthor(authorDto);
     }
-
 
     @DeleteMapping("/api/authors/{id}")
     public void deleteAuthor(@PathVariable("id") @NotBlank String id) {

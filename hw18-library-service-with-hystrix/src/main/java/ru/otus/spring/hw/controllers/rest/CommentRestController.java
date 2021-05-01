@@ -5,8 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,14 +31,8 @@ public class CommentRestController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/comments")
-    @HystrixCommand(fallbackMethod = "saveCommentFallbackHandler")
     CommentDto saveComment(@Valid @RequestBody CommentDto comment) {
         return commentService.addComment(comment);
-    }
-
-    @SuppressWarnings("unused")
-    private CommentDto saveCommentFallbackHandler(CommentDto comment) {
-        return new CommentDto();
     }
 
     @DeleteMapping("/api/comments/{id}")

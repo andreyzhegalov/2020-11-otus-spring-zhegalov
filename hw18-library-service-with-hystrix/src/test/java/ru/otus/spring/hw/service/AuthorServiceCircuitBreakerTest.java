@@ -42,7 +42,7 @@ public class AuthorServiceCircuitBreakerTest {
     }
 
     @Test
-    void shouldReturnEmptyAuthorWhenSaveIfRepositryNotResponse(){
+    void shouldReturnEmptyAuthorWhenSaveIfRepositoryNotResponse(){
         final var actualSavedAuthor = new Author();
         actualSavedAuthor.setId("123");
 
@@ -58,7 +58,7 @@ public class AuthorServiceCircuitBreakerTest {
     }
 
     @Test
-    void shouldReturnFalseWhenDeleteAuthorIfRepositoryNotResponce(){
+    void shouldReturnFalseWhenDeleteAuthorIfRepositoryNotResponse(){
         final var answersWithDelay = new AnswersWithDelay(2 * CIRCUIT_BREAKER_TIMEOUT, null);
         doAnswer(answersWithDelay).when(authorRepository).deleteById(anyString());
 

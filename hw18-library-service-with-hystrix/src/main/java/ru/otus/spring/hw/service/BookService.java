@@ -9,7 +9,7 @@ public interface BookService {
 
     BookDto save(BookDto bookDto);
 
-    void deleteBook(String id);
+    boolean deleteBook(String id);
 
     List<Book> findAll();
 }

@@ -24,46 +24,46 @@ public class GenreServiceCircuitBreakerTest {
     private final static int CIRCUIT_BREAKER_TIMEOUT = 500;
 
     @Autowired
-    private GenreService authorService;
+    private GenreService genreService;
 
     @MockBean
-    private GenreRepository authorRepository;
+    private GenreRepository genreRepository;
 
     @Test
     void shouldReturnEmptyListIfRepositoryNotResponse() throws InterruptedException {
         final var authorList = new Returns(List.of(new Genre()));
         final var answersWithDelay = new AnswersWithDelay(2 * CIRCUIT_BREAKER_TIMEOUT, authorList);
-        doAnswer(answersWithDelay).when(authorRepository).findAll();
+        doAnswer(answersWithDelay).when(genreRepository).findAll();
 
-        final var authorListFromCircuitBreaker = authorService.findAll();
+        final var authorListFromCircuitBreaker = genreService.findAll();
 
-        then(authorRepository).should().findAll();
+        then(genreRepository).should().findAll();
         assertThat(authorListFromCircuitBreaker).isEmpty();
     }
 
     @Test
-    void shouldReturnEmptyGenreWhenSaveIfRepositryNotResponse(){
+    void shouldReturnEmptyGenreWhenSaveIfRepositryNotResponse() {
         final var actualSavedGenre = new Genre();
         actualSavedGenre.setId("123");
 
         final var authorReturn = new Returns(actualSavedGenre);
         final var answersWithDelay = new AnswersWithDelay(2 * CIRCUIT_BREAKER_TIMEOUT, authorReturn);
-        doAnswer(answersWithDelay).when(authorRepository).save(any());
+        doAnswer(answersWithDelay).when(genreRepository).save(any());
 
-        final var savedGenreFromCircuitBreaker = authorService.saveGenre(new GenreDto( new Genre()));
+        final var savedGenreFromCircuitBreaker = genreService.saveGenre(new GenreDto(new Genre()));
 
-        then(authorRepository).should().save(any());
+        then(genreRepository).should().save(any());
         assertThat(savedGenreFromCircuitBreaker).isNotNull();
         assertThat(savedGenreFromCircuitBreaker.getId()).isNull();
     }
 
     @Test
-    void shouldReturnFalseWhenDeleteGenreIfRepositoryNotResponce(){
+    void shouldReturnFalseWhenDeleteGenreIfRepositoryNotResponse() {
         final var answersWithDelay = new AnswersWithDelay(2 * CIRCUIT_BREAKER_TIMEOUT, null);
-        doAnswer(answersWithDelay).when(authorRepository).deleteById(anyString());
+        doAnswer(answersWithDelay).when(genreRepository).deleteById(anyString());
 
-        final var result = authorService.deleteGenre("123");
-        then(authorRepository).should().deleteById(anyString());
+        final var result = genreService.deleteGenre("123");
+        then(genreRepository).should().deleteById(anyString());
         assertThat(result).isFalse();
     }
 
