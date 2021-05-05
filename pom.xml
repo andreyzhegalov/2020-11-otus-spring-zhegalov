@@ -45,6 +45,7 @@
         <module>hw14-spring-batch</module>
         <module>hw15-spring-integration</module>
         <module>hw16-healthchecks-logfile</module>
+        <module>hw18-library-service-with-hystrix</module>
     </modules>
 
     <build>
